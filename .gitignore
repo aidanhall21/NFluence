@@ -1,5 +1,8 @@
 # dependencies
 /node_modules
+/client/node_modules
+/client/run.sh
+/client/yarn.lock
 /.pnp
 .pnp.js
 
