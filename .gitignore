@@ -9,6 +9,7 @@
 # production
 /build
 .gitignore
+run.sh
 
 # misc
 .DS_Store
