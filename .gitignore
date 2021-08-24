@@ -1,8 +1,5 @@
 # dependencies
 /node_modules
-/client/node_modules
-/client/run.sh
-/client/yarn.lock
 /.pnp
 .pnp.js
 
@@ -11,6 +8,7 @@
 
 # production
 /build
+.gitignore
 
 # misc
 .DS_Store
