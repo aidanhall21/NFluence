@@ -10152,6 +10152,11 @@ sass-loader@^10.0.5:
     schema-utils "^3.0.0"
     semver "^7.3.2"
 
+sass-migrator@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/sass-migrator/-/sass-migrator-1.5.1.tgz#cc4908d547bf43d9b62ca623923a410117be507d"
+  integrity sha512-kEEodbgVazNxHfPnEsgV2RT3xGWJK89k4SC4WMsBLz0ErjFpceCtqpSGzE9IOHNl3dgdTRp2nA5SfPiJ8ACB3g==
+
 sass@^1.38.1:
   version "1.38.1"
   resolved "https://registry.yarnpkg.com/sass/-/sass-1.38.1.tgz#54dfb17fb168846b5850324b82fc62dc68f51bad"

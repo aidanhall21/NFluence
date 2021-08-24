@@ -11,8 +11,8 @@ import { NFTStorage } from "nft.storage"
 import CryptoJs from 'crypto-js'
 import { useUser } from "../../providers/UserProvider";
 
-const royaltiesOptions = ["10%", "20%", "30%"];
-
+//const royaltiesOptions = ["10%", "20%", "30%"];
+/*
 const items = [
   {
     title: "Create collection",
@@ -31,6 +31,7 @@ const items = [
     color: "#9757D7",
   },
 ];
+*/
 
 const apikey = process.env.REACT_APP_NFT_STORAGE_KEY
 
@@ -99,6 +100,7 @@ const Upload = () => {
       hash = encrypt(metadata.url)
     }
 
+    //eslint-disable-next-line
     const tx = await mintNsft(hash, type, name, desc, 1)
     .then((response) => {
       setSuccess(true)
@@ -108,7 +110,6 @@ const Upload = () => {
       setSuccess(false)
       console.log(err)
     })
-    
     
   }
 

@@ -34,7 +34,7 @@ const User = ({ className, item, handle }) => {
           <Icon name="globe" size="16" />
           <span>{profile.url}</span>
         </a> : <></>}
-        {profile.handle == handle ? <></> : (<div className={styles.control}>
+        {profile.handle === handle ? <></> : (<div className={styles.control}>
           <div className={styles.btns}>
             <button
               className={cn(

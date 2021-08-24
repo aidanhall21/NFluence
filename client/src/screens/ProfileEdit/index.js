@@ -111,7 +111,7 @@ const ProfileEdit = () => {
       const API = await axios.get(`${api_node}/api/v1/usernames/${username}`)
       const serverResponse = API.data;
   
-      if (serverResponse[0]["num_unique"] != 0) {
+      if (serverResponse[0]["num_unique"] !== 0) {
         error = true;
       }
     }
