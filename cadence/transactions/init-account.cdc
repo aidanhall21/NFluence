@@ -5,7 +5,7 @@ import FungibleToken from "../contracts/FungibleToken.cdc"
 
 transaction {
   prepare(acct: AuthAccount) {
-    if acct.borrow<&NSFT.Collection>(from: NSFT.CollectionStoragePath) == nil {
+    if acct.borrow<&NSFT.Collection{NSFT.NSFTCollectionPublic}>(from: NSFT.CollectionStoragePath) == nil {
       let collection <- NSFT.createEmptyCollection()
       acct.save(<- collection, to: NSFT.CollectionStoragePath)
       acct.link<&NSFT.Collection{NSFT.NSFTCollectionPublic}>(NSFT.CollectionPublicPath, target: NSFT.CollectionStoragePath)

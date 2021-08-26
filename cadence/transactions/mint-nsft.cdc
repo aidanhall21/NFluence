@@ -8,8 +8,6 @@ transaction(recipient: Address, cid: String, fileType: UInt8, title: String, des
     
 
     prepare(acct: AuthAccount) {
-        //self.receiverReference = acct.borrow<&NSFT.Collection>(from: NSFT.CollectionStoragePath)
-          //  ?? panic("Could not borrow reference to Collection")
         self.receiverReference = getAccount(recipient).getCapability<&NSFT.Collection{NSFT.NSFTCollectionPublic}>(NSFT.CollectionPublicPath).borrow()
             ?? panic("Could not borrow reference to Collection")
     }

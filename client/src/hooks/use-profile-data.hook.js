@@ -9,7 +9,7 @@ process.env.NODE_ENV === "production"
   ? api_node = ''
   : api_node = process.env.REACT_APP_LOCAL_API_NODE
 
-export default function useProfileData(user) {
+export default function useProfileData(user, loggedIn) {
     const [state, dispatch] = useReducer(defaultReducer, {
         loading: false,
         error: false,
@@ -34,7 +34,7 @@ export default function useProfileData(user) {
         const fetchUserData = async () => {
           dispatch({ type: 'PROCESSING' })
           let hash;
-          !user ? hash = '0x0000000000000' : hash = user?.addr
+          !loggedIn ? hash = '0x0000000000000' : hash = user?.addr
           let avatar = new Identicon(hash).toString()
           try {
             const api = await axios.get(`${api_node}/api/v1/user/${user?.addr}`)
@@ -61,7 +61,7 @@ export default function useProfileData(user) {
           }
         }
         fetchUserData()
-      }, [user])
+      }, [user, loggedIn])
 
     return {
         ...state,

@@ -4,10 +4,11 @@ import NSFT from 0xNSFT
 transaction(recipient: Address, cid: String, fileType: UInt8, title: String, description: String, editionSize: UInt16) {
 
     // local variable for storing the minter reference
-    let receiverReference: &NSFT.Collection
+    let receiverReference: &NSFT.Collection{NSFT.NSFTCollectionPublic}
+    
 
     prepare(acct: AuthAccount) {
-        self.receiverReference = acct.borrow<&NSFT.Collection>(from: NSFT.CollectionStoragePath)
+        self.receiverReference = getAccount(recipient).getCapability<&NSFT.Collection{NSFT.NSFTCollectionPublic}>(NSFT.CollectionPublicPath).borrow()
             ?? panic("Could not borrow reference to Collection")
     }
 

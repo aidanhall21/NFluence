@@ -9,10 +9,10 @@ import useProfileData from '../hooks/use-profile-data.hook'
 const UserContext = createContext()
 
 export default function UserProvider({ children }) {
-    const { user } = useAuth()
+    const { user, loggedIn } = useAuth()
     const { data: collection, createCollection, checkCollection } = useCollection(user)
     const { data: balance, createVault, getBalance } = useCurrency(user)
-    const { data: profile } = useProfileData(user)
+    const { data: profile } = useProfileData(user, loggedIn)
     const { data: userNsfts, mintNsft, loading, error } = useUserNsfts(user, collection)
 
     return (
@@ -25,6 +25,7 @@ export default function UserProvider({ children }) {
                 user,
                 userNsfts,
                 mintNsft,
+                loggedIn,
                 collection,
                 checkCollection,
                 createCollection,

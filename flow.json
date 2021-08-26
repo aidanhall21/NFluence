@@ -7,7 +7,12 @@
 	},
 	"contracts": {
 		"NonFungibleToken": "./cadence/contracts/NonFungibleToken.cdc",
-		"NSFT": "./cadence/contracts/NSFT.cdc",
+		"NSFT": {
+			"source": "./cadence/contracts/NSFT.cdc",
+			"aliases": {
+				"testnet": "0xdfa65aa771288367"
+			}
+		},
 		"NSFAuction": "./cadence/contracts/NSFAuction.cdc",
 		"UtilityCoin": "./cadence/contracts/UtilityCoin.cdc",
 		"FungibleToken": {
@@ -30,7 +35,7 @@
 		},
 		"second-account": {
 			"address": "01cf0e2f2f715450",
-			"keys": "03a816da8fb4c70be6e34c2c6302bf0d68c9370190046109ab57bbe76fc1d24d"
+			"keys": "e6d1c2088d4b71143c91b25e25314965ed2a73a91062472b38c78b35426cd5f1"
 		},
 		"third-account": {
 			"address": "179b6b1cb6755e31",

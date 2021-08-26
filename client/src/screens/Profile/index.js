@@ -15,10 +15,10 @@ import { useAuth } from "../../providers/AuthProvider";
 import { useUser } from "../../providers/UserProvider";
 
 const navLinks = [
-  "On Sale",
-  "Collectibles",
+  "Your Auctions",
+  "Your Bids",
   "Created",
-  "Likes",
+  "Owned",
   "Following",
   "Followers",
 ];
@@ -183,7 +183,6 @@ const Profile = () => {
 
   const { user } = useAuth()
   const { profile, userNsfts } = useUser()
-  console.log(userNsfts)
 
   const socials = [
     {
@@ -299,18 +298,18 @@ const Profile = () => {
             </div>
             <div className={styles.group}>
               <div className={styles.item}>
-                {activeIndex === 0 && (
+                {/*activeIndex === 0 && (
                   <Items class={styles.items} items={bids.slice(0, 3)} />
-                )}
-                {activeIndex === 1 && (
+                )*/}
+                {/*activeIndex === 1 && (
                   <Items class={styles.items} items={bids.slice(0, 6)} />
-                )}
+                )*/}
                 {activeIndex === 2 && (
-                  <Items class={styles.items} items={bids.slice(0, 2)} />
+                  <Items class={styles.items} items={userNsfts} />
                 )}
-                {activeIndex === 3 && (
+                {/*activeIndex === 3 && (
                   <Items class={styles.items} items={bids.slice(0, 3)} />
-                )}
+                )*/}
                 {activeIndex === 4 && (
                   <Followers className={styles.followers} items={following} />
                 )}

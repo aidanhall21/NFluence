@@ -7,7 +7,7 @@ const express = require('express')
 //This variable is linked to a Heroku Postgres database
 //process.env.NODE_ENV === "production" ? process.env.DATABASE_URL : ,
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: 'postgresql://postgres:Mgoblue2@localhost:5432/NSFT',
   ssl:
   process.env.NODE_ENV === "production"
     ? { rejectUnauthorized: false }

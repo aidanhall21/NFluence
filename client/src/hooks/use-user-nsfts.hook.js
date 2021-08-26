@@ -1,10 +1,9 @@
 import { useEffect, useReducer } from "react";
 import { userNsftReducer } from "../reducer/userNsftReducer";
 import { mutate, query, tx } from '@onflow/fcl';
-//import { useTxs } from "../providers/TxProvider";
-import { LIST_USER_OWNED_NFTS } from "../flow/list-user-minted-nft.script";
 import { MINT_NSFT } from "../flow/mint-nsft.tx";
 import { authorizationFunction } from "../services/authorization-function";
+import { GET_TOKEN_DATA } from "../flow/get-token-data.script";
 
 export default function useUserNsfts(user, collection) {
     const [state, dispatch] = useReducer(userNsftReducer, {
@@ -22,10 +21,9 @@ export default function useUserNsfts(user, collection) {
             dispatch({ type: 'PROCESSING' })
             try {
                 let res = await query({
-                    cadence: LIST_USER_OWNED_NFTS,
+                    cadence: GET_TOKEN_DATA,
                     args: (arg, t) => [arg(user?.addr, t.Address)]
                 })
-                console.log(res)
                 let minted_nsfts = res.filter(token => token.creatorAddress === user?.addr)
                 dispatch({ type: 'SUCCESS', payload: minted_nsfts })
             } catch (err) {
@@ -33,14 +31,12 @@ export default function useUserNsfts(user, collection) {
                 dispatch({ type: 'ERROR' })
             }
         }
-        console.log('fetching!!')
         fetchUserMintedNsfts()
         //eslint-disable-next-line
     }, [user])
 
     const mintNsft = async (cid, fileType, title, description, editionSize) => {
         dispatch({ type: 'PROCESSING' })
-        console.log(state.loading)
         try {
             let res = await mutate({
                 cadence: MINT_NSFT,
@@ -58,7 +54,6 @@ export default function useUserNsfts(user, collection) {
             //addTx(res)
             let txStatus = await tx(res).onceSealed()
             dispatch({ type: 'SUCCESS', payload: txStatus })
-            console.log(state.loading)
             return txStatus
         } catch(err) {
             console.log(err)

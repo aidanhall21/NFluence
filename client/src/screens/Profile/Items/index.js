@@ -2,7 +2,6 @@ import React from "react";
 import cn from "classnames";
 import styles from "./Items.module.sass";
 import Card from "../../../components/Card";
-import Loader from "../../../components/Loader";
 
 const Items = ({ className, items }) => {
   return (
@@ -12,7 +11,6 @@ const Items = ({ className, items }) => {
           <Card className={styles.card} item={x} key={index} />
         ))}
       </div>
-      <Loader className={styles.loader} />
     </div>
   );
 };

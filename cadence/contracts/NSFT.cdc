@@ -115,12 +115,10 @@ pub contract NSFT: NonFungibleToken {
         pub fun getAllTokenData(): [NSFData]
         pub fun borrowNFT(id: UInt64): &NonFungibleToken.NFT
         // Function that returns reference to the whole public facing NSFT Resource
-        pub fun borrowNSFT(id: UInt64): &{NSFT.NSFTPublic}? {
-            // If the result isn't nil, the id of the returned reference
-            // should be the same as the argument to the function
+        pub fun borrowNSFT(id: UInt64): &NSFT.NFT {
             post {
-                (result == nil) || (result?.id == id): 
-                    "Cannot borrow NSFT reference: The ID of the returned reference is incorrect"
+                (result == nil) || (result.id == id): 
+                    "Cannot borrow Moment reference: The ID of the returned reference is incorrect"
             }
         }
 
@@ -213,7 +211,7 @@ pub contract NSFT: NonFungibleToken {
             return &self.ownedNFTs[id] as &NonFungibleToken.NFT
         }
 
-        pub fun borrowNSFT(id: UInt64): &{NSFT.NSFTPublic} {
+        pub fun borrowNSFT(id: UInt64): &NSFT.NFT {
             pre {
                 self.ownedNFTs[id] != nil : "NFT does not exist in the collection"
             }
@@ -243,7 +241,6 @@ pub contract NSFT: NonFungibleToken {
         while a > 0 {
             var newNFT <- create NFT(cid: cid, fileType: fileType, title: title, description: description, creatorAddress: creatorAddress, serial: a, editionSize: editionSize)
             recipient.deposit(token: <-newNFT)
-            NSFT.totalSupply = NSFT.totalSupply + (1 as UInt64)
             a = a - 1
         }
     }

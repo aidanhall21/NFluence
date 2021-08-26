@@ -1,8 +1,9 @@
+import './config/config'
 import React from "react";
 import ReactDOM from "react-dom";
 import Providers from './providers/Providers.comp'
 import App from "./App";
-import './config/config'
+
 
 ReactDOM.render(
   <Providers>

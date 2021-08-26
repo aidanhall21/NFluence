@@ -8,9 +8,15 @@ import { useAuth } from "../../../providers/AuthProvider";
 
 const User = ({ className, item, handle }) => {
   const [visible, setVisible] = useState(false);
+  const [verifying, setVerifying] = useState(false)
 
   const { user } = useAuth()
-  const { profile } = useUser()
+  const { profile, collection, createCollection } = useUser()
+
+  const verify = async () => {
+    setVerifying(true)
+    await createCollection()
+  }
 
   return (
     <>
@@ -46,6 +52,20 @@ const User = ({ className, item, handle }) => {
             >
               <span>Follow</span>
               <span>Unfollow</span>
+            </button>
+          </div>
+        </div>)}
+        {collection ? <></> : (<div className={styles.control}>
+          <div className={styles.btns}>
+            <button
+              className={cn(
+                "button button-small",
+                { [styles.active]: visible },
+                styles.button
+              )}
+              onClick={verify}
+            >
+              <span>{verifying ? 'One moment...' : "Verify"}</span>
             </button>
           </div>
         </div>)}
