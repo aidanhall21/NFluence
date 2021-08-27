@@ -3,36 +3,19 @@ import cn from "classnames";
 import { Link } from "react-router-dom";
 import styles from "./Card.module.sass";
 import Icon from "../Icon";
-
-function makeGatewayURL(ipfsURI) {
-  return ipfsURI.replace(/^ipfs:\/\//, "https://dweb.link/ipfs/");
-}
-
-async function fetchIPFSJSON(ipfsURI) {
-  const url = makeGatewayURL(ipfsURI);
-  const resp = await fetch(url);
-  return resp.json();
-}
+import { createTokenLink } from "../../mocks/functions";
 
 const Card = ({ className, item }) => {
   const [visible, setVisible] = useState(false);
   const [metadata, setMetadata] = useState({});
 
   useEffect(() => {
-    const createTokenLink = async () => {
-      if (item.cid === "") return {};
-      const renderedFile = await fetchIPFSJSON(item.cid);
-      if (renderedFile.image) {
-        renderedFile.image = makeGatewayURL(renderedFile.image);
-      }
-      return renderedFile;
-    };
     const fetchData = async () => {
-      const res = await createTokenLink();
+      const res = await createTokenLink(item);
       setMetadata(res)
     }
     fetchData()
-  }, [item.cid]);
+  }, [item]);
 
   return (
     <div className={cn(styles.card, className)}>
@@ -64,12 +47,18 @@ const Card = ({ className, item }) => {
             <Icon name="heart" size="20" />
             </button>*/}
           <button className={cn("button-small", styles.button)}>
-            <span>Place a bid</span>
+            <span>Start Auction</span>
             <Icon name="scatter-up" size="16" />
           </button>
         </div>
       </div>
-      <Link className={styles.link} to="/">
+      <Link className={styles.link} to={{
+        pathname: `/item/${item.creatorAddress}/${item.nftId}`,
+        state: {
+          item: item,
+          metadata: metadata
+        }
+      }}>
         <div className={styles.body}>
           <div className={styles.line}>
             <div className={styles.title}>{item.title}</div>

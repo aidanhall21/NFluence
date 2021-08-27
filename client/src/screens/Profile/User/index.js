@@ -4,7 +4,14 @@ import styles from "./User.module.sass";
 import Icon from "../../../components/Icon";
 import { useUser } from "../../../providers/UserProvider";
 import { useAuth } from "../../../providers/AuthProvider";
+import axios from "axios";
 // import { isStepDivisible } from "react-range/lib/utils";
+
+let api_node;
+process.env.NODE_ENV === "production"
+  ? api_node = ''
+  : api_node = process.env.REACT_APP_LOCAL_API_NODE
+
 
 const User = ({ className, item, handle }) => {
   const [visible, setVisible] = useState(false);
@@ -16,6 +23,10 @@ const User = ({ className, item, handle }) => {
   const verify = async () => {
     setVerifying(true)
     await createCollection()
+    axios.put(`${api_node}/api/v1/user/verify`, {
+      verify: true,
+      address: user?.addr
+    })
   }
 
   return (
@@ -55,7 +66,7 @@ const User = ({ className, item, handle }) => {
             </button>
           </div>
         </div>)}
-        {collection ? <></> : (<div className={styles.control}>
+        {profile.verified ? <></> : (<div className={styles.control}>
           <div className={styles.btns}>
             <button
               className={cn(

@@ -4,10 +4,10 @@ const { Pool } = require("pg");
 const express = require('express')
 
 //use the config variable DATABASE_URL to connect to the database
-//This variable is linked to a Heroku Postgres database
+//'postgresql://postgres:Mgoblue2@localhost:5432/NSFT'
 //process.env.NODE_ENV === "production" ? process.env.DATABASE_URL : ,
 const pool = new Pool({
-  connectionString: 'postgresql://postgres:Mgoblue2@localhost:5432/NSFT',
+  connectionString: process.env.DATABASE_URL,
   ssl:
   process.env.NODE_ENV === "production"
     ? { rejectUnauthorized: false }
@@ -183,11 +183,11 @@ function createFollower(req, res) {
 }
 
 function createUser(req, res) {
-  const { name, email, handle, avatar, address, verified, cover_image, profile_image, bio, url, twitter, instagram } = req.body;
+  const { name, email, handle, avatar, address, db, cover_image, profile_image, bio, url, twitter, instagram } = req.body;
 
   pool.query(
-    `INSERT INTO users (name, email, handle, avatar, address, verified, cover_image, profile_image, bio, url, twitter, instagram ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-    [name, email, handle, avatar, address, verified, cover_image, profile_image, bio, url, twitter, instagram],
+    `INSERT INTO users (name, email, handle, db, address, verified, cover_image, profile_image, bio, url, twitter, instagram ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+    [name, email, handle, avatar, address, db, cover_image, profile_image, bio, url, twitter, instagram],
     (error, results) => {
       if (error) {
         throw error;
@@ -228,6 +228,21 @@ function updateUser(req, res) {
   );
 }
 
+function verifyUser(req, res) {
+  const { verify, address } = req.body;
+
+  pool.query(
+    `UPDATE users SET verify=$1 WHERE address=$2`,
+    [verify, address],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.status(204).send("success");
+    }
+  );
+}
+
 apiRouter.get("/followers/:account", getFollowing);
 apiRouter.get("/following/:account", getFollowers);
 apiRouter.post("/follower", createFollower);
@@ -242,6 +257,7 @@ apiRouter.get("/usernames/:username", getUniqueUsername);
 apiRouter.post("/user", createUser);
 apiRouter.get("/handle/:handle", getAddress);
 apiRouter.put("/user/update", updateUser);
+apiRouter.put("/user/verify", verifyUser)
 
 module.exports = apiRouter
 

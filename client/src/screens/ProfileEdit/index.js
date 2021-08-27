@@ -44,7 +44,7 @@ const ProfileEdit = () => {
     let ext = ext_array[ext_array.length - 1]
     data.append('file', file, user?.addr + '-profile.' + ext)
     axios.post(`${api_node}/api/v1/upload`, data, {})
-    profile.verified ?
+    profile.db ?
     axios.put(`${api_node}/api/v1/user/update`, {
       name: profile.name,
       email: profile.email,
@@ -56,7 +56,7 @@ const ProfileEdit = () => {
       name: profile.name,
       email: profile.email,
       avatar: profile.avatar,
-      verified: true,
+      db: true,
       cover_image: false,
       profile_image: true,
       handle: profile.handle,
@@ -120,7 +120,7 @@ const ProfileEdit = () => {
       setErrors(true)
       return;
     } else {
-      profile.verified ?
+      profile.db ?
       axios.put(`${api_node}/api/v1/user/update`, {
         name: name,
         email: email,
@@ -136,7 +136,7 @@ const ProfileEdit = () => {
         name: name,
         email: email,
         avatar: profile.avatar,
-        verified: true,
+        db: true,
         cover_image: profile.cover_image,
         profile_image: profile.profile_image,
         handle: username,

@@ -24,7 +24,8 @@ export default function useProfileData(user, loggedIn) {
             bio: '',
             url: null,
             twitter: null,
-            instagram: null
+            instagram: null,
+            db: false
           }
       })
 
@@ -53,7 +54,8 @@ export default function useProfileData(user, loggedIn) {
                 verified: false,
                 url: null,
                 twitter: null,
-                instagram: null
+                instagram: null,
+                db: false
               }})
             }
           } catch(err) {

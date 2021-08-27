@@ -110,7 +110,7 @@ function App() {
         />
         <Route
           exact
-          path="/item"
+          path="/item/:address/:nftid"
           render={() => (
             <Page>
               <Item />

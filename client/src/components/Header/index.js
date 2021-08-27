@@ -10,7 +10,7 @@ import { useAuth } from "../../providers/AuthProvider";
 
 const nav = [
   {
-    url: "/search01",
+    url: "/",
     title: "Discover",
   },
   {
@@ -55,7 +55,7 @@ const Header = () => {
               </Link>
             ))}
           </nav>
-          <form
+          {/*<form
             className={styles.search}
             action=""
             onSubmit={() => handleSubmit()}
@@ -72,7 +72,7 @@ const Header = () => {
             <button className={styles.result}>
               <Icon name="search" size="20" />
             </button>
-          </form>
+          </form>*/}
           <Link
             className={cn("button-small", styles.button)}
             to="/upload-variants"
@@ -80,7 +80,7 @@ const Header = () => {
             Upload
           </Link>
         </div>
-        <Notification className={styles.notification} />
+        {/*<Notification className={styles.notification} />*/}
         <Link
           className={cn("button-small", styles.button)}
           to="/upload-variants"

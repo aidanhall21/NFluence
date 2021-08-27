@@ -32,16 +32,6 @@ const Actions = ({ className }) => {
       icon: "close-circle",
       action: () => setVisibleModalRemoveSale(true),
     },
-    {
-      title: "Burn token",
-      icon: "close-circle",
-      action: () => setVisibleModalBurn(true),
-    },
-    {
-      title: "Report",
-      icon: "info-circle",
-      action: () => setVisibleModalReport(true),
-    },
   ];
 
   return (
