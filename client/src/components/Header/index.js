@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import cn from "classnames";
 import styles from "./Header.module.sass";
 import Icon from "../Icon";
@@ -7,6 +7,7 @@ import Image from "../Image";
 import Notification from "./Notification";
 import User from "./User";
 import { useAuth } from "../../providers/AuthProvider";
+import { useUser } from "../../providers/UserProvider";
 
 const nav = [
   {
@@ -18,7 +19,7 @@ const nav = [
     title: "How it works",
   },
   {
-    url: "/item",
+    url: "/upload-variants",
     title: "Create item",
   },
   {
@@ -30,21 +31,32 @@ const nav = [
 const Header = () => {
   const [visibleNav, setVisibleNav] = useState(false);
   const [search, setSearch] = useState("");
-  const { loggedIn, logIn } = useAuth()
-
-  const handleSubmit = (e) => {
-    alert();
-  };
+  const { user, logOut, loggedIn, logIn } = useAuth()
+  const history = useHistory()
+  const { profile } = useUser()
 
   return (
     <header className={styles.header}>
       <div className={cn("container", styles.container)}>
         <Link className={styles.logo} to="/">
-          <Image className={styles.pic} src="/images/nsft-logo.jpeg" srcDark="/images/nsft-logo.jpeg" alt="Logo" />
+          <Image className={styles.pic} src="/images/nsft-logo.jpeg" srcDark="/images/nsft-logo-dark.jpeg" alt="Logo" />
         </Link>
         <div className={cn(styles.wrapper, { [styles.active]: visibleNav })}>
           <nav className={styles.nav}>
-            {nav.map((x, index) => (
+            {nav.map((x, index) => x.title === 'Profile' ? (
+              loggedIn ? (
+              <Link
+                className={styles.link}
+                to={`${x.url}/${profile.handle}`}
+                key={index}
+              >
+                {x.title}
+              </Link>
+            ) : (
+              <Link className={styles.link} onClick={logIn} to={'/'} key={index}>
+                      Log In
+                      </Link>
+            )) : (
               <Link
                 className={styles.link}
                 // activeClassName={styles.active}
@@ -55,10 +67,12 @@ const Header = () => {
               </Link>
             ))}
           </nav>
-          {/*<form
+          <form
             className={styles.search}
             action=""
-            onSubmit={() => handleSubmit()}
+            onSubmit={() => {
+              history.push('/search')
+            }}
           >
             <input
               className={styles.input}
@@ -72,7 +86,7 @@ const Header = () => {
             <button className={styles.result}>
               <Icon name="search" size="20" />
             </button>
-          </form>*/}
+          </form>
           <Link
             className={cn("button-small", styles.button)}
             to="/upload-variants"

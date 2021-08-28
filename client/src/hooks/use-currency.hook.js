@@ -12,6 +12,7 @@ export default function useCurrency(user) {
     })
 
     useEffect(() => {
+        if (!user) return
         getBalance();
         //eslint-disable-next-line
     }, [user?.addr])

@@ -1,6 +1,6 @@
 #!/bin/bash
 export ACCESS_API=https://flow-testnet.g.alchemy.com
-export WALLET_DISCOVERY=https://flow-wallet-testnet.blocto.app/authn
+export WALLET_DISCOVERY=https://fcl-discovery.onflow.org/testnet/authn
 export NSFT_CONTRACT=0xdfa65aa771288367
 export AUCTION_CONTRACT=0xdfa65aa771288367
 export UTILITY_COIN_CONTRACT=0xdfa65aa771288367

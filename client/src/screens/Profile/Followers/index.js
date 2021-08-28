@@ -1,7 +1,6 @@
 import React from "react";
 import cn from "classnames";
 import styles from "./Followers.module.sass";
-import Loader from "../../../components/Loader";
 
 const Followers = ({ className, items }) => {
   return (
@@ -11,12 +10,12 @@ const Followers = ({ className, items }) => {
           <div className={styles.item} key={index}>
             <div className={styles.follower}>
               <div className={styles.avatar}>
-                <img src={x.avatar} alt="Avatar" />
+              {x.profile_image ? <img src={`/user-images/${x.address}-profile.jpg`} alt="Avatar" /> : <img src={`data:image/png;base64,${x.avatar}`} alt="Avatar" />}
               </div>
               <div className={styles.details}>
                 <div className={styles.title}>{x.name}</div>
-                <div className={styles.counter}>{x.counter}</div>
-                <a
+                <div className={styles.counter}>@{x.handle}</div>
+                {/*<a
                   className={cn(
                     { "button-small": x.buttonClass === "blue" },
                     {
@@ -29,10 +28,10 @@ const Followers = ({ className, items }) => {
                   rel="noopener noreferrer"
                 >
                   {x.buttonContent}
-                </a>
+                  </a>*/}
               </div>
             </div>
-            <div className={styles.wrap}>
+            {/*<div className={styles.wrap}>
               <div className={styles.gallery}>
                 {x.gallery.map((x, index) => (
                   <div className={styles.preview} key={index}>
@@ -40,11 +39,10 @@ const Followers = ({ className, items }) => {
                   </div>
                 ))}
               </div>
-            </div>
+                </div>*/}
           </div>
         ))}
       </div>
-      <Loader className={styles.loader} />
     </div>
   );
 };

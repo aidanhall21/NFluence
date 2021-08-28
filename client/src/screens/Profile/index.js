@@ -310,12 +310,12 @@ const Profile = () => {
                 {/*activeIndex === 3 && (
                   <Items class={styles.items} items={bids.slice(0, 3)} />
                 )*/}
-                {activeIndex === 4 && (
+                {/*{activeIndex === 4 && (
                   <Followers className={styles.followers} items={following} />
                 )}
                 {activeIndex === 5 && (
                   <Followers className={styles.followers} items={followers} />
-                )}
+                )}*/}
               </div>
             </div>
           </div>

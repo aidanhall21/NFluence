@@ -5,7 +5,7 @@ import styles from "./Footer.module.sass";
 //import Group from "./Group";
 //import Image from "../Image";
 //import Form from "../Form";
-//import Theme from "../Theme";
+import Theme from "../Theme";
 
 /*const items = [
   {
@@ -79,12 +79,12 @@ const Footers = () => {
               name="email"
             />
             </div>
-            <div className={styles.col}>
+            <div className={styles.col}>*/}
             <div className={styles.version}>
               <div className={styles.details}>Dark mode</div>
               <Theme className="theme-big" />
             </div>
-            </div>
+            {/*</div>
             </div>*/}
         <div className={styles.foot}>
           <div className={styles.copyright}>

@@ -1,46 +1,82 @@
-import React, { useState } from "react";
+import React, { useEffect, useReducer } from "react";
 import cn from "classnames";
 import styles from "./Search01.module.sass";
-import { Range, getTrackBackground } from "react-range";
-import Icon from "../../components/Icon";
-import Card from "../../components/Card";
-import Dropdown from "../../components/Dropdown";
+//import { Range, getTrackBackground } from "react-range";
+//import Icon from "../../components/Icon";
+//import Card from "../../components/Card";
+//import Dropdown from "../../components/Dropdown";
 
 // data
-import { bids } from "../../mocks/bids";
+//import { bids } from "../../mocks/bids";
+import { useLocation } from "react-router";
+import { defaultReducer } from "../../reducer/defaultReducer";
+import axios from "axios";
+import Followers from "../Profile/Followers";
 
-const navLinks = ["All items", "Art", "Game", "Photography", "Music", "Video"];
+//const navLinks = ["All items", "Art", "Game", "Photography", "Music", "Video"];
 
-const dateOptions = ["Newest", "Oldest"];
-const likesOptions = ["Most liked", "Least liked"];
-const colorOptions = ["All colors", "Black", "Green", "Pink", "Purple"];
-const creatorOptions = ["Verified only", "All", "Most liked"];
+//const dateOptions = ["Newest", "Oldest"];
+//const likesOptions = ["Most liked", "Least liked"];
+//const colorOptions = ["All colors", "Black", "Green", "Pink", "Purple"];
+//const creatorOptions = ["Verified only", "All", "Most liked"];
+
+let api_node;
+process.env.NODE_ENV === "production"
+  ? api_node = ''
+  : api_node = process.env.REACT_APP_LOCAL_API_NODE
+
 
 const Search = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [date, setDate] = useState(dateOptions[0]);
-  const [likes, setLikes] = useState(likesOptions[0]);
-  const [color, setColor] = useState(colorOptions[0]);
-  const [creator, setCreator] = useState(creatorOptions[0]);
+  //const [activeIndex, setActiveIndex] = useState(0);
+  //const [date, setDate] = useState(dateOptions[0]);
+  //const [likes, setLikes] = useState(likesOptions[0]);
+  //const [color, setColor] = useState(colorOptions[0]);
+  //const [creator, setCreator] = useState(creatorOptions[0]);
+  //const [search, setSearch] = useState("");
+  //const [values, setValues] = useState([5]);
 
-  const [search, setSearch] = useState("");
+  const [state, dispatch] = useReducer(defaultReducer, {
+    loading: false,
+    error: false,
+    data: []
+  })
 
-  const [values, setValues] = useState([5]);
+  const urlsearch = useLocation().search;
+  const param = new URLSearchParams(urlsearch).get('search')
 
+  useEffect(() => {
+    console.log('Searching')
+    const searchUsers = async (param) => {
+      dispatch({ type: 'PROCESSING' })
+      try { 
+        const API = await axios.get(`${api_node}/api/v1/users`);
+        const users = API.data;
+        //let nameres = users.filter((user) => user.name.toLowerCase().includes(param.toLowerCase()))
+        const res = users.filter((user) => user.handle.toLowerCase().includes(param.toLowerCase()))
+        dispatch({ type: 'SUCCESS', payload: res })
+      } catch(err) {
+        dispatch({ type: 'ERROR' })
+      }
+    }
+    searchUsers(param)
+  }, [param])
+
+    /*
   const handleSubmit = (e) => {
     alert();
   };
+  */
 
-  const STEP = 0.1;
-  const MIN = 0.01;
-  const MAX = 10;
+  //const STEP = 0.1;
+  //const MIN = 0.01;
+  //const MAX = 10;
 
   return (
     <div className={cn("section-pt80", styles.section)}>
       <div className={cn("container", styles.container)}>
         <div className={styles.top}>
-          <div className={styles.title}>Type your keywords</div>
-          <form
+          <div className={styles.title}>Find a Creator</div>
+          {/*<form
             className={styles.search}
             action=""
             onSubmit={() => handleSubmit()}
@@ -57,18 +93,18 @@ const Search = () => {
             <button className={styles.result}>
               <Icon name="search" size="16" />
             </button>
-          </form>
+          </form>*/}
         </div>
         <div className={styles.sorting}>
-          <div className={styles.dropdown}>
+          {/*<div className={styles.dropdown}>
             <Dropdown
               className={styles.dropdown}
               value={date}
               setValue={setDate}
               options={dateOptions}
             />
-          </div>
-          <div className={styles.nav}>
+        </div>*/}
+          {/*<div className={styles.nav}>
             {navLinks.map((x, index) => (
               <button
                 className={cn(styles.link, {
@@ -80,10 +116,10 @@ const Search = () => {
                 {x}
               </button>
             ))}
-          </div>
+              </div>*/}
         </div>
         <div className={styles.row}>
-          <div className={styles.filters}>
+          {/*<div className={styles.filters}>
             <div className={styles.range}>
               <div className={styles.label}>Price range</div>
               <Range
@@ -194,18 +230,20 @@ const Search = () => {
               <Icon name="close-circle-fill" size="24" />
               <span>Reset filter</span>
             </div>
-          </div>
+          </div>*/}
           <div className={styles.wrapper}>
             <div className={styles.list}>
-              {bids.map((x, index) => (
+            <Followers className={styles.followers} items={state.data} />
+              {/*state.data.map((x, index) => (
+                
                 <Card className={styles.card} item={x} key={index} />
-              ))}
+              ))*/}
             </div>
-            <div className={styles.btns}>
+            {/*<div className={styles.btns}>
               <button className={cn("button-stroke", styles.button)}>
                 <span>Load more</span>
               </button>
-            </div>
+            </div>*/}
           </div>
         </div>
       </div>

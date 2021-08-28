@@ -29,9 +29,9 @@ const Description = () => {
           <div className={styles.preview}>
             <Image
               srcSet="/images/nsft-logo.jpeg 2x"
-              srcSetDark="/images/nsft-logo.jpeg 2x"
+              srcSetDark="/images/nsft-logo-dark.jpeg 2x"
               src="/images/nsft-logo.jpeg"
-              srcDark="/images/nsft-logo.jpeg"
+              srcDark="/images/nsft-logo-dark.jpeg"
               alt="Logo"
             />
           </div>

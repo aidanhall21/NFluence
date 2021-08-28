@@ -13,6 +13,7 @@ import Profile from "./screens/Profile";
 import ProfileEdit from "./screens/ProfileEdit";
 import Item from "./screens/Item";
 import PageList from "./screens/PageList";
+import FourOhFour from "./screens/FourOhFour";
 
 function App() {
   return (
@@ -74,7 +75,7 @@ function App() {
         />
         <Route
           exact
-          path="/search01"
+          path="/search"
           render={() => (
             <Page>
               <Search01 />
@@ -126,6 +127,14 @@ function App() {
             </Page>
           )}
         />
+        <Route
+          path="*"
+          render={() => {
+            <Page>
+              <FourOhFour />
+            </Page>
+          }}
+          />
       </Switch>
     </Router>
   );
