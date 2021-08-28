@@ -232,7 +232,7 @@ function verifyUser(req, res) {
   const { verify, address } = req.body;
 
   pool.query(
-    `UPDATE users SET verify=$1 WHERE address=$2`,
+    `UPDATE users SET verified=$1 WHERE address=$2`,
     [verify, address],
     (error, results) => {
       if (error) {
