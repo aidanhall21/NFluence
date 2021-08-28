@@ -33,7 +33,6 @@ export default function useProfileData(user, loggedIn) {
 
       useEffect(() => {
         if (!user?.addr) return
-        console.log(user)
         const fetchUserData = async () => {
           dispatch({ type: 'PROCESSING' })
           let hash;

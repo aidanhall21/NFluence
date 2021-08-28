@@ -36,13 +36,14 @@ const ProfileEdit = () => {
   const [insta, setInsta] = useState('')
   const [email, setEmail] = useState('')
   const [errors, setErrors] = useState(false)
+  //const [type, setType] = useState('')
 
   const onProfilePhotoChange = (e) => {
     let data = new FormData()
     let file = e.target.files[0]
-    let ext_array = file.name.split('.')
-    let ext = ext_array[ext_array.length - 1]
-    data.append('file', file, user?.addr + '-profile.' + ext)
+    //let ext_array = file.name.split('.')
+    //let ext = ext_array[ext_array.length - 1]
+    data.append('file', file, user?.addr + '-profile.jpg')
     axios.post(`${api_node}/api/v1/upload`, data, {})
     profile.db ?
     axios.put(`${api_node}/api/v1/user/update`, {
@@ -51,17 +52,26 @@ const ProfileEdit = () => {
       handle: profile.handle,
       cover_image: profile.cover_image,
       profile_image: true,
-      address: user?.addr
+      address: user?.addr,
+      bio: profile.bio,
+      url: profile.url,
+      twitter: profile.twitter,
+      instagram: profile.instagram
     }) : axios.post(`${api_node}/api/v1/user`, {
       name: profile.name,
       email: profile.email,
+      handle: profile.handle,
       avatar: profile.avatar,
+      address: user?.addr,
       db: true,
       cover_image: false,
       profile_image: true,
-      handle: profile.handle,
-      address: user?.addr,
+      bio: profile.bio,
+      url: profile.url,
+      twitter: profile.twitter,
+      instagram: profile.instagram
     })
+    window.location.reload()
   }
 
   const handleNameChange = async (e) => {
@@ -101,6 +111,7 @@ const ProfileEdit = () => {
     setTwitter(profile.twitter)
     setInsta(profile.instagram)
     setEmail(profile.email)
+    
   }, [profile])
 
   const handleSubmit = async (e) => {
