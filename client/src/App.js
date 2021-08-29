@@ -120,6 +120,15 @@ function App() {
         />
         <Route
           exact
+          path="/auction/:address/:nftid"
+          render={() => (
+            <Page>
+              <Item />
+            </Page>
+          )}
+        />
+        <Route
+          exact
           path="/pagelist"
           render={() => (
             <Page>

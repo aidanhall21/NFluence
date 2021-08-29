@@ -1,6 +1,7 @@
 import React from "react";
 import cn from "classnames";
 import styles from "./Followers.module.sass";
+import { Link } from "react-router-dom";
 
 const Followers = ({ className, items }) => {
   return (
@@ -10,7 +11,12 @@ const Followers = ({ className, items }) => {
           <div className={styles.item} key={index}>
             <div className={styles.follower}>
               <div className={styles.avatar}>
-              {x.profile_image ? <img src={`/user-images/${x.address}-profile.jpg`} alt="Avatar" /> : <img src={`data:image/png;base64,${x.avatar}`} alt="Avatar" />}
+                <Link
+                  to={`/profile/${x.handle}`}
+                >
+                  {x.profile_image ? <img src={`/user-images/${x.address}-profile.jpg`} alt="Avatar" /> : <img src={`data:image/png;base64,${x.avatar}`} alt="Avatar" />}
+                </Link>
+              
               </div>
               <div className={styles.details}>
                 <div className={styles.title}>{x.name}</div>

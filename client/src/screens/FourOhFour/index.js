@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import cn from "classnames";
 import styles from "./Search02.module.sass";
 import Image from "../../components/Image";
-import Form from "../../components/Form";
+//import Form from "../../components/Form";
 
+/*
 const items = [
   {
     title: "Artwork",
@@ -26,13 +27,16 @@ const items = [
     image: "/images/content/activity-pic-2.jpg",
   },
 ];
+*/
 
 const Search = () => {
-  const [search, setSearch] = useState("");
+  //const [search, setSearch] = useState("");
 
+  /*
   const handleSubmit = (e) => {
     alert();
   };
+  */
 
   return (
     <div className={cn("section", styles.section)}>

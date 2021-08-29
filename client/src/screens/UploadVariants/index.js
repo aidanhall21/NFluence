@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import cn from "classnames";
 import styles from "./UploadVariants.module.sass";
 import Control from "../../components/Control";
+import Image from "../../components/Image";
 
 const breadcrumbs = [
   {
@@ -19,13 +20,17 @@ const items = [
     url: "/upload-details",
     buttonText: "Create Single",
     image: "/images/nsft-logo.jpeg",
+    imageDark: "/images/nsft-logo-dark.jpeg",
     image2x: "/images/nsft-logo.jpeg",
+    imageDark2x: "/images/nsft-logo-dark.jpeg"
   },
   {
     url: "/upload-details",
     buttonText: "Create Multiple",
     image: "/images/nsft-logo.jpeg",
-    image2x: "/images/content/nsft-logo.jpeg",
+    imageDark: "/images/nsft-logo-dark.jpeg",
+    image2x: "/images/nsft-logo.jpeg",
+    imageDark2x: "/images/nsft-logo-dark.jpeg"
   },
 ];
 
@@ -47,7 +52,13 @@ const Upload = () => {
             {items.map((x, index) => (
               <div className={styles.item} key={index}>
                 <div className={styles.preview}>
-                  <img srcSet={`${x.image2x} 2x`} src={x.image} alt="Upload" />
+                <Image
+              srcSet="/images/nsft-logo.jpeg 2x"
+              srcSetDark="/images/nsft-logo-dark.jpeg 2x"
+              src="/images/nsft-logo.jpeg"
+              srcDark="/images/nsft-logo-dark.jpeg"
+              alt="Logo"
+            />
                 </div>
                 <Link className={cn("button-stroke", styles.button)} to={x.url}>
                   {x.buttonText}
@@ -55,10 +66,10 @@ const Upload = () => {
               </div>
             ))}
           </div>
-          <div className={styles.note}>
+          {/*<div className={styles.note}>
             We do not own your private keys and cannot access your funds without
             your confirmation.
-          </div>
+            </div>*/}
         </div>
       </div>
     </div>

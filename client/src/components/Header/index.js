@@ -4,7 +4,7 @@ import cn from "classnames";
 import styles from "./Header.module.sass";
 import Icon from "../Icon";
 import Image from "../Image";
-import Notification from "./Notification";
+//import Notification from "./Notification";
 import User from "./User";
 import { useAuth } from "../../providers/AuthProvider";
 import { useUser } from "../../providers/UserProvider";
@@ -15,7 +15,7 @@ const nav = [
     title: "Discover",
   },
   {
-    url: "/faq",
+    url: "/",
     title: "How it works",
   },
   {
@@ -31,7 +31,7 @@ const nav = [
 const Header = () => {
   const [visibleNav, setVisibleNav] = useState(false);
   const [search, setSearch] = useState("");
-  const { user, logOut, loggedIn, logIn } = useAuth()
+  const { loggedIn, logIn } = useAuth()
   const history = useHistory()
   const { profile } = useUser()
 

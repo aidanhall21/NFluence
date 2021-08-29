@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import cn from "classnames";
 import styles from "./PutSale.module.sass";
-import Icon from "../../../../components/Icon";
-import Switch from "../../../../components/Switch";
+import Form from "../../../../components/Form";
+import { useUser } from "../../../../providers/UserProvider";
+import { useLocation } from "react-router";
+import Loader from "../../../../components/Loader";
+//import Icon from "../../../../components/Icon";
+//import LoaderCircle from "../../../../components/LoaderCircle";
+//import Icon from "../../../../components/Icon";
+//import Switch from "../../../../components/Switch";
 
-const items = [
+/*const items = [
   {
     title: "Enter your price",
     value: "ETH",
@@ -17,15 +23,28 @@ const items = [
     title: "Total bid amount",
     value: "0 ETH",
   },
-];
+];*/
 
 const PutSale = ({ className }) => {
   const [price, setPrice] = useState(false);
+  const { addToAuction, loading, status, error } = useUser();
+  const location = useLocation();
+  console.log(status)
+
+  const formatAmountInput = (x) => {
+    return x.toString() + ".0";
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const nftid = location.pathname.split("/")[3];
+    await addToAuction(parseInt(nftid), formatAmountInput(price));
+  };
 
   return (
     <div className={cn(className, styles.sale)}>
-      <div className={cn("h4", styles.title)}>Put on sale</div>
-      <div className={styles.line}>
+      <div className={cn("h4", styles.title)}>Put your NFT up for Auction</div>
+      {/*<div className={styles.line}>
         <div className={styles.icon}>
           <Icon name="coin" size="24" />
         </div>
@@ -36,19 +55,80 @@ const PutSale = ({ className }) => {
           </div>
         </div>
         <Switch className={styles.switch} value={price} setValue={setPrice} />
-      </div>
+  </div>*/}
       <div className={styles.table}>
-        {items.map((x, index) => (
-          <div className={styles.row} key={index}>
-            <div className={styles.col}>{x.title}</div>
-            <div className={styles.col}>{x.value}</div>
-          </div>
-        ))}
+        <div className={styles.row}>
+          <Form
+            className={styles.form}
+            onSubmit={() => handleSubmit()}
+            value={price}
+            placeholder="Set Starting Price"
+            setValue={setPrice}
+            type="number"
+            name="price"
+            step={1}
+          />
+          {/*<div className={styles.col}>Starting Price</div>
+            <div className={styles.col}>value</div>*/}
+        </div>
       </div>
-      <div className={styles.btns}>
-        <button className={cn("button", styles.button)}>Continue</button>
-        <button className={cn("button-stroke", styles.button)}>Cancel</button>
-      </div>
+      {loading ? (
+        <div className={styles.item}>
+          {/*<div className={styles.head}>
+            <div className={styles.icon}>
+              <LoaderCircle className={styles.loader} />
+            </div>
+            <div className={styles.details}>
+              <div className={styles.info}>Minting...</div>
+              <div className={styles.text}>
+                This may take up to a couple minutes to complete.
+              </div>
+            </div>
+      </div>*/}
+          <button className={cn("button loading", styles.button)}>
+            <Loader className={styles.loader} color="white" />
+          </button>
+        </div>
+      ) : (error ? (
+        <div className={cn(styles.item, styles.error)}>
+          {/*<div className={styles.head}>
+            <div className={styles.details}>
+              <div className={styles.text}>
+              Something went wrong, please{" "}
+              <a href="/#" target="_blank" rel="noopener noreferrer">
+                try again
+              </a>
+              </div>
+            </div>
+      </div>*/}
+          <button className={cn("button error", styles.button)}>Something went wrong :(</button>
+        </div>
+      ) :
+        (status.status === 4 ? (
+          <div className={cn(styles.item, styles.done)}>
+          {/*<div className={styles.head}>
+            <div className={styles.icon}>
+              <Icon name="upload-file" size="24" />
+            </div>
+            <div className={styles.details}>
+              <div className={styles.info}>Mint Successful!</div>
+              <div className={styles.text}>Check your profile to see your NFT</div>
+            </div>
+        </div>*/}
+          <button className={cn("button done", styles.button)}>Success! Your auction has started</button>
+        </div>
+        ) : (<div className={styles.btns}>
+          <button
+            className={cn("button", styles.button)}
+            onClick={handleSubmit}
+          >
+            Start Auction
+          </button>
+          {/*<button className={cn("button-stroke", styles.button)} onClick={onClose} >
+            Go Back
+        </button>*/}
+        </div>))
+      )}
     </div>
   );
 };

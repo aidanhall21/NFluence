@@ -11,7 +11,6 @@ export async function fetchIPFSJSON(ipfsURI) {
 export const createTokenLink = async (item) => {
     if (!item.cid) return {}
     if (item.cid === "") return {};
-    console.log(item.cid)
     const renderedFile = await fetchIPFSJSON(item.cid);
     if (renderedFile.image) {
       renderedFile.image = makeGatewayURL(renderedFile.image);

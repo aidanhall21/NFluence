@@ -18,15 +18,19 @@ const User = ({ className, item, handle }) => {
   const [verifying, setVerifying] = useState(false)
 
   const { user } = useAuth()
-  const { profile, collection, createCollection } = useUser()
+  const { collection, profile, createCollection, fetchUserData } = useUser()
 
   const verify = async () => {
     setVerifying(true)
-    await createCollection()
-    axios.put(`${api_node}/api/v1/user/verify`, {
+    if (!collection) {
+      await createCollection()
+    }
+    await axios.put(`${api_node}/api/v1/user/verify`, {
       verify: true,
       address: user?.addr
     })
+    await fetchUserData()
+    setVerifying(false)
   }
 
   return (

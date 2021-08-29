@@ -3,7 +3,6 @@ import cn from "classnames";
 import styles from "./Users.module.sass";
 
 const Users = ({ className, items }) => {
-  console.log(items)
   return (
     <div className={cn(styles.users, className)}>
       <div className={styles.list}>

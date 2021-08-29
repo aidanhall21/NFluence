@@ -10,7 +10,7 @@ const FolowSteps = ({ className, obj, onClose }) => {
     <div className={cn(className, styles.steps)}>
       <div className={cn("h4", styles.title)}>Creating your NFT</div>
       <div className={styles.list}>
-        {obj.success ? <div className={cn(styles.item, styles.done)}>
+        {obj.success && (<div className={cn(styles.item, styles.done)}>
           <div className={styles.head}>
             <div className={styles.icon}>
               <Icon name="upload-file" size="24" />
@@ -21,24 +21,24 @@ const FolowSteps = ({ className, obj, onClose }) => {
             </div>
           </div>
           <button className={cn("button done", styles.button)} onClick={onClose} >Done</button>
-        </div> : <></>}
-        {!obj.loading & !obj.error & !obj.success ? <div className={styles.item}>
+        </div>)}
+        {!obj.loading && !obj.error && !obj.success && (<div className={styles.item}>
           <div className={styles.head}>
             <div className={styles.icon}>
               <Icon name="pencil" size="24" />
             </div>
             <div className={styles.details}>
-              <div className={styles.info}>Sign sell order</div>
+              <div className={styles.info}>Continue</div>
               <div className={styles.text}>
-                Sign sell order using your wallet
+                Continue
               </div>
             </div>
           </div>
           <button className={cn("button disabled", styles.button)}>
-            Start now
+            Continue
           </button>
-        </div> : <></>}
-        {obj.loading ? <div className={styles.item}>
+        </div>)}
+        {obj.loading && (<div className={styles.item}>
           <div className={styles.head}>
             <div className={styles.icon}>
               <LoaderCircle className={styles.loader} />
@@ -53,14 +53,14 @@ const FolowSteps = ({ className, obj, onClose }) => {
           <button className={cn("button loading", styles.button)}>
             <Loader className={styles.loader} color="white" />
           </button>
-        </div> : <></>}
-        {obj.error ? <div className={cn(styles.item, styles.error)}>
+        </div>)}
+        {obj.error && (<div className={cn(styles.item, styles.error)}>
           <div className={styles.head}>
             <div className={styles.icon}>
               <Icon name="pencil" size="24" />
             </div>
             <div className={styles.details}>
-              <div className={styles.info}>Sign sell order</div>
+              <div className={styles.info}>Whoops</div>
               <div className={styles.text}>
               Something went wrong, please{" "}
         <a href="/#" target="_blank" rel="noopener noreferrer">
@@ -69,8 +69,8 @@ const FolowSteps = ({ className, obj, onClose }) => {
               </div>
             </div>
           </div>
-          <button className={cn("button error", styles.button)}>Failed</button>
-        </div> : <></>}
+          <button className={cn("button error", styles.button)}>Transaction Failed</button>
+        </div>)}
       </div>
     </div>
   );

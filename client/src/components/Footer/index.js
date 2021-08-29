@@ -40,13 +40,13 @@ const Footers = () => {
   //const [email, setEmail] = useState("");
 
   //const handleSubmit = (e) => {
-    //alert();
+  //alert();
   //};
 
   return (
     <footer className={styles.footer}>
       <div className={cn("container", styles.container)}>
-       {/*<div className={styles.row}>
+        {/*<div className={styles.row}>
           <div className={styles.col}>
             <Link className={styles.logo} to="/">
               <Image
@@ -78,14 +78,14 @@ const Footers = () => {
               type="email"
               name="email"
             />
-            </div>
-            <div className={styles.col}>*/}
-            <div className={styles.version}>
-              <div className={styles.details}>Dark mode</div>
-              <Theme className="theme-big" />
-            </div>
-            {/*</div>
             </div>*/}
+            <div className={styles.col}>
+          <div className={styles.version}>
+            <div className={styles.details}>Dark mode</div>
+            <Theme className="theme-big" />
+          </div>
+        </div>
+        {/*</div>*/}
         <div className={styles.foot}>
           <div className={styles.copyright}>
             Copyright © 2021 Long Hall Labs LLC. All rights reserved

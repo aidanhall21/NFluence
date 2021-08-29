@@ -5,11 +5,11 @@ import styles from "./Profile.module.sass";
 import Icon from "../../components/Icon";
 import User from "./User";
 import Items from "./Items";
-import Followers from "./Followers";
+//import Followers from "./Followers";
 
 
 // data
-import { bids } from "../../mocks/bids";
+//import { bids } from "../../mocks/bids";
 import axios from "axios";
 import { useAuth } from "../../providers/AuthProvider";
 import { useUser } from "../../providers/UserProvider";
@@ -23,6 +23,7 @@ const navLinks = [
   "Followers",
 ];
 
+/*
 const following = [
   {
     name: "Sally Fadel",
@@ -168,6 +169,7 @@ const followers = [
     ],
   },
 ];
+*/
 
 let api_node;
 process.env.NODE_ENV === "production"
@@ -182,7 +184,8 @@ const Profile = () => {
   const { handle } = useParams();
 
   const { user } = useAuth()
-  const { profile, userNsfts } = useUser()
+  const { profile, userNsfts, userAuctions } = useUser()
+  console.log(userAuctions)
 
   const socials = [
     {
@@ -298,9 +301,9 @@ const Profile = () => {
             </div>
             <div className={styles.group}>
               <div className={styles.item}>
-                {/*activeIndex === 0 && (
-                  <Items class={styles.items} items={bids.slice(0, 3)} />
-                )*/}
+                {activeIndex === 0 && (
+                  <Items class={styles.items} items={userAuctions} />
+                )}
                 {/*activeIndex === 1 && (
                   <Items class={styles.items} items={bids.slice(0, 6)} />
                 )*/}

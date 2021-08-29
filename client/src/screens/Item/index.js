@@ -3,15 +3,19 @@ import cn from "classnames";
 import styles from "./Item.module.sass";
 import Users from "./Users";
 import Control from "./Control";
-import Options from "./Options";
-import { useParams } from "react-router";
+//import Options from "./Options";
+import { useLocation, useParams } from "react-router";
 import { defaultReducer } from "../../reducer/defaultReducer";
 import { query } from "@onflow/fcl";
-import { useUser } from "../../providers/UserProvider";
+//import { useUser } from "../../providers/UserProvider";
 import { GET_SINGLE_TOKEN_DATA } from "../../flow/get-single-token-data.script";
 import { createTokenLink } from "../../mocks/functions";
 import { ownerReducer } from "../../reducer/ownerReducer";
 import axios from "axios";
+import { GET_SINGLE_AUCTION_DATA } from "../../flow/get-single-auction-data.script";
+import { GET_BID_HISTORY } from "../../flow/get-bid-history.script";
+import Bids from "./Bids";
+import { AuctionTimer } from "../../components/Card";
 
 const navLinks = ["Info", "Owners", "History", "Bids"];
 
@@ -28,7 +32,7 @@ const categories = [
 ];
 */
 
-let users;
+//let users;
 
 let api_node;
 process.env.NODE_ENV === "production"
@@ -38,6 +42,7 @@ process.env.NODE_ENV === "production"
 
 const Item = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [bids, setBids] = useState([])
   const [state, dispatch] = useReducer(defaultReducer, {
     loading: false,
     error: false,
@@ -50,6 +55,7 @@ const Item = () => {
   })
   const [metadata, setMetadata] = useState({});
   const { address, nftid } = useParams();
+  const location = useLocation()
 
   useEffect(() => {
     const fetchTokenData = async () => {
@@ -59,16 +65,52 @@ const Item = () => {
           cadence: GET_SINGLE_TOKEN_DATA,
           args: (arg, t) => [arg(address, t.Address), arg(parseInt(nftid), t.UInt64)],
         });
-        console.log(res)
         dispatch({ type: "SUCCESS", payload: res });
       } catch (err) {
         console.log(err);
         dispatch({ type: "ERROR" });
       }
     };
-    fetchTokenData();
-    
-  }, [address, nftid]);
+    const fetchAuctionTokenData = async () => {
+      dispatch({ type: 'PROCESSING' })
+      try {
+        let res = await query({
+          cadence: GET_SINGLE_AUCTION_DATA,
+          args: (arg, t) => [arg(address, t.Address), arg(parseInt(nftid), t.UInt64)]
+        })
+        const { nftData } = res
+        const obj = {...res, ...nftData}
+        dispatch({ type: 'SUCCESS', payload: obj }) 
+      } catch(err) {
+        console.log(err)
+        dispatch({ type: 'ERROR' })
+      }
+    }
+    if (location.pathname.split('/')[1] === 'auction') {
+      fetchAuctionTokenData()
+    } else {
+      fetchTokenData();
+    }
+    //eslint-disable-next-line
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (location.pathname.split('/')[1] === 'item') return
+    const fetchBidHistory = async () => {
+      try {
+        let res = await query({
+          cadence: GET_BID_HISTORY,
+          args: (arg, t) => [arg(address, t.Address), arg(parseInt(nftid), t.UInt64)]
+        })
+        setBids(res)
+      } catch(err) {
+        console.log(err)
+      }
+    }
+    fetchBidHistory()
+    //eslint-disable-next-line
+  }, [location.pathname])
+
   useEffect(() => {
     const fetchData = async () => {
       const res = await createTokenLink(state.data);
@@ -76,6 +118,7 @@ const Item = () => {
     };
     fetchData();
   }, [state.data])
+
   useEffect(() => {
     const fetchOwnerData = async () => {
       dispatchState({ type: 'PROCESSING' })
@@ -88,7 +131,8 @@ const Item = () => {
       }
     }
     fetchOwnerData()
-  }, [])
+  }, [address])
+
   useEffect(() => {
     const fetchCreatorData = async () => {
       if (state.data === {}) return
@@ -96,7 +140,6 @@ const Item = () => {
       try {
         const api = await axios.get(`${api_node}/api/v1/user/${state.data.creatorAddress}`)
         const serverResponse = api.data
-        console.log(serverResponse)
         if (serverResponse.length === 0) return
         dispatchState({ type: 'CREATOR', payload: {...serverResponse[0], position: 'Creator'} })
       } catch(err) {
@@ -143,12 +186,9 @@ const Item = () => {
           <div className={styles.details}>
             <h1 className={cn("h3", styles.title)}>{state.data.title}</h1>
             <div className={styles.cost}>
-              {/*<div className={cn("status-stroke-green", styles.price)}>
-                2.5 ETH
-              </div>
-              <div className={cn("status-stroke-black", styles.price)}>
-                $4,429.87
-              </div>*/}
+              {state.data.auctionId ? (<div className={cn("status-stroke-green", styles.price)}>
+                Current Price: ${state.data.price.split(".")[0]}
+              </div>) : (<></>)}
               <div className={styles.counter}>
                 #{state.data.serial} of {state.data.editionSize}
               </div>
@@ -168,7 +208,9 @@ const Item = () => {
                 </button>
               ))}
             </div>
-            <Users className={styles.users} items={ownerState.data} />
+            {activeIndex === 0 && (<AuctionTimer data={state.data} />)}
+            {activeIndex === 1 && (<Users className={styles.users} items={ownerState.data} />)}
+            {activeIndex === 3 && (<Bids className={styles.users} items={bids} />)}
             <Control className={styles.control} />
           </div>
         </div>

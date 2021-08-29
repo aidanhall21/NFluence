@@ -6,17 +6,26 @@ export const userNsftReducer = (state, action) => {
                 loading: true,
                 error: false
             }
-        case 'SUCCESS':
+        case 'MINTED_SUCCESS':
             return {
                 ...state,
                 loading: false,
                 error: false,
-                data: action.payload
+                minted_data: action.payload
             }
-        case 'ADD':
+        case 'AUCTION_SUCCESS':
             return {
                 ...state,
-                data: [...state.data, action.payload]
+                loading: false,
+                error: false,
+                auction_data: action.payload
+            }
+        case 'TX_SUCCESS':
+            return {
+                ...state,
+                loading: false,
+                error: false,
+                txStatus: action.payload
             }
         case 'ERROR':
             return {

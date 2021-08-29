@@ -3,7 +3,7 @@ import cn from "classnames";
 import styles from "./UploadDetails.module.sass";
 import Icon from "../../components/Icon";
 import TextInput from "../../components/TextInput";
-import Switch from "../../components/Switch";
+//import Switch from "../../components/Switch";
 import Modal from "../../components/Modal";
 import Preview from "./Preview";
 import FolowSteps from "./FolowSteps";
@@ -41,9 +41,9 @@ const encrypt = (text) => {
 
 const Upload = () => {
   //const [royalties, setRoyalties] = useState(royaltiesOptions[0]);
-  const [sale, setSale] = useState(true);
+  //const [sale, setSale] = useState(true);
   //const [price, setPrice] = useState(false);
-  const [locking, setLocking] = useState(false);
+  //const [locking, setLocking] = useState(false);
   const [visibleModal, setVisibleModal] = useState(false);
   const [visiblePreview, setVisiblePreview] = useState(false);
   const [name, setName] = useState('')
@@ -51,9 +51,10 @@ const Upload = () => {
   const [preview, setPreview] = useState()
   const [file, setFile] = useState()
   const [success, setSuccess] = useState(false)
+  const [verified, setVerified] = useState(false)
+  const [fileCheck, setFileCheck] = useState(false)
 
-  const { mintNsft, collection, createCollection, loading, error } = useUser()
-  console.log(error)
+  const { mintNsft, collection, loading, error } = useUser()
 
   const client = new NFTStorage({ token: apikey })
 
@@ -74,8 +75,16 @@ const Upload = () => {
 
   const handleSubmit = async (e) => {
     if (!collection) {
-      await createCollection()
+      setVerified(true)
+      return
     }
+
+    if (!file) {
+      setFileCheck(true)
+      return
+    }
+
+    setVisibleModal(true)
 
     //const files = e.nativeEvent["target"]["form"][0].files[0]
     const filetype = file["type"].split("/")[0]
@@ -95,10 +104,7 @@ const Upload = () => {
     })
 
     let hash = metadata.url
-
-    if (locking) {
-      hash = encrypt(metadata.url)
-    }
+    hash = encrypt(metadata.url)
 
     //eslint-disable-next-line
     const tx = await mintNsft(hash, type, name, desc, 1)
@@ -150,7 +156,7 @@ const Upload = () => {
                   <div className={styles.fieldset}>
                     <TextInput
                       className={styles.field}
-                      label="NSFT name"
+                      label="Title"
                       name="NSFT"
                       type="text"
                       required
@@ -168,7 +174,7 @@ const Upload = () => {
                   </div>
                 </div>
               </div>
-              <div className={styles.options}>
+              {/*<div className={styles.options}>
                 <div className={styles.option}>
                   <div className={styles.box}>
                     <div className={styles.category}>Put up for auction</div>
@@ -187,7 +193,7 @@ const Upload = () => {
                   </div>
                   <Switch value={locking} setValue={setLocking} />
                 </div>
-              </div>
+                </div>*/}
               <div className={styles.foot}>
                 <button
                   className={cn("button-stroke tablet-show", styles.button)}
@@ -199,7 +205,6 @@ const Upload = () => {
                 <button
                   className={cn("button", styles.button)}
                   onClick={(e) => {
-                    setVisibleModal(true)
                     handleSubmit(e)
                   }}
                   // type="button" hide after form customization
@@ -208,6 +213,8 @@ const Upload = () => {
                   <span>Create item</span>
                   <Icon name="arrow-next" size="10" />
                 </button>
+                {verified && (<div>You must verify your account before you can mint</div>)}
+                {fileCheck && (<div>Please upload content before continuing</div>)  }
               </div>
             </form>
           </div>

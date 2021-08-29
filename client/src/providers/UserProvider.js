@@ -12,8 +12,8 @@ export default function UserProvider({ children }) {
     const { user, loggedIn } = useAuth()
     const { data: collection, createCollection, checkCollection } = useCollection(user)
     const { data: balance, createVault, getBalance } = useCurrency(user)
-    const { data: profile } = useProfileData(user, loggedIn)
-    const { data: userNsfts, mintNsft, loading, error } = useUserNsfts(user, collection)
+    const { data: profile, fetchUserData } = useProfileData(user, loggedIn)
+    const { minted_data: userNsfts, txStatus: status, auction_data: userAuctions, mintNsft, loading, error, addToAuction } = useUserNsfts(user)
 
     return (
         <UserContext.Provider
@@ -29,8 +29,12 @@ export default function UserProvider({ children }) {
                 collection,
                 checkCollection,
                 createCollection,
+                fetchUserData,
+                addToAuction,
+                userAuctions,
                 loading,
-                error
+                error,
+                status
             }}>
             {children}
         </UserContext.Provider>
