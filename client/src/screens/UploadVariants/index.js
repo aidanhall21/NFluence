@@ -17,7 +17,7 @@ const breadcrumbs = [
 
 const items = [
   {
-    url: "/upload-details",
+    url: "/upload-single",
     buttonText: "Create Single",
     image: "/images/nsft-logo.jpeg",
     imageDark: "/images/nsft-logo-dark.jpeg",
@@ -25,7 +25,7 @@ const items = [
     imageDark2x: "/images/nsft-logo-dark.jpeg"
   },
   {
-    url: "/upload-details",
+    url: "/upload-multiple",
     buttonText: "Create Multiple",
     image: "/images/nsft-logo.jpeg",
     imageDark: "/images/nsft-logo-dark.jpeg",

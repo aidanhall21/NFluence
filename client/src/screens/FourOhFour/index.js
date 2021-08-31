@@ -1,6 +1,6 @@
 import React from "react";
 import cn from "classnames";
-import styles from "./Search02.module.sass";
+import styles from "./FourOhFour.module.sass";
 import Image from "../../components/Image";
 //import Form from "../../components/Form";
 
@@ -29,7 +29,7 @@ const items = [
 ];
 */
 
-const Search = () => {
+const FourOhFour = () => {
   //const [search, setSearch] = useState("");
 
   /*
@@ -84,4 +84,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default FourOhFour;

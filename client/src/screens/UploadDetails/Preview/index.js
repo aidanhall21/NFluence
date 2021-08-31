@@ -13,10 +13,17 @@ const Preview = ({ className, onClose, obj }) => {
         <div className={styles.info}>Preview</div>
         <div className={styles.card}>
           <div className={styles.preview}>
-            <img
-              src={obj.file ? obj.file : "/images/content/card-pic-6@2x.jpg"}
+            {!obj.type && (<img
+              src="/images/content/card-pic-6@2x.jpg"
               alt="Card"
-            />
+            />)}
+            {obj.type && obj.type === 'image' ? (<img
+              src={obj.file}
+              alt="Card"
+            />) : obj.type &&
+            (<video controls>
+              <source src={obj.file} type="video/mp4" />
+            </video>)}
           </div>
           <div className={styles.link}>
             <div className={styles.body}>
@@ -33,7 +40,7 @@ const Preview = ({ className, onClose, obj }) => {
             </div>
             <div className={styles.foot}>
             <div className={styles.bid}>
-                1 of 1
+                1 of {obj.count}
               </div>
               <div className={styles.status}>
                 <Icon name="candlesticks-up" size="20" />

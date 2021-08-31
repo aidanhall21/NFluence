@@ -58,11 +58,13 @@ const User = ({ className }) => {
                   <div className={styles.price}>${balance.slice(0, -6)}</div>
                 </div>
               </div>
+              <Link to="/profile-edit">
               <button
                 className={cn("button-stroke button-small", styles.button)}
               >
                 Manage Funds
               </button>
+              </Link>
             </div>
             <div className={styles.menu}>
               {items.map((x, index) =>

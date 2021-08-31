@@ -13,13 +13,14 @@ import { query } from "@onflow/fcl";
 import { GET_HIGHEST_BIDDER } from "../../../flow/get-highest-bidder.script";
 import axios from "axios";
 import { useUser } from "../../../providers/UserProvider";
+import { Link } from "react-router-dom";
 
 let api_node;
 process.env.NODE_ENV === "production"
   ? api_node = ''
   : api_node = process.env.REACT_APP_LOCAL_API_NODE
 
-const Control = ({ className }) => {
+const Control = ({ className, data }) => {
   const [visibleModalPurchase, setVisibleModalPurchase] = useState(false);
   const [visibleModalBid, setVisibleModalBid] = useState(false);
   const [visibleModalAccept, setVisibleModalAccept] = useState(false);
@@ -35,7 +36,7 @@ const Control = ({ className }) => {
   const { user } = useUser()
 
   useEffect(() => {
-    if (page === 'item') return
+    if (!data.auctionId) return
     const getHighestBidder = async () => {
       try {
         let res = await query({
@@ -44,12 +45,10 @@ const Control = ({ className }) => {
         })
         setHighBidder(res)
       } catch(err) {
-        console.log(err)
       }
     }
     getHighestBidder()
-    //eslint-disable-next-line
-  }, [location])
+  }, [data])
 
   useEffect(() => {
     if (highBidder === '') return
@@ -59,7 +58,6 @@ const Control = ({ className }) => {
         const serverResponse = api.data;
         setHighBidderProfile(serverResponse[0])
       } catch(err) {
-        console.log(err)
       }
     }
     getHighestBidderProfile()
@@ -68,34 +66,30 @@ const Control = ({ className }) => {
   return (
     <>
       <div className={cn(styles.control, className)}>
-        <div className={styles.head}>
+        {data.auctionId && (<div className={styles.head}>
           <div className={styles.avatar}>
           {highBidderProfile.profile_image ? <img src={`/user-images/${highBidder}-profile.jpg`} alt="Avatar" /> : <img src={`data:image/png;base64,${highBidderProfile.avatar}`} alt="Avatar" />}
           </div>
           <div className={styles.details}>
             <div className={styles.info}>
-              Highest bid by <span>@{highBidderProfile.handle}</span>
+              Highest bid by <Link to={`/profile/${highBidderProfile.handle}`}><span>@{highBidderProfile.handle}</span></Link>
             </div>
-            {/*<div className={styles.cost}>
-              <div className={styles.price}>1.46 ETH</div>
-              <div className={styles.price}>$2,764.89</div>
-            </div>*/}
           </div>
-        </div>
-        <div className={styles.btns}>
-          {address === user?.addr && page === 'auction' && (<button
+        </div>)}
+        {data.auctionId && (<div className={styles.btns}>
+          {address === user?.addr && (<button
             className={cn("button", styles.button)}
-            onClick={() => setVisibleModalPurchase(true)}
+            onClick={() => setVisibleModalAccept(true)}
           >
             Settle Auction
           </button>)}
-          {address !== user?.addr && page === 'auction' && (<button
+          {address !== user?.addr && (<button
             className={cn("button-stroke", styles.button)}
             onClick={() => setVisibleModalBid(true)}
           >
             Place a bid
           </button>)}
-        </div>
+        </div>)}
         {/*<div className={styles.btns}>
           <button className={cn("button-stroke", styles.button)}>
             View all
@@ -110,7 +104,7 @@ const Control = ({ className }) => {
         <div className={styles.text}>
           Platform fee <span className={styles.percent}>20%</span>
           </div>*/}
-        {page === 'item' && address === user?.addr && (<><div className={styles.foot}>
+        {!data.auctionId && address === user?.addr && (<><div className={styles.foot}>
           <button
             className={cn("button", styles.button)}
             onClick={() => setVisibleModalSale(true)}
@@ -141,7 +135,7 @@ const Control = ({ className }) => {
         visible={visibleModalAccept}
         onClose={() => setVisibleModalAccept(false)}
       >
-        <Accept />
+        <Accept data={data} profile={highBidderProfile} />
       </Modal>
       <Modal
         visible={visibleModalSale}

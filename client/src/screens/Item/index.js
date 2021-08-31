@@ -16,8 +16,9 @@ import { GET_SINGLE_AUCTION_DATA } from "../../flow/get-single-auction-data.scri
 import { GET_BID_HISTORY } from "../../flow/get-bid-history.script";
 import Bids from "./Bids";
 import { AuctionTimer } from "../../components/Card";
+import ReactPlayer from "react-player"
 
-const navLinks = ["Info", "Owners", "History", "Bids"];
+const navLinks = ["Owners", "Info", "History", "Bids"];
 
 /*
 const categories = [
@@ -53,7 +54,7 @@ const Item = () => {
     error: false,
     data: []
   })
-  const [metadata, setMetadata] = useState({});
+  const [link, setLink] = useState({});
   const { address, nftid } = useParams();
   const location = useLocation()
 
@@ -67,8 +68,8 @@ const Item = () => {
         });
         dispatch({ type: "SUCCESS", payload: res });
       } catch (err) {
-        console.log(err);
         dispatch({ type: "ERROR" });
+        throw new Error('whoops!')
       }
     };
     const fetchAuctionTokenData = async () => {
@@ -82,18 +83,29 @@ const Item = () => {
         const obj = {...res, ...nftData}
         dispatch({ type: 'SUCCESS', payload: obj }) 
       } catch(err) {
-        console.log(err)
         dispatch({ type: 'ERROR' })
       }
     }
-    if (location.pathname.split('/')[1] === 'auction') {
-      fetchAuctionTokenData()
-    } else {
-      fetchTokenData();
+    const fetchBidHistory = async () => {
+      try {
+        let res = await query({
+          cadence: GET_BID_HISTORY,
+          args: (arg, t) => [arg(address, t.Address), arg(parseInt(nftid), t.UInt64)]
+        })
+        setBids(res)
+      } catch(err) {
+      }
     }
+
+      fetchTokenData()
+      .catch((err) => {
+        fetchAuctionTokenData()
+        fetchBidHistory()
+      })
     //eslint-disable-next-line
   }, [location.pathname]);
 
+  /*
   useEffect(() => {
     if (location.pathname.split('/')[1] === 'item') return
     const fetchBidHistory = async () => {
@@ -110,11 +122,12 @@ const Item = () => {
     fetchBidHistory()
     //eslint-disable-next-line
   }, [location.pathname])
+  */
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await createTokenLink(state.data);
-      setMetadata(res);
+      res.properties ? setLink(res.properties.file) : setLink(res.image)
     };
     fetchData();
   }, [state.data])
@@ -171,13 +184,11 @@ const Item = () => {
                     </div>*/}
               {state.data.fileType === 1 ? (
                 <>
-                  <video controls>
-                    <source src={metadata.image} type="video/mp4" />
-                  </video>
+                  <ReactPlayer url={link} controls loop={true} />
                 </>
               ) : (
                 <>
-                  <img src={metadata.image} alt="Card" />
+                  <img src={link} alt="Card" />
                 </>
               )}
             </div>
@@ -208,10 +219,10 @@ const Item = () => {
                 </button>
               ))}
             </div>
-            {activeIndex === 0 && (<AuctionTimer data={state.data} />)}
-            {activeIndex === 1 && (<Users className={styles.users} items={ownerState.data} />)}
+            {state.data.auctionId && activeIndex === 1 && (<AuctionTimer data={state.data} />)}
+            {activeIndex === 0 && (<Users className={styles.users} items={ownerState.data} />)}
             {activeIndex === 3 && (<Bids className={styles.users} items={bids} />)}
-            <Control className={styles.control} />
+            <Control className={styles.control} data={state.data} />
           </div>
         </div>
       </div>

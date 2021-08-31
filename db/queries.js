@@ -183,11 +183,11 @@ function createFollower(req, res) {
 }
 
 function createUser(req, res) {
-  const { name, email, handle, avatar, address, db, cover_image, profile_image, bio, url, twitter, instagram } = req.body;
+  const { name, email, handle, avatar, address, db, verified, cover_image, profile_image, bio, url, twitter, instagram } = req.body;
 
   pool.query(
-    `INSERT INTO users (name, email, handle, db, address, verified, cover_image, profile_image, bio, url, twitter, instagram ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-    [name, email, handle, avatar, address, db, cover_image, profile_image, bio, url, twitter, instagram],
+    `INSERT INTO users (name, email, handle, avatar, address, db, verified, cover_image, profile_image, bio, url, twitter, instagram ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+    [name, email, handle, avatar, address, db, verified, cover_image, profile_image, bio, url, twitter, instagram],
     (error, results) => {
       if (error) {
         throw error;

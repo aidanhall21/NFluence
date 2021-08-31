@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styles from "./Card.module.sass";
 //import Icon from "../Icon";
 import { createTokenLink } from "../../mocks/functions";
+import ReactPlayer from "react-player";
 
 export function AuctionTimer({ data }) {
   const calculateTimeLeft = () => {
@@ -16,6 +17,7 @@ export function AuctionTimer({ data }) {
         days: Math.floor(timeRemaining / (1000 * 60 * 60 * 24)),
         hours: Math.floor((timeRemaining / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((timeRemaining / 1000 / 60) % 60),
+        seconds: Math.floor((timeRemaining / 1000) % 60),
       };
     }
 
@@ -27,7 +29,7 @@ export function AuctionTimer({ data }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeLeft(calculateTimeLeft());
-    }, 60000);
+    }, 1000);
     return () => clearTimeout(timer);
   });
 
@@ -55,12 +57,12 @@ export function AuctionTimer({ data }) {
 
 const Card = ({ className, item }) => {
   //const [visible, setVisible] = useState(false);
-  const [metadata, setMetadata] = useState({});
+  const [link, setLink] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await createTokenLink(item);
-      setMetadata(res);
+      res.properties ? setLink(res.properties.file) : setLink(res.image)
     };
     fetchData();
   }, [item]);
@@ -70,13 +72,11 @@ const Card = ({ className, item }) => {
       <div className={styles.preview}>
         {item.fileType === 1 ? (
           <>
-            <video controls>
-              <source src={metadata.image} type="video/mp4" />
-            </video>
+            <ReactPlayer url={link} width="100%" height="100%" />
           </>
         ) : (
           <>
-            <img src={metadata.image} alt="Card" />
+            <img src={link} alt="Card" />
           </>
         )}
         {/*<div className={styles.control}>
@@ -102,11 +102,7 @@ const Card = ({ className, item }) => {
       </div>
       <Link
         className={styles.link}
-        to={item.auctionId ? {
-          pathname: `/auction/${item.creatorAddress}/${item.nftId}`
-        } : {
-          pathname: `/item/${item.creatorAddress}/${item.nftId}`
-        }}
+        to={`/item/${item.creatorAddress}/${item.nftId}`}
       >
         <div className={styles.body}>
           <div className={styles.line}>

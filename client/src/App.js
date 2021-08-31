@@ -39,7 +39,16 @@ function App() {
         />
         <Route
           exact
-          path="/upload-details"
+          path="/upload-single"
+          render={() => (
+            <Page>
+              <UploadDetails />
+            </Page>
+          )}
+        />
+        <Route
+          exact
+          path="/upload-multiple"
           render={() => (
             <Page>
               <UploadDetails />
@@ -137,12 +146,22 @@ function App() {
           )}
         />
         <Route
-          path="*"
-          render={() => {
+          path="/oh-shit"
+          exact
+          render={() => (
             <Page>
               <FourOhFour />
             </Page>
-          }}
+          )}
+          />
+          <Route
+          path="/*"
+          exact
+          render={() => (
+            <Page>
+              <FourOhFour />
+            </Page>
+          )}
           />
       </Switch>
     </Router>

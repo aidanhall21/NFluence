@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import cn from "classnames";
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import styles from "./Profile.module.sass";
 import Icon from "../../components/Icon";
 import User from "./User";
@@ -14,14 +14,21 @@ import axios from "axios";
 import { useAuth } from "../../providers/AuthProvider";
 import { useUser } from "../../providers/UserProvider";
 
-const navLinks = [
+const userLinks = [
   "Your Auctions",
   "Your Bids",
   "Created",
   "Owned",
   "Following",
-  "Followers",
-];
+  "Followers"
+]
+
+const accountLinks = [
+  "Live Auctions",
+  "Following",
+  "Followers"
+]
+
 
 /*
 const following = [
@@ -172,6 +179,7 @@ const followers = [
 */
 
 let api_node;
+
 process.env.NODE_ENV === "production"
   ? api_node = ''
   : api_node = process.env.REACT_APP_LOCAL_API_NODE
@@ -180,23 +188,44 @@ const Profile = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [visible, setVisible] = useState(false);
   const [file, setFile] = useState(null)
+  const [profData, setProfData] = useState({})
+  const [auctions, setAuctions] = useState([])
 
   const { handle } = useParams();
 
   const { user } = useAuth()
-  const { profile, userNsfts, userAuctions } = useUser()
-  console.log(userAuctions)
+  const { profile, userNsfts, userAuctions, fetchAccountLiveAuctions } = useUser()
+  const history = useHistory()
 
-  const socials = [
-    {
-      title: "twitter",
-      url: `https://twitter.com/${profile.twitter}`,
-    },
-    {
-      title: "instagram",
-      url: `https://www.instagram.com/${profile.instagram}`,
-    },
-  ];
+  useEffect(() => {
+    setProfData(profile)
+    if (profile.handle === handle) return
+    const getProfileData = async () => {
+      try {
+        const api = await axios.get(`${api_node}/api/v1/handle/${handle}`)
+        if (api.data.length === 0) return
+        const addr = api.data[0]
+        const data = await axios.get(`${api_node}/api/v1/user/${addr.address}`)
+        setProfData(data.data[0])
+      } catch(err) {
+        console.log(err)
+        history.push('/oh-shit')
+      }
+    }
+    getProfileData()
+    //eslint-disable-next-line
+  }, [handle, profile])
+
+  useEffect(() => {
+    setAuctions(userAuctions)
+    if (profile.handle === handle) return
+    if (!profData.address) return
+    const updateAuctions = async () => {
+      let auctionData = await fetchAccountLiveAuctions(profData.address)
+      setAuctions(auctionData)
+    }
+    updateAuctions()
+  }, [profData, userAuctions])
 
   const onCoverPhotoChange = (e) => {
     setFile(e.target.files[0])
@@ -204,11 +233,11 @@ const Profile = () => {
 
   const onCoverPhotoSubmit = (e) => {
     let data = new FormData()
-    let ext_array = file.name.split('.')
-    let ext = ext_array[ext_array.length - 1]
-    data.append('file', file, user?.addr + '-cover.' + ext)
+    //let ext_array = file.name.split('.')
+    //let ext = ext_array[ext_array.length - 1]
+    data.append('file', file, user?.addr + '-cover.jpg')
     axios.post(`${api_node}/api/v1/upload`, data, {})
-    profile.verified ?
+    profile.db ?
     axios.put(`${api_node}/api/v1/user/update`, {
       name: profile.name,
       email: profile.email,
@@ -224,29 +253,31 @@ const Profile = () => {
       name: profile.name,
       email: profile.email,
       avatar: profile.avatar,
-      verified: true,
+      db: true,
       cover_image: true,
-      profile_image: false,
+      profile_image: profile.profile_image,
       handle: profile.handle,
       address: user?.addr,
       bio: profile.bio,
       url: profile.url,
       twitter: profile.twitter,
-      instagram: profile.instagram
+      instagram: profile.instagram,
+      verified: profile.verified
     })
+    window.location.reload()
   }
 
   return (
     <div className={styles.profile}>
       <div
         className={cn(styles.head, { [styles.active]: visible })}
-        style={profile.cover_image ? {
-          backgroundImage: `url(/user-images/${user?.addr}-cover.jpg)`,
+        style={profData.cover_image ? {
+          backgroundImage: `url(/user-images/${profData.address}-cover.jpg)`,
         } : {
           backgroundImage: "url(/images/content/bg-profile.jpg)",
         }}
       >
-        <div className={cn("container", styles.container)}>
+        {handle === profile.handle && (<div className={cn("container", styles.container)}>
           <div className={styles.btns}>
             <button
               className={cn("button-stroke button-small", styles.button)}
@@ -280,14 +311,24 @@ const Profile = () => {
               Save photo
             </button>
           </div>
-        </div>
+        </div>)}
       </div>
       <div className={styles.body}>
         <div className={cn("container", styles.container)}>
-          <User className={styles.user} item={socials} handle={handle} />
+          <User className={styles.user} data={profData} handle={handle} />
           <div className={styles.wrapper}>
             <div className={styles.nav}>
-              {navLinks.map((x, index) => (
+              {handle === profile.handle ? userLinks.map((x, index) => (
+                <button
+                  className={cn(styles.link, {
+                    [styles.active]: index === activeIndex,
+                  })}
+                  key={index}
+                  onClick={() => setActiveIndex(index)}
+                >
+                  {x}
+                </button>
+              )) : accountLinks.map((x, index) => (
                 <button
                   className={cn(styles.link, {
                     [styles.active]: index === activeIndex,
@@ -301,13 +342,13 @@ const Profile = () => {
             </div>
             <div className={styles.group}>
               <div className={styles.item}>
-                {activeIndex === 0 && (
-                  <Items class={styles.items} items={userAuctions} />
+                {activeIndex === 0 &&  (
+                  <Items class={styles.items} items={auctions} />
                 )}
                 {/*activeIndex === 1 && (
                   <Items class={styles.items} items={bids.slice(0, 6)} />
                 )*/}
-                {activeIndex === 2 && (
+                {activeIndex === 2 && handle === profile.handle && (
                   <Items class={styles.items} items={userNsfts} />
                 )}
                 {/*activeIndex === 3 && (

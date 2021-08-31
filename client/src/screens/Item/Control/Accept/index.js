@@ -1,29 +1,43 @@
 import React from "react";
 import cn from "classnames";
 import styles from "./Accept.module.sass";
+import { useUser } from "../../../../providers/UserProvider";
+import { useLocation } from "react-router";
+import Loader from "../../../../components/Loader";
 
-const items = [
-  {
-    title: "Service fee",
-    value: "0 ETH",
-  },
-  {
-    title: "Total bid amount",
-    value: "1.46 ETH",
-  },
-];
 
-const Accept = ({ className }) => {
+
+const Accept = ({ className, data, profile }) => {
+  const items = [
+    {
+      title: "Platform fee",
+      value: "20%",
+    },
+    {
+      title: "You Recieve",
+      value: `$${data.price * 0.8}`,
+    },
+  ];
+
+  const { settleAuction, loading, status, error } = useUser()
+  const location = useLocation()
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const nftid = location.pathname.split("/")[3];
+    await settleAuction(parseInt(nftid));
+  };
+
   return (
     <div className={cn(className, styles.accept)}>
       <div className={styles.line}>
         <div className={styles.icon}></div>
         <div className={styles.text}>
-          You are about to accept a bid for <strong>C O I N Z</strong> from{" "}
-          <strong>UI8</strong>
+          You are about to accept a bid for <strong>{data.title}</strong> from{" "}
+          <strong>{profile.name} (@{profile.handle})</strong>
         </div>
       </div>
-      <div className={styles.stage}>1.46 ETH for 1 edition</div>
+      <div className={styles.stage}>${data.price.split('.')[0]}</div>
       <div className={styles.table}>
         {items.map((x, index) => (
           <div className={styles.row} key={index}>
@@ -32,11 +46,27 @@ const Accept = ({ className }) => {
           </div>
         ))}
       </div>
-      <div className={styles.btns}>
-        <button className={cn("button", styles.button)}>Accept bid</button>
-        <button className={cn("button-stroke", styles.button)}>Cancel</button>
+      {loading ? (
+        <div className={styles.btns}>
+          <button className={cn("button loading", styles.button)}>
+            <Loader className={styles.loader} color="white" />
+          </button>
+        </div>
+      ) : (error ? (
+        <div className={cn(styles.btns, styles.error)}>
+          <button className={cn("button error", styles.button)}>Something went wrong :(</button>
+        </div>
+      ) :
+        (status.status === 4 ? (
+          <div className={cn(styles.btns, styles.done)}>
+          <button className={cn("button done", styles.button)}>Success! Your auction has been settled</button>
+        </div>
+        ) : (      <div className={styles.btns}>
+          <button className={cn("button", styles.button)} onClick={handleSubmit}>Accept bid</button>
+        </div>
+      )
+      ))}
       </div>
-    </div>
   );
 };
 

@@ -6,6 +6,7 @@ import Loader from "../../../components/Loader";
 import LoaderCircle from "../../../components/LoaderCircle";
 
 const FolowSteps = ({ className, obj, onClose }) => {
+  console.log(obj)
   return (
     <div className={cn(className, styles.steps)}>
       <div className={cn("h4", styles.title)}>Creating your NFT</div>

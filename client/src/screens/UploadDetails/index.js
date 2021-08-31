@@ -10,6 +10,9 @@ import FolowSteps from "./FolowSteps";
 import { NFTStorage } from "nft.storage"
 import CryptoJs from 'crypto-js'
 import { useUser } from "../../providers/UserProvider";
+import { useLocation } from "react-router";
+import { Link } from "react-router-dom";
+import image from './nsft-logo.jpeg';
 
 //const royaltiesOptions = ["10%", "20%", "30%"];
 /*
@@ -48,13 +51,19 @@ const Upload = () => {
   const [visiblePreview, setVisiblePreview] = useState(false);
   const [name, setName] = useState('')
   const [desc, setDesc] = useState('')
+  const [count, setCount] = useState(1)
   const [preview, setPreview] = useState()
+  const [previewType, setPreviewType] = useState('')
   const [file, setFile] = useState()
   const [success, setSuccess] = useState(false)
   const [verified, setVerified] = useState(false)
   const [fileCheck, setFileCheck] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false)
 
-  const { mintNsft, collection, loading, error } = useUser()
+  const { mintNsft, collection, fetchUserMintedNsfts } = useUser()
+
+  const location = useLocation()
 
   const client = new NFTStorage({ token: apikey })
 
@@ -66,14 +75,21 @@ const Upload = () => {
     setDesc(e)
   }
 
+  const handleCountChange = async (e) => {
+    setCount(e)
+  }
+
   const handleFileInput = async (e) => {
     setPreview(URL.createObjectURL(e.target.files[0]))
     setFile(e.target.files[0])
+    setPreviewType(e.target.files[0].type.split('/')[0])
   }
 
   // Test videos
 
+
   const handleSubmit = async (e) => {
+    
     if (!collection) {
       setVerified(true)
       return
@@ -83,6 +99,8 @@ const Upload = () => {
       setFileCheck(true)
       return
     }
+
+    setLoading(true)
 
     setVisibleModal(true)
 
@@ -97,27 +115,50 @@ const Upload = () => {
       type = 2
     }
 
-    const metadata = await client.store({
-      name: name,
-      description: desc,
-      image: file
+
+    const stockImage = new File([image], "image.jpeg", {
+      type: "image/jpeg"
     })
+
+    let metadata;
+
+    try {
+      metadata = await client.store({
+        name: name,
+        description: desc,
+        image: stockImage,
+        properties: {
+          file: file
+        }
+      })
+    } catch(err) {
+      console.log(err)
+      setLoading(false)
+      setError(true)
+    }
+
 
     let hash = metadata.url
     hash = encrypt(metadata.url)
 
     //eslint-disable-next-line
-    const tx = await mintNsft(hash, type, name, desc, 1)
+    const tx = await mintNsft(hash, type, name, desc, parseInt(count))
     .then((response) => {
       setSuccess(true)
+      setLoading(false)
       console.log(response)
+      fetchUserMintedNsfts()
     })
     .catch((err) => {
+      setError(true)
+      setLoading(false)
       setSuccess(false)
       console.log(err)
     })
     
   }
+
+  console.log(preview)
 
   return (
     <>
@@ -126,13 +167,18 @@ const Upload = () => {
           <div className={styles.wrapper}>
             <div className={styles.head}>
               <div className={cn("h2", styles.title)}>
-                Create single collectible
+                {location.pathname.split("/")[1] === 'upload-single' ? 'Create single collectible' : 'Create multiple collectibles'}
               </div>
+              <Link
+                className={styles.button}
+                to={location.pathname.split("/")[1] === 'upload-single' ? '/upload-multiple' : '/upload-single'}
+              >
               <button
                 className={cn("button-stroke button-small", styles.button)}
               >
-                Switch to Multiple
+                {location.pathname.split("/")[1] === 'upload-single' ? 'Switch to Multiple' : 'Switch to Single'}
               </button>
+              </Link>
             </div>
             <form className={styles.form} action="">
               <div className={styles.list}>
@@ -171,6 +217,21 @@ const Upload = () => {
                       required
                       onChange={(e) => handleDescriptionChange(e.currentTarget.value)}
                     />
+                    {location.pathname.split("/")[1] === 'upload-multiple' && (
+                      <TextInput
+                      className={styles.field}
+                      label="Count"
+                      name="Count"
+                      type="number"
+                      placeholder=""
+                      step={1}
+                      min={1}
+                      max={10}
+                      required
+                      onChange={(e) => handleCountChange(e.currentTarget.value)}
+                    />
+                    )}
+                    
                   </div>
                 </div>
               </div>
@@ -223,8 +284,10 @@ const Upload = () => {
             onClose={() => setVisiblePreview(false)}
             obj={{
               file: preview,
+              type: previewType,
               name: name,
-              desc: desc
+              desc: desc,
+              count: count
             }}
           />
         </div>

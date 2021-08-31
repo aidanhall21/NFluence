@@ -5,6 +5,7 @@ import Form from "../../../../components/Form";
 import { useUser } from "../../../../providers/UserProvider";
 import { useLocation } from "react-router";
 import Loader from "../../../../components/Loader";
+import { formatAmountInput } from "../../../../mocks/functions";
 //import Icon from "../../../../components/Icon";
 //import LoaderCircle from "../../../../components/LoaderCircle";
 //import Icon from "../../../../components/Icon";
@@ -29,11 +30,6 @@ const PutSale = ({ className }) => {
   const [price, setPrice] = useState(false);
   const { addToAuction, loading, status, error } = useUser();
   const location = useLocation();
-  console.log(status)
-
-  const formatAmountInput = (x) => {
-    return x.toString() + ".0";
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,6 +40,9 @@ const PutSale = ({ className }) => {
   return (
     <div className={cn(className, styles.sale)}>
       <div className={cn("h4", styles.title)}>Put your NFT up for Auction</div>
+      <div className={styles.text}>
+            You'll need to confirm the transaction in the next popup.
+          </div>
       {/*<div className={styles.line}>
         <div className={styles.icon}>
           <Icon name="coin" size="24" />

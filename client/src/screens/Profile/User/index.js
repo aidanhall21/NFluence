@@ -13,9 +13,20 @@ process.env.NODE_ENV === "production"
   : api_node = process.env.REACT_APP_LOCAL_API_NODE
 
 
-const User = ({ className, item, handle }) => {
+const User = ({ className, data, handle }) => {
   const [visible, setVisible] = useState(false);
   const [verifying, setVerifying] = useState(false)
+
+  const socials = [
+    {
+      title: "twitter",
+      url: `https://twitter.com/${data.twitter !== null ? data.twitter : ''}`,
+    },
+    {
+      title: "instagram",
+      url: `https://www.instagram.com/${data.instagram !== null ? data.instagram : ''}`,
+    },
+  ];
 
   const { user } = useAuth()
   const { collection, profile, createCollection, fetchUserData } = useUser()
@@ -25,6 +36,23 @@ const User = ({ className, item, handle }) => {
     if (!collection) {
       await createCollection()
     }
+    if (!data.db) {
+      await axios.post(`${api_node}/api/v1/user`, {
+        name: data.name,
+        email: data.email,
+        avatar: data.avatar,
+        db: true,
+        verified: true,
+        cover_image: data.cover_image,
+        profile_image: data.profile_image,
+        handle: data.handle,
+        address: user?.addr,
+        bio: data.bio,
+        url: data.url,
+        twitter: data.twitter,
+        instagram: data.instagram
+      })
+    } 
     await axios.put(`${api_node}/api/v1/user/verify`, {
       verify: true,
       address: user?.addr
@@ -37,23 +65,23 @@ const User = ({ className, item, handle }) => {
     <>
       <div className={cn(styles.user, className)}>
         <div className={styles.avatar}>
-        {profile.profile_image ? <img src={`/user-images/${user?.addr}-profile.jpg`} alt="Avatar" /> : <img src={`data:image/png;base64,${profile.avatar}`} alt="Avatar" />}
+        {data.profile_image ? <img src={`/user-images/${data.address}-profile.jpg`} alt="Avatar" /> : <img src={`data:image/png;base64,${data.avatar}`} alt="Avatar" />}
         </div>
-        <div className={styles.name}>{profile.name}</div>
+        <div className={styles.name}>{data.name}</div>
         <div className={styles.code}>
-          <div className={styles.number}>@{profile.handle}</div>
+          <div className={styles.number}>@{data.handle}</div>
         </div>
         <div className={styles.info}>
-          {profile.bio}
+          {data.bio}
         </div>
-        {profile.url ? <a
+        {data.url ? <a
           className={styles.site}
-          href={`https://${profile.url}`}
+          href={`https://${data.url}`}
           target="_blank"
           rel="noopener noreferrer"
         >
           <Icon name="globe" size="16" />
-          <span>{profile.url}</span>
+          <span>{data.url}</span>
         </a> : <></>}
         {profile.handle === handle ? <></> : (<div className={styles.control}>
           <div className={styles.btns}>
@@ -70,7 +98,7 @@ const User = ({ className, item, handle }) => {
             </button>
           </div>
         </div>)}
-        {profile.verified ? <></> : (<div className={styles.control}>
+        {data.handle === handle && profile.verified ? <></> : (<div className={styles.control}>
           <div className={styles.btns}>
             <button
               className={cn(
@@ -85,7 +113,7 @@ const User = ({ className, item, handle }) => {
           </div>
         </div>)}
         <div className={styles.socials}>
-          {item.map((x, index) => (
+          {socials.map((x, index) => (
             <a
               className={styles.social}
               href={x.url}
