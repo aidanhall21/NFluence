@@ -31,10 +31,13 @@ let upload = multer({ storage: storage }).single('file')
 app.post('/api/v1/upload', function(req, res) {
   upload(req, res, function (err) {
     if (err instanceof multer.MulterError) {
+      console.log(err)
       return res.status(500).json(err)
     } else if (err) {
+      console.log(err)
       return res.status(500).json(err)
     }
+    console.log(req.file)
     return res.status(200).send(req.file)
   })
 })
