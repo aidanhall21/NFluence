@@ -9,12 +9,12 @@ const Description = () => {
     <div className={styles.section}>
       <div className={cn("container", styles.container)}>
         <div className={styles.wrap}>
-          <div className={styles.stage}>Create provably scarce and ownable digital content</div>
+          <div className={styles.stage}>Digital proof of fandom</div>
           <h1 className={cn("h1", styles.title)}>
-          The NFT Platform For Influencers
+          The NFT Platform For Exclusive and Premium Content
           </h1>
           <div className={styles.text}>
-            Welcome to the future of brand monetization
+            Welcome to the frontier of brand monetization
           </div>
           <div className={styles.btns}>
             <Link className={cn("button", styles.button)} to="/upload-variants">
