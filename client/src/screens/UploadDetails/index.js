@@ -60,8 +60,9 @@ const Upload = () => {
   const [fileCheck, setFileCheck] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
+  const [validate, setValidate] = useState(false)
 
-  const { mintNsft, collection, fetchUserMintedNsfts } = useUser()
+  const { mintNsft, collection, fetchUserMintedNsfts, user } = useUser()
 
   const location = useLocation()
 
@@ -76,12 +77,30 @@ const Upload = () => {
   }
 
   const handleCountChange = async (e) => {
+    setValidate(false)
     setCount(e)
   }
 
   const handleFileInput = async (e) => {
+    setFileCheck(false)
+    let file = e.target.files[0]
+    /*
+    let reader = new FileReader()
+    reader.readAsArrayBuffer(file)
+    let data;
+    reader.onload = function() {
+      console.log(reader)
+      console.log(reader.result)
+      let res = reader.result
+      data = new File([res], "test.mp4", {
+        type: "video/mp4"
+      })
+      console.log(data)
+      setFile(data)
+    }
+    */
+    setFile(file)
     setPreview(URL.createObjectURL(e.target.files[0]))
-    setFile(e.target.files[0])
     setPreviewType(e.target.files[0].type.split('/')[0])
   }
 
@@ -100,11 +119,16 @@ const Upload = () => {
       return
     }
 
+    if (count > 10 || count < 0) {
+      setValidate(true)
+      return
+    }
+
     setLoading(true)
 
     setVisibleModal(true)
 
-    //const files = e.nativeEvent["target"]["form"][0].files[0]
+    console.log(file)
     const filetype = file["type"].split("/")[0]
     let type;
     if (filetype === 'image') {
@@ -155,10 +179,7 @@ const Upload = () => {
       setSuccess(false)
       console.log(err)
     })
-    
   }
-
-  console.log(preview)
 
   return (
     <>
@@ -167,7 +188,7 @@ const Upload = () => {
           <div className={styles.wrapper}>
             <div className={styles.head}>
               <div className={cn("h2", styles.title)}>
-                {location.pathname.split("/")[1] === 'upload-single' ? 'Create single collectible' : 'Create multiple collectibles'}
+                {location.pathname.split("/")[1] === 'upload-single' ? 'Create a collectible' : 'Create multiple collectibles'}
               </div>
               <Link
                 className={styles.button}
@@ -223,6 +244,7 @@ const Upload = () => {
                       label="Count"
                       name="Count"
                       type="number"
+                      value={count}
                       placeholder=""
                       step={1}
                       min={1}
@@ -275,7 +297,8 @@ const Upload = () => {
                   <Icon name="arrow-next" size="10" />
                 </button>
                 {verified && (<div>You must verify your account before you can mint</div>)}
-                {fileCheck && (<div>Please upload content before continuing</div>)  }
+                {fileCheck && (<div>Please upload content before continuing</div>)}
+                {validate && (<div>Count must be a number between 1 and 10</div>)}
               </div>
             </form>
           </div>

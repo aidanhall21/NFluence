@@ -8,6 +8,7 @@ import { CREATE_AUCTION } from "../flow/create-auction.tx";
 import { GET_AUCTION_IDS } from "../flow/get-auction-ids.script";
 import { GET_SINGLE_AUCTION_DATA } from "../flow/get-single-auction-data.script";
 import { SETTLE_AUCTION } from "../flow/settle-auction.tx";
+import { BID_ON_AUCTION } from "../flow/bid-auction.tx";
 
 export default function useUserNsfts(user) {
     const [state, dispatch] = useReducer(userNsftReducer, {
@@ -25,7 +26,10 @@ export default function useUserNsfts(user) {
                 cadence: GET_TOKEN_DATA,
                 args: (arg, t) => [arg(user?.addr, t.Address)]
             })
-            let minted_nsfts = res.filter(token => token.creatorAddress === user?.addr)
+            let minted_nsfts = []
+            if (res !== null) {
+                minted_nsfts = res.filter(token => token.creatorAddress === user?.addr)
+            }
             dispatch({ type: 'MINTED_SUCCESS', payload: minted_nsfts })
         } catch (err) {
             console.log(err)
@@ -86,6 +90,18 @@ export default function useUserNsfts(user) {
         }
     }
 
+    /*
+    const fetchAccountLiveBids = async (address) => {
+        try {
+            let res = await query({
+
+            })
+        } catch(err) {
+            console.log(err)
+        }
+    }
+    */
+
     const addToAuction = async (nftid, price) => {
         dispatch({ type: 'PROCESSING' })
         try {
@@ -106,13 +122,30 @@ export default function useUserNsfts(user) {
         }
     }
 
+    const bidOnAuction = async (nftid, address, price) => {
+        dispatch({ type: 'PROCESSING' })
+        try {
+            let res = await mutate({
+                cadence: BID_ON_AUCTION,
+                args: (arg, t) => [arg(nftid, t.UInt64), arg(address, t.Address), arg(price, t.UFix64)],
+                limit: 150
+            })
+            let txStatus = await tx(res).onceSealed()
+            dispatch({ type: 'TX_SUCCESS', payload: txStatus })
+        } catch(err) {
+            console.log(err)
+            dispatch({ type: 'ERROR' })
+        }
+    }
+
     const settleAuction = async (nftid) => {
+        console.log(state.error)
         dispatch({ type: 'PROCESSING' })
         try {
             let res = await mutate({
                 cadence: SETTLE_AUCTION,
                 args: (arg, t) => [arg(nftid, t.UInt64)],
-                limit: 100
+                limit: 500
             })
             let txStatus = await tx(res).onceSealed()
             dispatch({ type: 'TX_SUCCESS', payload: txStatus })
@@ -155,6 +188,7 @@ export default function useUserNsfts(user) {
         addToAuction,
         settleAuction,
         fetchAccountLiveAuctions,
-        fetchUserMintedNsfts
+        fetchUserMintedNsfts,
+        bidOnAuction
     }
 }

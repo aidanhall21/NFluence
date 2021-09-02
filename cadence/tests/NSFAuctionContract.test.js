@@ -1,6 +1,6 @@
 import { emulator, getAccountAddress, init, shallPass } from "flow-js-testing";
 import path from "path";
-import { addToAuction, deployNSFAuctionContract, setupStorefrontOnAccount, mintNSFT, getAuctionIds, bidOnAuction, getCurrentPriceForAuction, mintUtilityCoin, removeListing, listUserNSFTs, settleAuction, getUtilityCoinVaultBalance } from "./src/NSFAuctionContract";
+import { addToAuction, deployNSFAuctionContract, setupStorefrontOnAccount, mintNSFT, getAuctionIds, bidOnAuction, getCurrentPriceForAuction, mintUtilityCoin, removeListing, listUserNSFTs, settleAuction, getUtilityCoinVaultBalance, returnBids } from "./src/NSFAuctionContract";
 
 const basePath = path.resolve(__dirname, "../");
 const port = 8080;
@@ -91,5 +91,19 @@ describe("NSFAuction", () => {
         const balance = await getUtilityCoinVaultBalance(Alice)
         expect(nsftlist).toEqual(expect.arrayContaining([0]))
         expect(balance).toEqual("80.00000000")
+    })
+
+    it("Should return a list of all bids on the current auction", async () => {
+        await deployNSFAuctionContract();
+        const Alice = await getAccountAddress("Alice")
+        const Bob = await getAccountAddress("Bob")
+        await setupStorefrontOnAccount(Alice)
+        await setupStorefrontOnAccount(Bob)
+        await mintUtilityCoin(Bob, "1000.0")
+        await mintNSFT(Alice, TEST_NSFT)
+        await addToAuction(Alice, 0, "21.0")
+        await bidOnAuction(Bob, 0, Alice, "100.0")
+        const bids = await returnBids(Alice, 0)
+        expect(bids.length).toEqual(1)
     })
 })

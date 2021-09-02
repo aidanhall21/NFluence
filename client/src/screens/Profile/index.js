@@ -190,6 +190,7 @@ const Profile = () => {
   const [file, setFile] = useState(null)
   const [profData, setProfData] = useState({})
   const [auctions, setAuctions] = useState([])
+  const [bids, setBids] = useState([])
 
   const { handle } = useParams();
 
@@ -226,6 +227,14 @@ const Profile = () => {
     }
     updateAuctions()
   }, [profData, userAuctions])
+
+    /*
+  useEffect(() => {
+    const updateBids = async () => {
+      let bidData = await 
+    }
+  })
+  */
 
   const onCoverPhotoChange = (e) => {
     setFile(e.target.files[0])
@@ -279,13 +288,13 @@ const Profile = () => {
       >
         {handle === profile.handle && (<div className={cn("container", styles.container)}>
           <div className={styles.btns}>
-            <button
+            {/*<button
               className={cn("button-stroke button-small", styles.button)}
               onClick={() => setVisible(true)}
             >
               <span>Edit cover photo</span>
               <Icon name="edit" size="16" />
-            </button>
+            </button>*/}
             <Link
               className={cn("button-stroke button-small", styles.button)}
               to="/profile-edit"
@@ -345,9 +354,9 @@ const Profile = () => {
                 {activeIndex === 0 &&  (
                   <Items class={styles.items} items={auctions} />
                 )}
-                {/*activeIndex === 1 && (
+                {activeIndex === 1 && (
                   <Items class={styles.items} items={bids.slice(0, 6)} />
-                )*/}
+                )}
                 {activeIndex === 2 && handle === profile.handle && (
                   <Items class={styles.items} items={userNsfts} />
                 )}

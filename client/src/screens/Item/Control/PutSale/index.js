@@ -3,7 +3,7 @@ import cn from "classnames";
 import styles from "./PutSale.module.sass";
 import Form from "../../../../components/Form";
 import { useUser } from "../../../../providers/UserProvider";
-import { useLocation } from "react-router";
+import { useLocation, useParams } from "react-router";
 import Loader from "../../../../components/Loader";
 import { formatAmountInput } from "../../../../mocks/functions";
 //import Icon from "../../../../components/Icon";
@@ -29,11 +29,10 @@ import { formatAmountInput } from "../../../../mocks/functions";
 const PutSale = ({ className }) => {
   const [price, setPrice] = useState(false);
   const { addToAuction, loading, status, error } = useUser();
-  const location = useLocation();
+  const { nftid } = useParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const nftid = location.pathname.split("/")[3];
     await addToAuction(parseInt(nftid), formatAmountInput(price));
   };
 

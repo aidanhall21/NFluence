@@ -13,6 +13,7 @@ import { MINT_UTILITY_COIN } from "../../flow/mint-utility-coin.tx";
 import Loader from "../../components/Loader";
 import { formatAmountInput } from "../../mocks/functions";
 import { authorizationFunction } from "../../services/authorization-function";
+import { useHistory } from "react-router";
 
 const breadcrumbs = [
   {
@@ -31,7 +32,7 @@ process.env.NODE_ENV === "production"
 
 const ProfileEdit = () => {
   const { user } = useAuth();
-  const { profile, getBalance } = useUser();
+  const { profile, getBalance, collection, fetchUserData } = useUser();
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [change, setChange] = useState(false);
@@ -45,7 +46,9 @@ const ProfileEdit = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  //const [type, setType] = useState('')
+  const [updateSuccess, setUpdateSuccess] = useState(false)
+  const [verified, setVerified] = useState(false)
+  console.log(collection)
 
   const onProfilePhotoChange = (e) => {
     let data = new FormData();
@@ -125,21 +128,15 @@ const ProfileEdit = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let taken = false;
-    console.log(change)
-    console.log(username)
 
     if (change) {
       const API = await axios.get(`${api_node}/api/v1/usernames/${username}`);
       const serverResponse = API.data;
-      console.log(serverResponse)
-      console.log(serverResponse[0]["num_unique"])
 
       if (serverResponse[0].num_unique !== '0') {
         taken = true;
       }
     }
-    console.log(taken)
-    console.log(profile)
     if (taken) {
       setErrors(true);
       return;
@@ -172,14 +169,20 @@ const ProfileEdit = () => {
             instagram: insta,
             verified: profile.verified
           });
-
-      window.location.reload();
-      //history.push("/profile");
+      setUpdateSuccess(true)
+      //await fetchUserData()
+      setTimeout(() => {
+        window.location.reload();
+      }, 500)
     }
   };
 
   const onDepositSubmit = async (e) => {
     e.preventDefault();
+    if (!collection) {
+      setVerified(true)
+      return
+    }
     setLoading(true);
     try {
       let res = await mutate({
@@ -227,7 +230,7 @@ const ProfileEdit = () => {
                     />
                   )}
                 </div>
-                <div className={styles.details}>
+                {/*<div className={styles.details}>
                   <div className={styles.stage}>Profile photo</div>
                   <div className={styles.file}>
                     <button
@@ -246,7 +249,7 @@ const ProfileEdit = () => {
                       onChange={onProfilePhotoChange}
                     />
                   </div>
-                </div>
+                      </div>*/}
               </div>
             </div>
             <div className={styles.col}>
@@ -339,8 +342,10 @@ const ProfileEdit = () => {
                         type="number"
                         name="price"
                         step={1}
+                        min={0}
                       />
                     )}
+                    {verified && (<div>You must verify your account before you can mint</div>)}
                   </div>
                 </div>
                 <div className={styles.item}>
@@ -391,7 +396,7 @@ const ProfileEdit = () => {
                   className={cn("button", styles.button)}
                   onClick={(e) => handleSubmit(e)}
                 >
-                  Update Profile
+                  {!updateSuccess ? 'Update Profile' : 'Update Successful!'}
                 </button>
                 {errors && (
                   <div>Your username has been taken already :(</div>

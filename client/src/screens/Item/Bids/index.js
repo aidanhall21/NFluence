@@ -12,8 +12,8 @@ const Bids = ({ className, items }) => {
             {x.profile_image ? <img src={`/user-images/${x.address}-profile.jpg`} alt="Avatar" /> : <img src={`data:image/png;base64,${x.avatar}`} alt="Avatar" />}
         </div>*/}
             <div className={styles.details}>
-              <div className={styles.position}>Bid #{x.bidSequence}</div>
-              <div className={styles.name}>${x.biAmount.split(".")[0]}</div>
+              <div className={styles.position}>Bid #{x.bidSequence + 1}</div>
+              <div className={styles.name}>${x.bidAmount.split(".")[0]}</div>
             </div>
           </div>
         ))}

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import cn from "classnames";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styles from "./Card.module.sass";
 //import Icon from "../Icon";
 import { createTokenLink } from "../../mocks/functions";
 import ReactPlayer from "react-player";
+import { useUser } from "../../providers/UserProvider";
 
 export function AuctionTimer({ data }) {
   const calculateTimeLeft = () => {
@@ -57,26 +58,29 @@ export function AuctionTimer({ data }) {
 
 const Card = ({ className, item }) => {
   //const [visible, setVisible] = useState(false);
-  const [link, setLink] = useState({});
+  const [link, setLink] = useState('');
+  const { handle } = useParams();
+  const { profile } = useUser()
 
   useEffect(() => {
     const fetchData = async () => {
+      if (item.auctionId && profile.handle !== handle) return
       const res = await createTokenLink(item);
       res.properties ? setLink(res.properties.file) : setLink(res.image)
     };
     fetchData();
-  }, [item]);
+  }, [item, handle, profile.handle]);
 
   return (
     <div className={cn(styles.card, className)}>
       <div className={styles.preview}>
-        {item.fileType === 1 ? (
+        {item.fileType === 1 && link !== '' ? (
           <>
             <ReactPlayer url={link} width="100%" height="100%" />
           </>
         ) : (
           <>
-            <img src={link} alt="Card" />
+            <img src={link === '' ? '/images/auction-lock.jpeg' : link} alt="Card" />
           </>
         )}
         {/*<div className={styles.control}>

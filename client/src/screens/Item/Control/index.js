@@ -128,8 +128,8 @@ const Control = ({ className, data }) => {
         visible={visibleModalBid}
         onClose={() => setVisibleModalBid(false)}
       >
-        <Connect />
-        <Bid />
+        {/*<Connect />*/}
+        <Bid data={data} />
       </Modal>
       <Modal
         visible={visibleModalAccept}

@@ -11,7 +11,9 @@ const Form = ({
   setValue,
   type,
   name,
-  step
+  step,
+  min,
+  max
 }) => {
   return (
     <form className={cn(styles.form, className)} action="" onSubmit={onSubmit}>
@@ -20,6 +22,8 @@ const Form = ({
         type={type}
         value={value}
         step={step}
+        min={min}
+        max={max}
         onChange={(e) => setValue(e.target.value)}
         name={name}
         placeholder={placeholder}

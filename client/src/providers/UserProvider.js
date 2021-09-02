@@ -13,7 +13,7 @@ export default function UserProvider({ children }) {
     const { data: collection, createCollection, checkCollection } = useCollection(user)
     const { data: balance, createVault, getBalance } = useCurrency(user)
     const { data: profile, fetchUserData } = useProfileData(user, loggedIn)
-    const { minted_data: userNsfts, txStatus: status, auction_data: userAuctions, mintNsft, settleAuction, loading, error, addToAuction, fetchAccountLiveAuctions, fetchUserMintedNsfts } = useUserNsfts(user)
+    const { minted_data: userNsfts, txStatus: status, auction_data: userAuctions, mintNsft, settleAuction, loading, error, addToAuction, fetchAccountLiveAuctions, fetchUserMintedNsfts, bidOnAuction } = useUserNsfts(user)
 
     return (
         <UserContext.Provider
@@ -29,6 +29,7 @@ export default function UserProvider({ children }) {
                 collection,
                 checkCollection,
                 createCollection,
+                bidOnAuction,
                 fetchUserData,
                 addToAuction,
                 userAuctions,

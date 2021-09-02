@@ -25,6 +25,7 @@ const Accept = ({ className, data, profile }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const nftid = location.pathname.split("/")[3];
+    console.log(nftid)
     await settleAuction(parseInt(nftid));
   };
 

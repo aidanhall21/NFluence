@@ -32,6 +32,13 @@ export const checkCollection = async (account) => {
     return res
 }
 
+export const returnBids = async (account, nftId) => {
+    const name = 'get-bid-history'
+    const args = [account, nftId]
+    const res = await executeScript({ name, args })
+    return res
+}
+
 export const checkStorefront = async (account) => {
     const name ='check-storefront'
     const args = [account]

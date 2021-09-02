@@ -20,7 +20,7 @@ pub contract NSFAuction {
     // The public location for a Storefront link.
     pub let StorefrontPublicPath: PublicPath
 
-    pub event NFTStorefrontInitialized()
+    pub event NSFAuctionContractInitialized()
     pub event AuctionCreated(tokenID: UInt64, user: Address, startPrice: UFix64)
     pub event BidPlaced(tokenID: UInt64?, user: Address, bidPrice: UFix64)
     pub event BidReceived(tokenID: UInt64?, user: Address, bidPrice: UFix64)
@@ -83,12 +83,12 @@ pub contract NSFAuction {
         pub let bidSequence: UInt64
         pub let bidAmount: UFix64
         // Capability to the vault that contains the token the NFT owner will receive if this bid wins the auction
-        pub let bidderReceiver: Capability<&{FungibleToken.Receiver}>
+        pub let bidder: Address
 
         init(bidSequence: UInt64, bidAmount: UFix64, bidderReceiver: Capability<&{FungibleToken.Receiver}>) {
             self.bidSequence = bidSequence
             self.bidAmount = bidAmount
-            self.bidderReceiver = bidderReceiver
+            self.bidder = bidderReceiver.borrow()!.owner!.address
         }
     }
 
@@ -284,8 +284,7 @@ pub contract NSFAuction {
             }
 
             for bid in self.bidHistory {
-                var bidderAddress = bid.bidderReceiver.borrow()!.owner!.address
-                if bidderAddress == address {
+                if bid.bidder == address {
                     return bid.bidAmount
                 }
             }
@@ -497,7 +496,7 @@ pub contract NSFAuction {
 
         self.cutVault <- UtilityCoin.createEmptyVault()
 
-        emit NFTStorefrontInitialized()
+        emit NSFAuctionContractInitialized()
         self.totalAuctions = (0 as UInt64)
         self.cutPercentage = 20.0
     }   

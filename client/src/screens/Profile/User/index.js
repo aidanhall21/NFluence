@@ -15,7 +15,8 @@ process.env.NODE_ENV === "production"
 
 const User = ({ className, data, handle }) => {
   const [visible, setVisible] = useState(false);
-  const [verifying, setVerifying] = useState(false)
+  const [verifying, setVerifying] = useState(false);
+  const [success, setSuccess] = useState(false)
 
   const socials = [
     {
@@ -58,8 +59,10 @@ const User = ({ className, data, handle }) => {
       address: user?.addr
     })
     await fetchUserData()
+    setSuccess(true)
     setVerifying(false)
   }
+
 
   return (
     <>
@@ -98,7 +101,7 @@ const User = ({ className, data, handle }) => {
             </button>
           </div>
         </div>)}
-        {data.handle === handle && profile.verified ? <></> : (<div className={styles.control}>
+        {data.address !== user?.addr || profile.verified ? <></> : (<div className={styles.control}>
           <div className={styles.btns}>
             <button
               className={cn(
@@ -112,6 +115,7 @@ const User = ({ className, data, handle }) => {
             </button>
           </div>
         </div>)}
+        {success && (<span>You're now verified!</span>)}
         <div className={styles.socials}>
           {socials.map((x, index) => (
             <a

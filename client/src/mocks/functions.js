@@ -9,12 +9,16 @@ export function makeGatewayURL(ipfsURI) {
   }
   
 export async function fetchIPFSJSON(ipfsURI) {
+    console.log(ipfsURI)
     const url = makeGatewayURL(ipfsURI);
+    console.log(url)
     const resp = await fetch(url);
+
     return resp.json();
   }
 
 export const createTokenLink = async (item) => {
+    console.log(item)
     if (!item.cid) return {}
     if (item.cid === "") return {};
     let decodedHash;
@@ -30,6 +34,7 @@ export const createTokenLink = async (item) => {
     if (item.fileType === 1 && renderedFile.properties.file) {
       renderedFile.properties.file = makeGatewayURL(renderedFile.properties.file)
     }
+    console.log(renderedFile)
     return renderedFile;
   };
 

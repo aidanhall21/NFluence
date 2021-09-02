@@ -4,7 +4,7 @@ import styles from "./Item.module.sass";
 import Users from "./Users";
 import Control from "./Control";
 //import Options from "./Options";
-import { useLocation, useParams } from "react-router";
+import { useParams } from "react-router";
 import { defaultReducer } from "../../reducer/defaultReducer";
 import { query } from "@onflow/fcl";
 //import { useUser } from "../../providers/UserProvider";
@@ -17,6 +17,7 @@ import { GET_BID_HISTORY } from "../../flow/get-bid-history.script";
 import Bids from "./Bids";
 import { AuctionTimer } from "../../components/Card";
 import ReactPlayer from "react-player"
+import { useUser } from "../../providers/UserProvider";
 
 const navLinks = ["Owners", "Info", "History", "Bids"];
 
@@ -54,9 +55,10 @@ const Item = () => {
     error: false,
     data: []
   })
-  const [link, setLink] = useState({});
+  const [link, setLink] = useState('');
   const { address, nftid } = useParams();
-  const location = useLocation()
+  const { user } = useUser()
+  console.log(bids)
 
   useEffect(() => {
     const fetchTokenData = async () => {
@@ -92,6 +94,9 @@ const Item = () => {
           cadence: GET_BID_HISTORY,
           args: (arg, t) => [arg(address, t.Address), arg(parseInt(nftid), t.UInt64)]
         })
+        if (res.length > 0) {
+          
+        }
         setBids(res)
       } catch(err) {
       }
@@ -103,34 +108,17 @@ const Item = () => {
         fetchBidHistory()
       })
     //eslint-disable-next-line
-  }, [location.pathname]);
-
-  /*
-  useEffect(() => {
-    if (location.pathname.split('/')[1] === 'item') return
-    const fetchBidHistory = async () => {
-      try {
-        let res = await query({
-          cadence: GET_BID_HISTORY,
-          args: (arg, t) => [arg(address, t.Address), arg(parseInt(nftid), t.UInt64)]
-        })
-        setBids(res)
-      } catch(err) {
-        console.log(err)
-      }
-    }
-    fetchBidHistory()
-    //eslint-disable-next-line
-  }, [location.pathname])
-  */
+  }, [address, nftid]);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (state.data.auctionId && user?.addr !== address) return
       const res = await createTokenLink(state.data);
+      if (!res.properties && !res.image) return
       res.properties ? setLink(res.properties.file) : setLink(res.image)
     };
     fetchData();
-  }, [state.data])
+  }, [state.data, address, user?.addr])
 
   useEffect(() => {
     const fetchOwnerData = async () => {
@@ -162,6 +150,7 @@ const Item = () => {
     fetchCreatorData()
   }, [state.data])
 
+
   return (
     <>
       <div className={cn("section", styles.section)}>
@@ -182,13 +171,14 @@ const Item = () => {
                   </div>
                 ))}
                     </div>*/}
-              {state.data.fileType === 1 ? (
+                    
+              {state.data.fileType === 1 && link !== '' ? (
                 <>
                   <ReactPlayer url={link} controls loop={true} />
                 </>
               ) : (
                 <>
-                  <img src={link} alt="Card" />
+                  <img src={link === '' ? '/images/auction-lock.jpeg' : link} alt="Card" />
                 </>
               )}
             </div>

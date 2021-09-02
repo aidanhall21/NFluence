@@ -66,11 +66,15 @@
 		"testnet-four": {
 			"address": "0xdfa65aa771288367",
 			"keys": "49ae4d8aa78e05420adcfca53d53a1bcd50ce4e29baba18baea9df0e47d8722c"
+		},
+		"testnet-five": {
+			"address": "0xa3c018ee20b2cb65",
+			"keys": "ef5c55a6a7f1aa5eae99e0dbe5689d6b4acccc093c5104c5fc797bbb5fc4b84e"
 		}
 	},
 	"deployments": {
 		"testnet": {
-			"testnet-four": ["NSFT", "NSFAuction", "UtilityCoin", "NonFungibleToken"]
+			"testnet-five": ["NSFT", "NSFAuction", "UtilityCoin", "NonFungibleToken"]
 		},
 		"emulator": {
 			 "emulator-account": ["NSFT", "NSFAuction", "UtilityCoin", "NonFungibleToken"]

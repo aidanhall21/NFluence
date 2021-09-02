@@ -1,23 +1,19 @@
 import React from "react";
-//import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import cn from "classnames";
 import styles from "./Footer.module.sass";
-//import Group from "./Group";
-//import Image from "../Image";
-//import Form from "../Form";
+import Group from "./Group";
+import Image from "../Image";
+import Form from "../Form";
 import Theme from "../Theme";
 
-/*const items = [
+const items = [
   {
-    title: "Crypter.",
+    title: "NSFT",
     menu: [
       {
-        title: "Discover",
-        url: "/search01",
-      },
-      {
-        title: "Connect wallet",
-        url: "/connect-wallet",
+        title: "Support",
+        url: "mailto:aidan@nsftonight.com",
       },
     ],
   },
@@ -34,7 +30,7 @@ import Theme from "../Theme";
       },
     ],
   },
-];*/
+];
 
 const Footers = () => {
   //const [email, setEmail] = useState("");
@@ -46,46 +42,10 @@ const Footers = () => {
   return (
     <footer className={styles.footer}>
       <div className={cn("container", styles.container)}>
-        {/*<div className={styles.row}>
-          <div className={styles.col}>
-            <Link className={styles.logo} to="/">
-              <Image
-                className={styles.pic}
-                src="/images/nsft-logo.jpeg"
-                srcDark="/images/nsft-logo.jpeg"
-                alt="Logo"
-              />
-            </Link>
-            <div className={styles.info}>Slogan</div>
-          </div>
-          <div className={styles.col}>
-            {items.map((x, index) => (
-              <Group className={styles.group} item={x} key={index} />
-            ))}
+            <div className={styles.version}>
+              <div className={styles.details}>Dark theme</div>
+              <Theme className="theme-big" />
             </div>
-          <div className={styles.col}>
-            <div className={styles.category}>Join Newsletter</div>
-            <div className={styles.text}>
-              Subscribe our newsletter to get more free design course and
-              resource
-            </div>
-            <Form
-              className={styles.form}
-              value={email}
-              setValue={setEmail}
-              onSubmit={() => handleSubmit()}
-              placeholder="Enter your email"
-              type="email"
-              name="email"
-            />
-            </div>*/}
-            <div className={styles.col}>
-          <div className={styles.version}>
-            <div className={styles.details}>Dark mode</div>
-            <Theme className="theme-big" />
-          </div>
-        </div>
-        {/*</div>*/}
         <div className={styles.foot}>
           <div className={styles.copyright}>
             Copyright © 2021 Long Hall Labs LLC. All rights reserved
