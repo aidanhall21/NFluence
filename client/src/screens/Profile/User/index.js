@@ -17,6 +17,8 @@ const User = ({ className, data, handle }) => {
   const [visible, setVisible] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState(false)
+  console.log('data', data)
 
   const socials = [
     {
@@ -30,20 +32,23 @@ const User = ({ className, data, handle }) => {
   ];
 
   const { user } = useAuth()
-  const { collection, profile, createCollection, fetchUserData } = useUser()
-  console.log(collection)
+  const { collection, profile, createCollection, fetchUserData, collectionError } = useUser()
+  console.log("collection", collection)
+  console.log('err', collectionError)
 
   const verify = async () => {
     setVerifying(true)
+    console.log(collectionError)
     await createCollection()
-    /*
+    
     if (!data.db) {
+      console.log('adding to db')
       await axios.post(`${api_node}/api/v1/user`, {
         name: data.name,
         email: data.email,
         avatar: data.avatar,
         db: true,
-        verified: true,
+        verified: data.verified,
         cover_image: data.cover_image,
         profile_image: data.profile_image,
         handle: data.handle,
@@ -54,16 +59,20 @@ const User = ({ className, data, handle }) => {
         instagram: data.instagram
       })
       
-    } 
+    }
+    console.log(collectionError)
+    if (collectionError) {
+      console.log('err')
+      setError(true)
+      return
+    }
     await axios.put(`${api_node}/api/v1/user/verify`, {
       verify: true,
       address: user?.addr
     })
-    await fetchUserData()
     setSuccess(true)
-    */
+    await fetchUserData()
     setVerifying(false)
-    
   }
 
 
@@ -119,6 +128,7 @@ const User = ({ className, data, handle }) => {
           </div>
         </div>)}
         {success && (<span>You're now verified!</span>)}
+        {error && (<span>Something went wrong, please contact us</span>)}
         <div className={styles.socials}>
           {socials.map((x, index) => (
             <a

@@ -133,7 +133,7 @@ const PutSale = ({ className }) => {
               <div className={styles.text}>Check your profile to see your NFT</div>
             </div>
         </div>*/}
-          <button className={cn("button done", styles.button)} onClick={window.location.reload()}>Success! Your auction has started</button>
+          <button className={cn("button done", styles.button)}>Success! Your auction has started</button>
         </div>
         ) : (<div className={styles.btns}>
           <button

@@ -12,6 +12,7 @@ export default function UserProvider({ children }) {
   const { user, loggedIn } = useAuth();
   const {
     data: collection,
+    error: collectionError,
     createCollection,
     checkCollection,
   } = useCollection(user);
@@ -52,6 +53,7 @@ export default function UserProvider({ children }) {
         createCollection,
         bidOnAuction,
         fetchUserData,
+        collectionError,
         addToAuction,
         userAuctions,
         settleAuction,
