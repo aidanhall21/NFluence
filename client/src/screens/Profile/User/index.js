@@ -113,7 +113,7 @@ const User = ({ className, data, handle }) => {
             </button>
           </div>
         </div>)}
-        {data.address !== user?.addr || profile.verified ? <></> : (<div className={styles.control}>
+        {data.address !== user?.addr || collection ? <></> : (<div className={styles.control}>
           <div className={styles.btns}>
             <button
               className={cn(
