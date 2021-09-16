@@ -11,7 +11,7 @@ export const ownerReducer = (state, action) => {
           ...state,
           loading: false,
           error: false,
-          data: [...state.data, action.payload]
+          data: [action.payload]
         }
       case 'CREATOR':
         return {

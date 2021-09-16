@@ -31,12 +31,12 @@ const User = ({ className, data, handle }) => {
 
   const { user } = useAuth()
   const { collection, profile, createCollection, fetchUserData } = useUser()
+  console.log(collection)
 
   const verify = async () => {
     setVerifying(true)
-    if (!collection) {
-      await createCollection()
-    }
+    await createCollection()
+    /*
     if (!data.db) {
       await axios.post(`${api_node}/api/v1/user`, {
         name: data.name,
@@ -53,6 +53,7 @@ const User = ({ className, data, handle }) => {
         twitter: data.twitter,
         instagram: data.instagram
       })
+      
     } 
     await axios.put(`${api_node}/api/v1/user/verify`, {
       verify: true,
@@ -60,7 +61,9 @@ const User = ({ className, data, handle }) => {
     })
     await fetchUserData()
     setSuccess(true)
+    */
     setVerifying(false)
+    
   }
 
 

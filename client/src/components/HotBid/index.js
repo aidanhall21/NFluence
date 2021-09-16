@@ -58,9 +58,9 @@ const Hot = ({ classSection }) => {
           <h3 className={cn("h3", styles.title)}>Hot bid</h3>
           <div className={styles.inner}>
             <Slider className="bid-slider" {...settings}>
-              {bids.map((x, index) => (
+              {/*bids.map((x, index) => (
                 <Card key={index} className={styles.card} item={x} />
-              ))}
+              ))*/}
             </Slider>
           </div>
         </div>

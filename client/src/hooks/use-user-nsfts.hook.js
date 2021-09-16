@@ -9,6 +9,14 @@ import { GET_AUCTION_IDS } from "../flow/get-auction-ids.script";
 import { GET_SINGLE_AUCTION_DATA } from "../flow/get-single-auction-data.script";
 import { SETTLE_AUCTION } from "../flow/settle-auction.tx";
 import { BID_ON_AUCTION } from "../flow/bid-auction.tx";
+import { GET_OWNED_IDS } from "../flow/get-owned-token-ids.script";
+import axios from "axios";
+
+let api_node;
+
+process.env.NODE_ENV === "production"
+  ? api_node = ''
+  : api_node = process.env.REACT_APP_LOCAL_API_NODE
 
 export default function useUserNsfts(user) {
     const [state, dispatch] = useReducer(userNsftReducer, {
@@ -16,8 +24,34 @@ export default function useUserNsfts(user) {
         error: false,
         minted_data: [],
         auction_data: [],
+        owned_data: [],
+        owned_ids: [],
+        bids_data: [],
         txStatus: {}
     })
+
+    const runScript = async (address, id) => {
+        console.log('HI', address, id)
+        let auction_data = await query({
+            cadence: GET_SINGLE_AUCTION_DATA,
+            args: (arg, t) => [arg(address, t.Address), arg(id, t.UInt64)]
+        })
+        console.log(auction_data)
+        const { nftData } = auction_data
+        return {...auction_data, ...nftData}
+    }
+
+    const fetchAuctionData = async (address, data) => {
+        return Promise.all(data.map((id) => {
+            return runScript(address, id)
+        }))
+    }
+
+    const fetchBidData = async (data) => {
+        return Promise.all(data.map((el) => {
+            return runScript(el.auctionuser, el.tokenid)
+        }))
+    }
 
     const fetchUserMintedNsfts = async () => {
         dispatch({ type: 'PROCESSING' })
@@ -26,6 +60,7 @@ export default function useUserNsfts(user) {
                 cadence: GET_TOKEN_DATA,
                 args: (arg, t) => [arg(user?.addr, t.Address)]
             })
+            console.log(res)
             let minted_nsfts = []
             if (res !== null) {
                 minted_nsfts = res.filter(token => token.creatorAddress === user?.addr)
@@ -37,45 +72,83 @@ export default function useUserNsfts(user) {
         }
     }
 
+    const fetchUserOwnedIds = async () => {
+        dispatch({ type: 'PROCESSING' })
+        try {
+            let res = await query({
+                cadence: GET_OWNED_IDS,
+                args: (arg, t) => [arg(user?.addr, t.Address)]
+            })
+            console.log(res)
+            let owned_nsfts = []
+            if (res !== null) {
+                owned_nsfts = res.filter(token => token.creatorAddress !== user?.addr)
+            }
+            dispatch({ type: 'ID_SUCCESS', payload: owned_nsfts })
+        } catch(err) {
+            console.log(err)
+            dispatch({ type: 'ERROR' })
+        }
+    }
+
+    const fetchUserOwnedNsfts = async () => {
+        dispatch({ type: 'PROCESSING' })
+        try {
+            let res = await query({
+                cadence: GET_TOKEN_DATA,
+                args: (arg, t) => [arg(user?.addr, t.Address)]
+            })
+            console.log(res)
+            let owned_nsfts = []
+            if (res !== null) {
+                owned_nsfts = res.filter(token => token.creatorAddress !== user?.addr)
+            }
+            dispatch({ type: 'OWNED_SUCCESS', payload: owned_nsfts })
+        } catch (err) {
+            console.log(err)
+            dispatch({ type: 'ERROR' })
+        }
+    }
+
+    const fetchUserLiveAuctions = async () => {
+        dispatch({ type: 'PROCESSING' })
+        try {
+            let res = await query({
+                cadence: GET_AUCTION_IDS,
+                args: (arg, t) => [arg(user?.addr, t.Address)]
+            })
+            let data = await fetchAuctionData(user?.addr, res)
+            dispatch({ type: 'AUCTION_SUCCESS', payload: data })
+        } catch(err) {
+            dispatch({ type: 'ERROR' })
+        }
+    }
+
+    const fetchUserLiveBids = async () => {
+        dispatch({ type: 'PROCESSING' })
+        try {
+            let response = await axios.get(`${api_node}/api/v1/bids/${user?.addr}`)
+            const bidData = response.data;
+            console.log('response', bidData)
+            let data = await fetchBidData(bidData)
+            console.log('data', data)
+            dispatch({ type: 'BID_SUCCESS', payload: data })
+        } catch(err) {
+            dispatch({ type: 'ERROR' })
+        }
+
+    }
+
     useEffect(() => {
         if(!user?.addr) return
         fetchUserMintedNsfts()
-        //eslint-disable-next-line
-    }, [user])
-
-    const runScript = async (address, id) => {
-        let auction_data = await query({
-            cadence: GET_SINGLE_AUCTION_DATA,
-            args: (arg, t) => [arg(address, t.Address), arg(id, t.UInt64)]
-        })
-        const { nftData } = auction_data
-        return {...auction_data, ...nftData}
-    }
-
-    const fetchAuctionData = async (address, data) => {
-        return Promise.all(data.map((id) => {
-            return runScript(address, id)
-        }))
-    }
-
-    useEffect(() => {
-        if(!user?.addr) return
-        const fetchUserLiveAuctions = async () => {
-            dispatch({ type: 'PROCESSING' })
-            try {
-                let res = await query({
-                    cadence: GET_AUCTION_IDS,
-                    args: (arg, t) => [arg(user?.addr, t.Address)]
-                })
-                let data = await fetchAuctionData(user?.addr, res)
-                dispatch({ type: 'AUCTION_SUCCESS', payload: data })
-            } catch(err) {
-                dispatch({ type: 'ERROR' })
-            }
-        }
+        fetchUserOwnedNsfts()
+        fetchUserOwnedIds()
         fetchUserLiveAuctions()
+        fetchUserLiveBids()
         //eslint-disable-next-line
     }, [user])
+
 
     const fetchAccountLiveAuctions = async (address) => {
         try {
@@ -90,17 +163,9 @@ export default function useUserNsfts(user) {
         }
     }
 
-    /*
-    const fetchAccountLiveBids = async (address) => {
-        try {
-            let res = await query({
+    
 
-            })
-        } catch(err) {
-            console.log(err)
-        }
-    }
-    */
+    
 
     const addToAuction = async (nftid, price) => {
         dispatch({ type: 'PROCESSING' })
@@ -114,6 +179,7 @@ export default function useUserNsfts(user) {
                 limit: 500
             })
             let txStatus = await tx(res).onceSealed()
+            console.log(txStatus)
             dispatch({ type: 'TX_SUCCESS', payload: txStatus })
             return txStatus
         } catch(err) {
@@ -131,6 +197,7 @@ export default function useUserNsfts(user) {
                 limit: 150
             })
             let txStatus = await tx(res).onceSealed()
+            console.log(txStatus)
             dispatch({ type: 'TX_SUCCESS', payload: txStatus })
         } catch(err) {
             console.log(err)
@@ -148,6 +215,7 @@ export default function useUserNsfts(user) {
                 limit: 500
             })
             let txStatus = await tx(res).onceSealed()
+            console.log(txStatus)
             dispatch({ type: 'TX_SUCCESS', payload: txStatus })
             return txStatus
         } catch(err) {
@@ -189,6 +257,8 @@ export default function useUserNsfts(user) {
         settleAuction,
         fetchAccountLiveAuctions,
         fetchUserMintedNsfts,
+        fetchUserOwnedNsfts,
+        fetchUserOwnedIds,
         bidOnAuction
     }
 }

@@ -23,7 +23,7 @@ transaction(listingResourceID: UInt64, storefrontAddress: Address, bidAmount: UF
             ?? panic("Could not borrow reference to the owner's Vault!")
         self.paymentVault <- vaultRef.withdraw(amount: bidAmount)
         self.vaultCap = acct.getCapability<&{FungibleToken.Receiver}>(/public/utilityCoinReceiver)
-        self.collectionCap = acct.getCapability<&{NSFT.NSFTCollectionPublic}>(NSFT.CollectionPublicPath)
+        self.collectionCap = acct.getCapability<&NSFT.Collection{NSFT.NSFTCollectionPublic}>(NSFT.CollectionPublicPath)
     }
 
     execute {

@@ -6,7 +6,10 @@ import { formatAmountInput } from "../../mocks/functions";
 import { useParams } from "react-router";
 import { useUser } from "../../providers/UserProvider";
 import Loader from "../Loader";
+import { getBidPlacedEvents } from "../../flow/query-event.script.script"
+import axios from "axios";
 
+/*
 const items = [
   {
     title: "Enter bid",
@@ -25,13 +28,19 @@ const items = [
     value: "0 ETH",
   },
 ];
+*/
+
+let api_node;
+process.env.NODE_ENV === "production"
+  ? api_node = ''
+  : api_node = process.env.REACT_APP_LOCAL_API_NODE
 
 const Bid = ({ className, data }) => {
   const [bid, setBid] = useState(false)
   const [nofunds, setNofunds] = useState(false)
 
   const { address, nftid } = useParams()
-  const { bidOnAuction, balance, loading, error, status } = useUser()
+  const { bidOnAuction, balance, loading, error, status, getBalance, user } = useUser()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,6 +50,21 @@ const Bid = ({ className, data }) => {
       return
     }
     await bidOnAuction(parseInt(nftid), address, formatAmountInput(bid));
+    await getBalance()
+    let events = await getBidPlacedEvents()
+    console.log(events)
+    let userBids = events.filter(event => event.data.user === user?.addr)
+    const userBidData = userBids[userBids.length - 1]
+    console.log(userBidData)
+    await axios.post(`${api_node}/api/v1/bid`, {
+      blockheight: userBidData.blockHeight, 
+      blockid: userBidData.blockId, 
+      blocktime: userBidData.blockTimestamp, 
+      tokenid: userBidData.data.tokenID,
+      biddinguser: userBidData.data.user, 
+      price: userBidData.data.bidPrice, 
+      auctionuser: address
+    })
   };
 
   return (
@@ -50,13 +74,16 @@ const Bid = ({ className, data }) => {
         You are about to bid on <strong>{data.title}</strong>
       </div>
       <div className={styles.text}>
+            You'll need to confirm the transaction in the next popup.
+          </div>
+      <div className={styles.text}>
             Minimum bid ${parseInt(data.minNextBid).toString()}
           </div>
       <div className={styles.table}>
         <div className={styles.row}>
           <Form
             className={styles.form}
-            onSubmit={() => handleSubmit()}
+            onSubmit={handleSubmit}
             value={bid}
             placeholder="Bid Amount"
             setValue={setBid}

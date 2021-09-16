@@ -3,9 +3,11 @@ import cn from "classnames";
 import styles from "./PutSale.module.sass";
 import Form from "../../../../components/Form";
 import { useUser } from "../../../../providers/UserProvider";
-import { useLocation, useParams } from "react-router";
+import { useParams } from "react-router";
 import Loader from "../../../../components/Loader";
 import { formatAmountInput } from "../../../../mocks/functions";
+import { getAuctionStartedEvents } from "../../../../flow/query-event.script.script"
+import axios from "axios";
 //import Icon from "../../../../components/Icon";
 //import LoaderCircle from "../../../../components/LoaderCircle";
 //import Icon from "../../../../components/Icon";
@@ -26,14 +28,32 @@ import { formatAmountInput } from "../../../../mocks/functions";
   },
 ];*/
 
+let api_node;
+process.env.NODE_ENV === "production"
+  ? api_node = ''
+  : api_node = process.env.REACT_APP_LOCAL_API_NODE
+
 const PutSale = ({ className }) => {
   const [price, setPrice] = useState(false);
-  const { addToAuction, loading, status, error } = useUser();
+  const { addToAuction, loading, status, error, user } = useUser();
   const { nftid } = useParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await addToAuction(parseInt(nftid), formatAmountInput(price));
+    let events = await getAuctionStartedEvents()
+    console.log(events)
+    let userAuctions = events.filter(event => event.data.user === user?.addr)
+    const userAuctionData = userAuctions[userAuctions.length - 1]
+    console.log(userAuctionData)
+    await axios.post(`${api_node}/api/v1/auction`, {
+      blockheight: userAuctionData.blockHeight, 
+      blockid: userAuctionData.blockId, 
+      blocktime: userAuctionData.blockTimestamp, 
+      tokenid: userAuctionData.data.tokenID,
+      user: userAuctionData.data.user, 
+      price: userAuctionData.data.startPrice,
+    }) 
   };
 
   return (
@@ -58,7 +78,7 @@ const PutSale = ({ className }) => {
         <div className={styles.row}>
           <Form
             className={styles.form}
-            onSubmit={() => handleSubmit()}
+            onSubmit={handleSubmit}
             value={price}
             placeholder="Set Starting Price"
             setValue={setPrice}
@@ -113,7 +133,7 @@ const PutSale = ({ className }) => {
               <div className={styles.text}>Check your profile to see your NFT</div>
             </div>
         </div>*/}
-          <button className={cn("button done", styles.button)}>Success! Your auction has started</button>
+          <button className={cn("button done", styles.button)} onClick={window.location.reload()}>Success! Your auction has started</button>
         </div>
         ) : (<div className={styles.btns}>
           <button

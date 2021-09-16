@@ -15,7 +15,7 @@ const nav = [
     title: "Discover",
   },
   {
-    url: "/",
+    url: "/faq",
     title: "How it works",
   },
   {

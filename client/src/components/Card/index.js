@@ -59,28 +59,32 @@ export function AuctionTimer({ data }) {
 const Card = ({ className, item }) => {
   //const [visible, setVisible] = useState(false);
   const [link, setLink] = useState('');
+  const [loading, setLoading] = useState(true)
   const { handle } = useParams();
-  const { profile } = useUser()
+  const { profile, user } = useUser()
+  console.log('link', link)
 
   useEffect(() => {
+    setLoading(true)
     const fetchData = async () => {
-      if (item.auctionId && profile.handle !== handle) return
+      if (item.auctionId && item.creatorAddress !== user?.addr) return
       const res = await createTokenLink(item);
-      res.properties ? setLink(res.properties.file) : setLink(res.image)
+      setLink(res.properties.file)
     };
     fetchData();
-  }, [item, handle, profile.handle]);
+    setLoading(false)
+  }, [item, handle, profile.handle, user?.addr]);
 
   return (
     <div className={cn(styles.card, className)}>
       <div className={styles.preview}>
-        {item.fileType === 1 && link !== '' ? (
+        {item.fileType === 1 && link !== '' && !loading ? (
           <>
             <ReactPlayer url={link} width="100%" height="100%" />
           </>
         ) : (
           <>
-            <img src={link === '' ? '/images/auction-lock.jpeg' : link} alt="Card" />
+            <img src={link !== '' && !loading ? link : '/images/auction-lock.jpeg'} alt="Card" />
           </>
         )}
         {/*<div className={styles.control}>

@@ -13,20 +13,17 @@ import Items from "./Items";
 import axios from "axios";
 import { useAuth } from "../../providers/AuthProvider";
 import { useUser } from "../../providers/UserProvider";
+import { getBidPlacedEvents } from "../../flow/query-event.script.script";
 
 const userLinks = [
   "Your Auctions",
   "Your Bids",
   "Created",
   "Owned",
-  "Following",
-  "Followers"
 ]
 
 const accountLinks = [
   "Live Auctions",
-  "Following",
-  "Followers"
 ]
 
 
@@ -190,13 +187,16 @@ const Profile = () => {
   const [file, setFile] = useState(null)
   const [profData, setProfData] = useState({})
   const [auctions, setAuctions] = useState([])
-  const [bids, setBids] = useState([])
+  //const [bids, setBids] = useState([])
 
   const { handle } = useParams();
 
   const { user } = useAuth()
-  const { profile, userNsfts, userAuctions, fetchAccountLiveAuctions } = useUser()
+  const { profile, userNsfts, bids, userAuctions, userOwned, fetchAccountLiveAuctions } = useUser()
   const history = useHistory()
+  console.log(userOwned)
+  console.log(userNsfts)
+  console.log("bids", bids)
 
   useEffect(() => {
     setProfData(profile)
@@ -227,14 +227,6 @@ const Profile = () => {
     }
     updateAuctions()
   }, [profData, userAuctions])
-
-    /*
-  useEffect(() => {
-    const updateBids = async () => {
-      let bidData = await 
-    }
-  })
-  */
 
   const onCoverPhotoChange = (e) => {
     setFile(e.target.files[0])
@@ -355,14 +347,14 @@ const Profile = () => {
                   <Items class={styles.items} items={auctions} />
                 )}
                 {activeIndex === 1 && (
-                  <Items class={styles.items} items={bids.slice(0, 6)} />
+                  <Items class={styles.items} items={bids} />
                 )}
                 {activeIndex === 2 && handle === profile.handle && (
                   <Items class={styles.items} items={userNsfts} />
                 )}
-                {/*activeIndex === 3 && (
-                  <Items class={styles.items} items={bids.slice(0, 3)} />
-                )*/}
+                {activeIndex === 3 && (
+                  <Items class={styles.items} items={userOwned} />
+                )}
                 {/*{activeIndex === 4 && (
                   <Followers className={styles.followers} items={following} />
                 )}

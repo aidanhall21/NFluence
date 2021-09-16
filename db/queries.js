@@ -243,6 +243,70 @@ function verifyUser(req, res) {
   );
 }
 
+function createBid(req, res) {
+  const { blockheight, blockid, blocktime, tokenid, biddinguser, price, auctionuser } = req.body;
+
+  pool.query(
+    `INSERT INTO bids (blockheight, blockid, blocktime, tokenid, biddinguser, price, auctionuser) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [blockheight, blockid, blocktime, tokenid, biddinguser, price, auctionuser],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.status(201).send("success");
+    }
+  );
+}
+
+function createAuction(req, res) {
+  const { blockheight, blockid, blocktime, tokenid, user, price } = req.body;
+
+  pool.query(
+    `INSERT INTO auctions (blockheight, blockid, blocktime, tokenid, auctionuser, price) VALUES ($1, $2, $3, $4, $5, $6)`,
+    [blockheight, blockid, blocktime, tokenid, user, price],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.status(201).send("success");
+    }
+  );
+}
+
+function settleAuction(req, res) {
+  const { active, address, tokenid } = req.body;
+
+  pool.query(
+    `UPDATE auctions SET active=$1 WHERE auctionuser=$2 AND tokenid=$3`,
+    [active, address, tokenid],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.status(204).send("success");
+    }
+  );
+}
+
+function getLiveBids(req, res) {
+  const address = req.params.address;
+
+  pool.query(
+    `SELECT bids.tokenid, bids.auctionuser 
+    FROM bids
+    JOIN auctions
+    ON bids.tokenid = auctions.tokenid AND bids.auctionuser = auctions.auctionuser
+    WHERE active = true AND bids.biddinguser = $1;`,
+    [address],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.status(200).json(results.rows);
+    }
+  );
+}
+
 apiRouter.get("/followers/:account", getFollowing);
 apiRouter.get("/following/:account", getFollowers);
 apiRouter.post("/follower", createFollower);
@@ -258,6 +322,10 @@ apiRouter.post("/user", createUser);
 apiRouter.get("/handle/:handle", getAddress);
 apiRouter.put("/user/update", updateUser);
 apiRouter.put("/user/verify", verifyUser)
+apiRouter.post("/bid", createBid)
+apiRouter.get("/bids/:address", getLiveBids)
+apiRouter.post("/auction", createAuction)
+apiRouter.put("/auction/settle", settleAuction)
 
 module.exports = apiRouter
 

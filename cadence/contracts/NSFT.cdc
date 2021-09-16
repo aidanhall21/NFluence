@@ -264,9 +264,9 @@ pub contract NSFT: NonFungibleToken {
         self.totalSupply = 0
         self.maxEditionSize = 10
         // Initialize Collection paths
-        self.CollectionPublicPath = /public/NFTCollection
-        self.CollectionStoragePath = /storage/NFTCollection
-        self.AdminStoragePath = /storage/NSFTAdmin
+        self.CollectionPublicPath = /public/NSFTCollectionPublic
+        self.CollectionStoragePath = /storage/NSFTCollectionStorage
+        self.AdminStoragePath = /storage/NSFTAdminStorage
         // Create the admin resource and store it in the account that deployed this contract
         let admin <- create NSFTAdmin()
         self.account.save(<-admin, to: NSFT.AdminStoragePath)

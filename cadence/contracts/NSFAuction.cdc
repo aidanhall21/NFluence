@@ -305,7 +305,7 @@ pub contract NSFAuction {
                 !self.auctionCompleted : "The auction is already settled"
                 self.NFT != nil: "NFT in auction does not exist"
                 self.timeRemaining() > 0.0: "Time to place bids has elapsed"
-                bidTokens.balance > self.minNextBid() : "Bid amount must be larger or equal to the current price + minimum bid increment"
+                bidTokens.balance >= self.minNextBid() : "Bid amount must be larger or equal to the current price + minimum bid increment"
             }
 
             let bidderAddress = vaultCap.borrow()!.owner!.address

@@ -45,6 +45,7 @@ process.env.NODE_ENV === "production"
 const Item = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [bids, setBids] = useState([])
+  const [loading, setLoading] = useState(true)
   const [state, dispatch] = useReducer(defaultReducer, {
     loading: false,
     error: false,
@@ -56,17 +57,23 @@ const Item = () => {
     data: []
   })
   const [link, setLink] = useState('');
+  const [currentOwner, setCurrentOwner] = useState(false)
   const { address, nftid } = useParams();
-  const { user } = useUser()
-  console.log(bids)
+  const { user, owned_ids } = useUser()
+  console.log(currentOwner)
+  console.log(owned_ids)
+  console.log(user?.addr)
 
   useEffect(() => {
     const fetchTokenData = async () => {
       dispatch({ type: "PROCESSING" });
+      let acct;
+      currentOwner ? acct = user?.addr : acct = address
+      console.log(acct)
       try {
         let res = await query({
           cadence: GET_SINGLE_TOKEN_DATA,
-          args: (arg, t) => [arg(address, t.Address), arg(parseInt(nftid), t.UInt64)],
+          args: (arg, t) => [arg(acct, t.Address), arg(parseInt(nftid), t.UInt64)],
         });
         dispatch({ type: "SUCCESS", payload: res });
       } catch (err) {
@@ -97,44 +104,54 @@ const Item = () => {
         if (res.length > 0) {
           
         }
-        setBids(res)
+        setBids(res.reverse())
       } catch(err) {
       }
     }
 
       fetchTokenData()
       .catch((err) => {
+        console.log('first catch')
         fetchAuctionTokenData()
         fetchBidHistory()
       })
-    //eslint-disable-next-line
-  }, [address, nftid]);
+  }, [address, nftid, currentOwner, user?.addr]);
 
   useEffect(() => {
+    if (owned_ids.includes(parseInt(nftid))) {
+      setCurrentOwner(true)
+    }
+  }, [nftid, owned_ids])
+
+  useEffect(() => {
+    setLoading(true)
     const fetchData = async () => {
-      if (state.data.auctionId && user?.addr !== address) return
+      if (state.data.auctionId && user?.addr !== address && !currentOwner) return
+      console.log('fetching')
       const res = await createTokenLink(state.data);
+      console.log(res)
       if (!res.properties && !res.image) return
-      res.properties ? setLink(res.properties.file) : setLink(res.image)
+      setLink(res.properties.file)
     };
     fetchData();
-  }, [state.data, address, user?.addr])
+    setLoading(false)
+  }, [state.data, address, user?.addr, currentOwner])
 
   useEffect(() => {
     const fetchOwnerData = async () => {
+      console.log(state.data)
+      if (state.data === {}) return
+      let acct;
+      currentOwner ? acct = user?.addr : acct = address
       dispatchState({ type: 'PROCESSING' })
       try {
-        const api = await axios.get(`${api_node}/api/v1/user/${address}`)
+        const api = await axios.get(`${api_node}/api/v1/user/${acct}`)
         const serverResponse = api.data
         dispatchState({ type: 'OWNER', payload: {...serverResponse[0], position: 'Owner'} })
       } catch(err) {
         dispatchState({ type: 'ERROR' })
       }
     }
-    fetchOwnerData()
-  }, [address])
-
-  useEffect(() => {
     const fetchCreatorData = async () => {
       if (state.data === {}) return
       dispatchState({ type: 'PROCESSING' })
@@ -148,8 +165,10 @@ const Item = () => {
       }
     }
     fetchCreatorData()
-  }, [state.data])
+    fetchOwnerData()
+  }, [state.data, address, currentOwner, user?.addr])
 
+  console.log('ITEMS', ownerState.data)
 
   return (
     <>
@@ -172,13 +191,13 @@ const Item = () => {
                 ))}
                     </div>*/}
                     
-              {state.data.fileType === 1 && link !== '' ? (
+              {state.data.fileType === 1 && link !== '' && !loading ? (
                 <>
                   <ReactPlayer url={link} controls loop={true} />
                 </>
               ) : (
                 <>
-                  <img src={link === '' ? '/images/auction-lock.jpeg' : link} alt="Card" />
+                  <img src={link !== '' && !loading ? link : '/images/auction-lock.jpeg'} alt="Card" />
                 </>
               )}
             </div>
@@ -210,9 +229,9 @@ const Item = () => {
               ))}
             </div>
             {state.data.auctionId && activeIndex === 1 && (<AuctionTimer data={state.data} />)}
-            {activeIndex === 0 && (<Users className={styles.users} items={ownerState.data} />)}
+            {activeIndex === 0 && !state.error && (<Users className={styles.users} items={ownerState.data} />)}
             {activeIndex === 3 && (<Bids className={styles.users} items={bids} />)}
-            <Control className={styles.control} data={state.data} />
+            <Control className={styles.control} data={state.data} error={state.error} />
           </div>
         </div>
       </div>
