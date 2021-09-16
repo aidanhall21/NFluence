@@ -7,7 +7,7 @@ const express = require('express')
 //'postgresql://postgres:Mgoblue2@localhost:5432/NSFT'
 //process.env.NODE_ENV === "production" ? process.env.DATABASE_URL : ,
 const pool = new Pool({
-  connectionString: 'postgresql://postgres:Mgoblue2@localhost:5432/NSFT',
+  connectionString: process.env.DATABASE_URL,
   ssl:
   process.env.NODE_ENV === "production"
     ? { rejectUnauthorized: false }
