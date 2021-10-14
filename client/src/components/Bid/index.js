@@ -14,7 +14,7 @@ import CheckoutForm from "./CheckoutForm";
 import Modal from "../Modal";
 
 const promise = loadStripe(
-  "pk_test_51JhdSpJoN02dbjVUt1SXae4LgPPPw6vsD6TlVnaPDNe2Aex3tTm81xihPLp9gnwfSDLDcKz43qsjulWSsP7uPdfg00FJvIdwbs"
+  process.env.STRIPE_TEST_API_KEY
 );
 
 /*

@@ -1,4 +1,4 @@
-const stripe = require('stripe')('sk_test_51JhdSpJoN02dbjVUeDlh5MPtsO9IQ1Ru0Y4AFsj3mi5A3imPRQbuKZVJtQrMuwVbJ6VtenKuhfD1ayjW8QKixakQ00ZW2DtAzJ')
+const stripe = require('stripe')(process.env.STRIP_TEST_API_KEY)
 const express = require("express");
 const aws = require('aws-sdk');
 const path = require("path");
@@ -13,7 +13,6 @@ let port = 5000
 const app = express();
 const apiRouter = require('./db/queries');
 const bodyParser = require('body-parser');
-const endpointSecret = 'whsec_d19Ji0uVjncsdewclLgmB9qLffiQeFVQ';
 
 const MY_DOMAIN = 'http://localhost:3000/profile-edit';
 

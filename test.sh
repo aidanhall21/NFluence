@@ -1,5 +1,0 @@
-export AWS_ACCESS_KEY_ID=AKIAXTHP632YGVIWJOBZ
-export AWS_SECRET_ACCESS_KEY=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
-export S3_BUCKET=nfluence-assets
-
-yarn run start

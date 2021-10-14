@@ -7,7 +7,7 @@ import { useAuth } from "../../../providers/AuthProvider";
 import axios from "axios";
 // import { isStepDivisible } from "react-range/lib/utils";
 
-const stripe = require('stripe')('sk_test_51JhdSpJoN02dbjVUeDlh5MPtsO9IQ1Ru0Y4AFsj3mi5A3imPRQbuKZVJtQrMuwVbJ6VtenKuhfD1ayjW8QKixakQ00ZW2DtAzJ')
+const stripe = require('stripe')(process.env.STRIPE_TEST_API_KEY)
 
 let api_node;
 process.env.NODE_ENV === "production"
