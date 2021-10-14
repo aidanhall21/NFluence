@@ -13,10 +13,12 @@ const Form = ({
   name,
   step,
   min,
-  max
+  max,
+  action,
+  method
 }) => {
   return (
-    <form className={cn(styles.form, className)} action="" onSubmit={onSubmit}>
+    <form className={cn(styles.form, className)} action={action} method={method} onSubmit={onSubmit}>
       <input
         className={styles.input}
         type={type}

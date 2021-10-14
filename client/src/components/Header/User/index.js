@@ -35,7 +35,7 @@ const User = ({ className }) => {
       <div className={cn(styles.user, className)}>
         <div className={styles.head} onClick={() => setVisible(!visible)}>
           <div className={styles.avatar}>
-          {profile.profile_image ? <img src={`/user-images/${user?.addr}-profile.jpg`} alt="Avatar" /> : <img src={`data:image/png;base64,${profile.avatar}`} alt="Avatar" />}
+          {profile.profile_image ? <img src={`https://nfluence-assets.s3.amazonaws.com/${user?.addr}-profile`} alt="Avatar" /> : <img src={`data:image/png;base64,${profile.avatar}`} alt="Avatar" />}
           </div>
           <div className={styles.wallet}>
             @{profile.handle}
@@ -51,7 +51,7 @@ const User = ({ className }) => {
             <div className={styles.wrap}>
               <div className={styles.line}>
                 <div className={styles.preview}>
-                {profile.profile_image ? <img src={`/user-images/${user?.addr}-profile.jpg`} alt="Avatar" /> : <img src={`data:image/png;base64,${profile.avatar}`} alt="Avatar" />}
+                {profile.profile_image ? <img src={`https://nfluence-assets.s3.amazonaws.com/${user?.addr}-profile`} alt="Avatar" /> : <img src={`data:image/png;base64,${profile.avatar}`} alt="Avatar" />}
                 </div>
                 <div className={styles.details}>
                   <div className={styles.info}>Balance</div>

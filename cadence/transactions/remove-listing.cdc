@@ -1,12 +1,12 @@
-import NSFAuction from "../contracts/NSFAuction.cdc"
-import NSFT from "../contracts/NSFT.cdc"
-import FungibleToken from "../contracts/FungibleToken.cdc"
+import NFluenceAuction from "../contracts/NFluenceAuction.cdc"
+import NFluence from "../contracts/NFluence.cdc"
+import FungibleToken from 0x9a0766d93b6608b7
 
 transaction(listingId: UInt64) {
-    let storefront: &NSFAuction.Storefront
+    let storefront: &NFluenceAuction.Storefront
 
     prepare(acct: AuthAccount) {
-        self.storefront = acct.borrow<&NSFAuction.Storefront>(from: NSFAuction.StorefrontStoragePath)
+        self.storefront = acct.borrow<&NFluenceAuction.Storefront>(from: NFluenceAuction.NFluenceAuctionStorefrontStoragePath)
             ?? panic("Missing or mis-typed NFTStorefront Storefront")
     }
 

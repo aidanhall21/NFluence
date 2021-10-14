@@ -1,0 +1,27 @@
+          {nofunds && (<div className={styles.text}>
+            You do not have the funds available to submit this bid
+          </div>)}
+      {loading ? (
+        <div className={styles.item}>
+          <button className={cn("button loading", styles.button)}>
+            <Loader className={styles.loader} color="white" />
+          </button>
+        </div>
+      ) : (error ? (
+        <div className={cn(styles.item, styles.error)}>
+          <button className={cn("button error", styles.button)}>Something went wrong :(</button>
+        </div>
+      ) :
+        (status.status === 4 ? (
+          <div className={cn(styles.item, styles.done)}>
+          <button className={cn("button done", styles.button)}>Success! Your bid has been submitted</button>
+        </div>
+        ) : (<div className={styles.btns}>
+          <button
+            className={cn("button", styles.button)}
+            onClick={handleSubmit}
+          >
+            Place a bid
+          </button>
+        </div>))
+      )}

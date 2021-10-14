@@ -13,7 +13,8 @@ import { MINT_UTILITY_COIN } from "../../flow/mint-utility-coin.tx";
 import Loader from "../../components/Loader";
 import { formatAmountInput } from "../../mocks/functions";
 import { authorizationFunction } from "../../services/authorization-function";
-import { useHistory } from "react-router";
+import Icon from "../../components/Icon";
+const stripe = require('stripe')('sk_test_51JhdSpJoN02dbjVUeDlh5MPtsO9IQ1Ru0Y4AFsj3mi5A3imPRQbuKZVJtQrMuwVbJ6VtenKuhfD1ayjW8QKixakQ00ZW2DtAzJ')
 
 const breadcrumbs = [
   {
@@ -29,6 +30,28 @@ let api_node;
 process.env.NODE_ENV === "production"
   ? (api_node = "")
   : (api_node = process.env.REACT_APP_LOCAL_API_NODE);
+
+const ProductDisplay = () => (
+  <section>
+    <div className={styles.item}>
+      <div className="description">
+      <h3>NFluence Balance</h3>
+      <h5>$1.00</h5>
+      </div>
+    </div>
+    <form action={`${api_node}/api/v1/create-checkout-session`} method="POST">
+      <button type="submit">
+        Checkout
+      </button>
+    </form>
+  </section>
+);
+
+const Message = ({ message }) => (
+  <section>
+    <p>{message}</p>
+  </section>
+);
 
 const ProfileEdit = () => {
   const { user } = useAuth();
@@ -48,13 +71,65 @@ const ProfileEdit = () => {
   const [error, setError] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false)
   const [verified, setVerified] = useState(false)
-  console.log(collection)
+  const [src, setSrc] = useState('')
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    // Check to see if this is a redirect back from Checkout
+    const query = new URLSearchParams(window.location.search);
+    if (query.get("success")) {
+      setMessage("Deposit Successful! You will receive an email confirmation.");
+    }
+    if (query.get("canceled")) {
+      setMessage(
+        "Order canceled"
+      );
+    }
+  }, []);
+
+  function uploadFile(file, signedRequest, url) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', signedRequest);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          setSrc(url)
+          console.log(url)
+        }
+        else {
+          alert('Could not upload file');
+        }
+      }
+    };
+    xhr.send(file);
+  }
+
+  const getSignedRequest = (file) => {
+    const xhr = new XMLHttpRequest();
+    //const type = file.type.split('/')[1]
+    const filename = `${user?.addr}-profile`
+    xhr.open('GET', `${api_node}/api/v1/sign-s3?file-name=${filename}&file-type=${file.type}`);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          uploadFile(file, response.signedRequest, response.url)
+        }
+        else {
+          alert('Could not get signed URL');
+        }
+      }
+    };
+    xhr.send();
+  }
 
   const onProfilePhotoChange = (e) => {
-    let data = new FormData();
-    let file = e.target.files[0];
-    data.append("file", file, user?.addr + "-profile.jpg");
-    axios.post(`${api_node}/api/v1/upload`, data, {});
+
+    const file = e.target.files[0]
+    if (file == null) {
+      return alert('No file selected.');
+    }
+    getSignedRequest(file);
     profile.db
       ? axios.put(`${api_node}/api/v1/user/update`, {
           name: profile.name,
@@ -83,7 +158,7 @@ const ProfileEdit = () => {
           instagram: profile.instagram,
           verified: profile.verified
         });
-    window.location.reload();
+    //window.location.reload();
   };
 
   const handleNameChange = async (e) => {
@@ -123,6 +198,7 @@ const ProfileEdit = () => {
     setTwitter(profile.twitter);
     setInsta(profile.instagram);
     setEmail(profile.email);
+    profile.profile_image ? setSrc(`https://nfluence-assets.s3.amazonaws.com/${user?.addr}-profile`) : setSrc(`data:image/png;base64,${profile.avatar}`)
   }, [profile]);
 
   const handleSubmit = async (e) => {
@@ -183,6 +259,7 @@ const ProfileEdit = () => {
       setVerified(true)
       return
     }
+    /*
     setLoading(true);
     try {
       let res = await mutate({
@@ -204,6 +281,7 @@ const ProfileEdit = () => {
       setLoading(false);
       console.log(err);
     }
+    */
   };
 
   return (
@@ -218,19 +296,13 @@ const ProfileEdit = () => {
             <div className={styles.col}>
               <div className={styles.user}>
                 <div className={styles.avatar}>
-                  {profile.profile_image ? (
                     <img
-                      src={`/user-images/${user?.addr}-profile.jpg`}
+                      id="preview"
+                      src={src}
                       alt="Avatar"
                     />
-                  ) : (
-                    <img
-                      src={`data:image/png;base64,${profile.avatar}`}
-                      alt="Avatar"
-                    />
-                  )}
                 </div>
-                {/*<div className={styles.details}>
+                <div className={styles.details}>
                   <div className={styles.stage}>Profile photo</div>
                   <div className={styles.file}>
                     <button
@@ -249,7 +321,7 @@ const ProfileEdit = () => {
                       onChange={onProfilePhotoChange}
                     />
                   </div>
-                      </div>*/}
+                      </div>
               </div>
             </div>
             <div className={styles.col}>
@@ -307,6 +379,10 @@ const ProfileEdit = () => {
                     />
                   </div>
                 </div>
+                { message && (
+                  <Message message={message} />
+                )
+                }
                 <div className={styles.item}>
                   <div className={styles.category}>
                     Fund Your Account with USD
@@ -336,11 +412,12 @@ const ProfileEdit = () => {
                     {!loading && !error && !success && (
                       <Form
                         className={styles.form}
-                        onSubmit={(e) => onDepositSubmit(e)}
                         placeholder="Enter an amount in USD"
                         setValue={setDeposit}
                         type="number"
                         name="price"
+                        action={`${api_node}/api/v1/create-checkout-session?deposit=${deposit}`}
+                        method="POST"
                         step={1}
                         min={0}
                       />

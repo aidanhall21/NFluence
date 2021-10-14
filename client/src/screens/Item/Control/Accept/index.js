@@ -33,6 +33,7 @@ const Accept = ({ className, data, profile }) => {
     e.preventDefault();
     const nftid = location.pathname.split("/")[3];
     await settleAuction(parseInt(nftid));
+    // When you settle but reject the transaction the auciton is still marked as inactive in the db
     await getBalance()
     await axios.put(`${api_node}/api/v1/auction/settle`, {
       active: false, 

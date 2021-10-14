@@ -1,5 +1,5 @@
 #!/bin/bash
-export ACCESS_API=https://flow-testnet.g.alchemy.com
+export ACCESS_API=https://access-testnet.onflow.org
 export WALLET_DISCOVERY=https://fcl-discovery.onflow.org/testnet/authn
 export NSFT_CONTRACT=0xa3c018ee20b2cb65
 export AUCTION_CONTRACT=0xa3c018ee20b2cb65
@@ -9,6 +9,7 @@ export NFT_STORAGE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRo
 export NSFT_PRIVATE_KEY=ef5c55a6a7f1aa5eae99e0dbe5689d6b4acccc093c5104c5fc797bbb5fc4b84e
 export NSFT_ACCOUNT_KEY_INDEX=0
 export LOCAL_API_NODE=http://localhost:5000
+
 
 export REACT_APP_ACCESS_NODE=${ACCESS_API}
 export REACT_APP_WALLET_DISCOVERY=${WALLET_DISCOVERY}
@@ -20,6 +21,9 @@ export REACT_APP_NFT_STORAGE_KEY=${NFT_STORAGE_KEY}
 export REACT_APP_NSFT_PRIVATE_KEY=${NSFT_PRIVATE_KEY}
 export REACT_APP_NSFT_ACCOUNT_KEY_INDEX=${NSFT_ACCOUNT_KEY_INDEX}
 export REACT_APP_LOCAL_API_NODE=${LOCAL_API_NODE}
+export REACT_APP_AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+export REACT_APP_AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+export REACT_APP_S3_BUCKET=${S3_BUCKET}
 
 
 yarn run start

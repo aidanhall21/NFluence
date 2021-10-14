@@ -7,6 +7,8 @@ import { useAuth } from "../../../providers/AuthProvider";
 import axios from "axios";
 // import { isStepDivisible } from "react-range/lib/utils";
 
+const stripe = require('stripe')('sk_test_51JhdSpJoN02dbjVUeDlh5MPtsO9IQ1Ru0Y4AFsj3mi5A3imPRQbuKZVJtQrMuwVbJ6VtenKuhfD1ayjW8QKixakQ00ZW2DtAzJ')
+
 let api_node;
 process.env.NODE_ENV === "production"
   ? api_node = ''
@@ -40,6 +42,19 @@ const User = ({ className, data, handle }) => {
     setVerifying(true)
     console.log(collectionError)
     await createCollection()
+
+    const account = await stripe.accounts.create({
+      type: 'express'
+    });
+
+    const accounts = await stripe.accountLinks.create({
+      account: account.id,
+      refresh_url: 'https://example.com/reauth',
+      return_url: 'https://nsftonight.com/user',
+      type: 'account_onboarding',
+    });
+
+    window.location.assign(accounts.url)
     
     if (!data.db) {
       console.log('adding to db')
@@ -80,7 +95,7 @@ const User = ({ className, data, handle }) => {
     <>
       <div className={cn(styles.user, className)}>
         <div className={styles.avatar}>
-        {data.profile_image ? <img src={`/user-images/${data.address}-profile.jpg`} alt="Avatar" /> : <img src={`data:image/png;base64,${data.avatar}`} alt="Avatar" />}
+        {data.profile_image ? <img src={`https://nfluence-assets.s3.amazonaws.com/${user?.addr}-profile`} alt="Avatar" /> : <img src={`data:image/png;base64,${data.avatar}`} alt="Avatar" />}
         </div>
         <div className={styles.name}>{data.name}</div>
         <div className={styles.code}>

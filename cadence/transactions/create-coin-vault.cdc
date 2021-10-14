@@ -1,14 +1,14 @@
-import FungibleToken from "../contracts/FungibleToken.cdc"
-import UtilityCoin from "../contracts/UtilityCoin.cdc"
+import FungibleToken from 0x9a0766d93b6608b7
+import NFluenceUtilityCoin from "../contracts/NFluenceUtilityCoin.cdc"
 
 transaction {
     prepare(signer: AuthAccount) {
-        if(signer.borrow<&UtilityCoin>(from: /storage/utilityCoinVault) != nil) {
+        if(signer.borrow<&NFluenceUtilityCoin>(from: NFluenceUtilityCoin.NFluenceUtilityCoinVaultStoragePath) != nil) {
             return
         }
 
-        signer.save(<- UtilityCoin.createEmptyVault(), to: /storage/utilityCoinVault)
-        signer.link<&UtilityCoin.Vault{FungibleToken.Receiver}>(/public/utilityCoinReceiver, target: /storage/utilityCoinVault)
-        signer.link<&UtilityCoin.Vault{FungibleToken.Balance}>(/public/urilityCoinBalance, target: /storage/utilityCoinVault)
+        signer.save(<- NFluenceUtilityCoin.createEmptyVault(), to: NFluenceUtilityCoin.NFluenceUtilityCoinVaultStoragePath)
+        signer.link<&NFluenceUtilityCoin.Vault{FungibleToken.Receiver}>(NFluenceUtilityCoin.NFluenceUtilityCoinReceiverPublicPath, target: NFluenceUtilityCoin.NFluenceUtilityCoinVaultStoragePath)
+        signer.link<&NFluenceUtilityCoin.Vault{FungibleToken.Balance}>(NFluenceUtilityCoin.NFluenceUtilityCoinBalancePublicPath, target: NFluenceUtilityCoin.NFluenceUtilityCoinVaultStoragePath)
     }
 }

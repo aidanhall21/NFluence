@@ -184,9 +184,13 @@ process.env.NODE_ENV === "production"
 const Profile = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [visible, setVisible] = useState(false);
-  const [file, setFile] = useState(null)
+  //const [file, setFile] = useState(null)
   const [profData, setProfData] = useState({})
+  console.log(profData)
   const [auctions, setAuctions] = useState([])
+  const [src, setSrc] = useState('')
+  const [loading, setLoading] = useState(false)
+  console.log('src', src)
   //const [bids, setBids] = useState([])
 
   const { handle } = useParams();
@@ -194,9 +198,6 @@ const Profile = () => {
   const { user } = useAuth()
   const { profile, userNsfts, bids, userAuctions, userOwned, fetchAccountLiveAuctions } = useUser()
   const history = useHistory()
-  console.log(userOwned)
-  console.log(userNsfts)
-  console.log("bids", bids)
 
   useEffect(() => {
     setProfData(profile)
@@ -228,16 +229,57 @@ const Profile = () => {
     updateAuctions()
   }, [profData, userAuctions])
 
-  const onCoverPhotoChange = (e) => {
-    setFile(e.target.files[0])
+  useEffect(() => {
+    profile.cover_image ? setSrc(`url(https://nfluence-assets.s3.amazonaws.com/${user?.addr}-cover)`) : setSrc(`url(/images/content/bg-profile.jpg)`)
+  }, [profile]);
+
+  function uploadFile(file, signedRequest, url) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', signedRequest);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          setSrc(`url(${url})`)
+          console.log(src)
+          setLoading(false)
+        }
+        else {
+          alert('Could not upload file');
+        }
+      }
+    };
+    xhr.send(file);
   }
 
-  const onCoverPhotoSubmit = (e) => {
-    let data = new FormData()
-    //let ext_array = file.name.split('.')
-    //let ext = ext_array[ext_array.length - 1]
-    data.append('file', file, user?.addr + '-cover.jpg')
-    axios.post(`${api_node}/api/v1/upload`, data, {})
+  const getSignedRequest = (file) => {
+    const xhr = new XMLHttpRequest();
+    //const type = file.type.split('/')[1]
+    const filename = `${user?.addr}-cover`
+    xhr.open('GET', `${api_node}/api/v1/sign-s3?file-name=${filename}&file-type=${file.type}`);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          uploadFile(file, response.signedRequest, response.url)
+        }
+        else {
+          alert('Could not get signed URL');
+        }
+      }
+    };
+    xhr.send();
+  }
+
+  const onCoverPhotoChange = (e) => {
+    setLoading(true)
+    const file = e.target.files[0]
+    if (file == null) {
+      return alert('No file selected.');
+    }
+    getSignedRequest(file)
+
+    console.log(src)
+
     profile.db ?
     axios.put(`${api_node}/api/v1/user/update`, {
       name: profile.name,
@@ -265,28 +307,23 @@ const Profile = () => {
       instagram: profile.instagram,
       verified: profile.verified
     })
-    window.location.reload()
   }
 
   return (
     <div className={styles.profile}>
       <div
         className={cn(styles.head, { [styles.active]: visible })}
-        style={profData.cover_image ? {
-          backgroundImage: `url(/user-images/${profData.address}-cover.jpg)`,
-        } : {
-          backgroundImage: "url(/images/content/bg-profile.jpg)",
-        }}
+        style={{ backgroundImage: src }}
       >
         {handle === profile.handle && (<div className={cn("container", styles.container)}>
           <div className={styles.btns}>
-            {/*<button
+            <button
               className={cn("button-stroke button-small", styles.button)}
               onClick={() => setVisible(true)}
             >
               <span>Edit cover photo</span>
               <Icon name="edit" size="16" />
-            </button>*/}
+            </button>
             <Link
               className={cn("button-stroke button-small", styles.button)}
               to="/profile-edit"
@@ -304,9 +341,10 @@ const Profile = () => {
             </div>
             <button
               className={cn("button-small", styles.button)}
+              disabled={loading}
               onClick={() => {
-                setVisible(false)
-                onCoverPhotoSubmit()
+                //setVisible(false)
+                window.location.reload()
               }}
             >
               Save photo

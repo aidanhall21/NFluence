@@ -1,24 +1,17 @@
-import NSFT from "../contracts/NSFT.cdc"
-
-// This transaction transfers a Kitty Item from one account to another.
+import NFluence from "../contracts/NFluence.cdc"
+import NFluenceAuction from "../contracts/NFluenceAuction.cdc"
 
 transaction(recipient: Address, withdrawID: UInt64) {
     prepare(signer: AuthAccount) {
         
-        // get the recipients public account object
         let recipient = getAccount(recipient)
-
-        // borrow a reference to the signer's NFT collection
-        let collectionRef = signer.borrow<&NSFT.Collection>(from: NSFT.CollectionStoragePath)
+        let collectionRef = signer.borrow<&NFluence.Collection>(from: NFluence.CollectionStoragePath)
             ?? panic("Could not borrow a reference to the owner's collection")
-
-        // borrow a public reference to the receivers collection
-        let depositRef = recipient.getCapability(NSFT.CollectionPublicPath)!.borrow<&NSFT.Collection{NSFT.NSFTCollectionPublic}>()!
-
-        // withdraw the NFT from the owner's collection
+        let storefront = signer.borrow<&NFluenceAuction.Storefront{NFluenceAuction.StorefrontManager}>(from: NFluenceAuction.NFluenceAuctionStorefrontStoragePath)
+            ?? panic("Missing or mis-typed NFTStorefront.Storefront")
+        let depositRef = recipient.getCapability(NFluence.CollectionPublicPath).borrow<&NFluence.Collection{NFluence.NFluenceCollectionPublic}>()!
+        storefront.removeListing(listingResourceID: withdrawID)
         let nft <- collectionRef.withdraw(withdrawID: withdrawID)
-
-        // Deposit the NFT in the recipient's collection
         depositRef.deposit(token: <-nft)
     }
 }

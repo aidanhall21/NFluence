@@ -1,17 +1,17 @@
-import FungibleToken from "../contracts/FungibleToken.cdc"
-import UtilityCoin from "../contracts/UtilityCoin.cdc"
+import FungibleToken from 0x9a0766d93b6608b7
+import NFluenceUtilityCoin from "../contracts/NFluenceUtilityCoin.cdc"
 
 transaction(recipient: Address, amount: UFix64) {
-    let tokenAdmin: &UtilityCoin.Administrator
+    let tokenAdmin: &NFluenceUtilityCoin.Administrator
     let tokenReceiver: &{FungibleToken.Receiver}
 
     prepare(signer: AuthAccount) {
-        self.tokenAdmin = signer.borrow<&UtilityCoin.Administrator>(from: /storage/UtilityCoinAdmin)
+        self.tokenAdmin = signer.borrow<&NFluenceUtilityCoin.Administrator>(from: NFluenceUtilityCoin.NFluenceUtilityCoinAdminStoragePath)
             ?? panic("Signer is not the token admin")
 
         self.tokenReceiver = getAccount(recipient)
-            .getCapability(/public/utilityCoinReceiver)
-            .borrow<&UtilityCoin.Vault{FungibleToken.Receiver}>()
+            .getCapability(NFluenceUtilityCoin.NFluenceUtilityCoinReceiverPublicPath)
+            .borrow<&NFluenceUtilityCoin.Vault{FungibleToken.Receiver}>()
             ?? panic("Unable to borrow receiver reference")
     }
 
