@@ -3,6 +3,8 @@ import { useEffect, useReducer } from "react";
 import { INIT_ACCOUNT } from "../flow/init-account.tx";
 import { GET_BALANCE } from "../flow/get-balance.script";
 import { defaultReducer } from "../reducer/defaultReducer";
+import { GET_FUSD_BALANCE } from "../flow/get-fusd-balance.script";
+import { SETUP_FUSD_VAULT } from "../flow/setup-fusd-vault.tx";
 
 export default function useCurrency(user) {
     const [state, dispatch] = useReducer(defaultReducer, {
@@ -21,7 +23,7 @@ export default function useCurrency(user) {
         dispatch({ type: 'PROCESSING'})
         try {
             let response = await query({
-                cadence: GET_BALANCE,
+                cadence: GET_FUSD_BALANCE,
                 args: (arg, t) => [arg(user?.addr, t.Address)]
             })
             dispatch({ type: 'SUCCESS', payload: response })
@@ -34,7 +36,7 @@ export default function useCurrency(user) {
         dispatch({ type: 'PROCESSING' })
         try {
             let response = await mutate({
-                cadence: INIT_ACCOUNT,
+                cadence: SETUP_FUSD_VAULT,
             })
             await tx(response).onceSealed()
             dispatch({ type: 'SUCCESS' })

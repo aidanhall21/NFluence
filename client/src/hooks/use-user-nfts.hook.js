@@ -32,11 +32,16 @@ export default function useUserNsfts(user) {
 
     const runScript = async (address, id) => {
         console.log('HI', address, id)
-        let auction_data = await query({
-            cadence: GET_SINGLE_AUCTION_DATA,
-            args: (arg, t) => [arg(address, t.Address), arg(id, t.UInt64)]
-        })
-        console.log(auction_data)
+        let auction_data;
+        try {
+            auction_data = await query({
+                cadence: GET_SINGLE_AUCTION_DATA,
+                args: (arg, t) => [arg(address, t.Address), arg(id, t.UInt64)]
+            })
+            console.log(auction_data)
+        } catch (err) {
+            return
+        }
         const { nftData } = auction_data
         return {...auction_data, ...nftData}
     }
@@ -48,8 +53,9 @@ export default function useUserNsfts(user) {
     }
 
     const fetchBidData = async (data) => {
+        console.log(data)
         return Promise.all(data.map((el) => {
-            return runScript(el.auctionuser, el.tokenid)
+            return runScript(el.blockEventData.owner, el.blockEventData.tokenID)
         }))
     }
 
@@ -65,6 +71,7 @@ export default function useUserNsfts(user) {
             if (res !== null) {
                 minted_nsfts = res.filter(token => token.creatorAddress === user?.addr)
             }
+            console.log(minted_nsfts)
             dispatch({ type: 'MINTED_SUCCESS', payload: minted_nsfts })
         } catch (err) {
             console.log(err)
@@ -127,12 +134,17 @@ export default function useUserNsfts(user) {
     const fetchUserLiveBids = async () => {
         dispatch({ type: 'PROCESSING' })
         try {
-            let response = await axios.get(`${api_node}/api/v1/bids/${user?.addr}`)
+            let response = await axios.get(`https://prod-test-net-dashboard-api.azurewebsites.net/api/company/04a74a09-619e-47f3-a6b4-99d24ce69971/search?user=${user?.addr}`)
             const bidData = response.data;
-            console.log('response', bidData)
-            let data = await fetchBidData(bidData)
-            console.log('data', data)
-            dispatch({ type: 'BID_SUCCESS', payload: data })
+            const result = bidData.filter(event => event.flowEventId === "A.a3c018ee20b2cb65.NFluenceAuction.BidPlaced")
+            let tokens = result.filter((event, index, self) => 
+                index === self.findIndex((e) => (
+                    e.blockEventData.tokenID === event.blockEventData.tokenID
+                ))
+            )
+            let livebids = await fetchBidData(tokens)
+            livebids = livebids.filter(bid => bid !== undefined)
+            dispatch({ type: 'BID_SUCCESS', payload: livebids })
         } catch(err) {
             dispatch({ type: 'ERROR' })
         }
@@ -176,9 +188,10 @@ export default function useUserNsfts(user) {
                     arg(nftid, t.UInt64),
                     arg(price, t.UFix64)
                 ],
-                limit: 500
+                limit: 9999
             })
             let txStatus = await tx(res).onceSealed()
+            console.log('done!')
             console.log(txStatus)
             dispatch({ type: 'TX_SUCCESS', payload: txStatus })
             return txStatus
@@ -194,7 +207,7 @@ export default function useUserNsfts(user) {
             let res = await mutate({
                 cadence: BID_ON_AUCTION,
                 args: (arg, t) => [arg(nftid, t.UInt64), arg(address, t.Address), arg(price, t.UFix64)],
-                limit: 150
+                limit: 9999
             })
             let txStatus = await tx(res).onceSealed()
             console.log(txStatus)
@@ -212,7 +225,7 @@ export default function useUserNsfts(user) {
             let res = await mutate({
                 cadence: SETTLE_AUCTION,
                 args: (arg, t) => [arg(nftid, t.UInt64)],
-                limit: 500
+                limit: 9999
             })
             let txStatus = await tx(res).onceSealed()
             console.log(txStatus)
@@ -237,8 +250,7 @@ export default function useUserNsfts(user) {
                     arg(description, t.String),
                     arg(editionSize, t.UInt16),
                   ],
-                  limit: 500,
-                  authz: authorizationFunction
+                  limit: 9999,
             })
             //addTx(res)
             let txStatus = await tx(res).onceSealed()

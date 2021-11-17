@@ -7,14 +7,14 @@
 	},
 	"contracts": {
 		"NonFungibleToken": "./cadence/contracts/NonFungibleToken.cdc",
-		"NSFT": {
-			"source": "./cadence/contracts/NSFT.cdc",
+		"NFluence":"./cadence/contracts/NFluence.cdc",
+		"NFluenceAuction": "./cadence/contracts/NFluenceAuction.cdc",
+		"FUSD": {
+			"source": "./cadence/contracts/FUSD.cdc",
 			"aliases": {
-				"testnet": "0xdfa65aa771288367"
+				"testnet": "e223d8a629e49c68"
 			}
 		},
-		"NSFAuction": "./cadence/contracts/NSFAuction.cdc",
-		"UtilityCoin": "./cadence/contracts/UtilityCoin.cdc",
 		"FungibleToken": {
 			"source": "./cadence/contracts/FungibleToken.cdc",
 			"aliases": {
@@ -74,10 +74,7 @@
 	},
 	"deployments": {
 		"testnet": {
-			"testnet-five": ["NSFT", "NSFAuction", "UtilityCoin", "NonFungibleToken"]
-		},
-		"emulator": {
-			 "emulator-account": ["NSFT", "NSFAuction", "UtilityCoin", "NonFungibleToken"]
+			"testnet-five": ["NFluence", "NFluenceAuction", "NonFungibleToken"]
 		}
    }
 }

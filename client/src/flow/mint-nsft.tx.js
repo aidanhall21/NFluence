@@ -1,19 +1,19 @@
 export const MINT_NSFT = `
-import NSFT from 0xNSFT
+import NFluence from 0xNFLUENCE
 
 transaction(recipient: Address, cid: String, fileType: UInt8, title: String, description: String, editionSize: UInt16) {
 
     // local variable for storing the minter reference
-    let receiverReference: &NSFT.Collection{NSFT.NSFTCollectionPublic}
+    let receiverReference: &NFluence.Collection{NFluence.NFluenceCollectionPublic}
     
 
     prepare(acct: AuthAccount) {
-        self.receiverReference = getAccount(recipient).getCapability<&NSFT.Collection{NSFT.NSFTCollectionPublic}>(NSFT.CollectionPublicPath).borrow()
+        self.receiverReference = getAccount(recipient).getCapability<&NFluence.Collection{NFluence.NFluenceCollectionPublic}>(NFluence.CollectionPublicPath).borrow()
             ?? panic("Could not borrow reference to Collection")
     }
 
     execute {
-        NSFT.mintNFT(recipient: self.receiverReference, cid: cid, fileType: fileType, title: title, description: description, editionSize: editionSize)
+        NFluence.mintNFT(recipient: self.receiverReference, cid: cid, fileType: fileType, title: title, description: description, editionSize: editionSize)
     }
 }
 `

@@ -1,12 +1,11 @@
-import NSFT from "../contracts/NSFT.cdc"
+import NFluence from "../contracts/NFluence.cdc"
 
-pub fun main(addr: Address, tokenID: UInt64): NSFT.NSFData? {
+pub fun main(addr: Address): [NFluence.NFluenceNFTData] {
     let account = getAccount(addr)
-
-    if let ref = account.getCapability<&NSFT.Collection{NSFT.NSFTCollectionPublic}>(NSFT.CollectionPublicPath).borrow() {
-        let data = ref.getTokenData(id: tokenID)
+    if let ref = account.getCapability<&NFluence.Collection{NFluence.NFluenceCollectionPublic}>(NFluence.CollectionPublicPath).borrow() {
+        let data = ref.getAllTokenData()
         return data
     }
-
-    return nil
+    
+    return []
 }

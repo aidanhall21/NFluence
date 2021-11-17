@@ -196,8 +196,10 @@ const Profile = () => {
   const { handle } = useParams();
 
   const { user } = useAuth()
-  const { profile, userNsfts, bids, userAuctions, userOwned, fetchAccountLiveAuctions } = useUser()
+  const { profile, userNsfts, bids, userAuctions, userOwned, fetchAccountLiveAuctions, fetchUserMintedNsfts } = useUser()
   const history = useHistory()
+  console.log("BIDS", bids)
+  console.log("CREATED", userNsfts)
 
   useEffect(() => {
     setProfData(profile)

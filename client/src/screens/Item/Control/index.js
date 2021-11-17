@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import cn from "classnames";
 import styles from "./Control.module.sass";
-import Checkout from "./Checkout";
-import Connect from "../../../components/Connect";
 import Bid from "../../../components/Bid";
 import Accept from "./Accept";
 import PutSale from "./PutSale";
-import SuccessfullyPurchased from "./SuccessfullyPurchased";
 import Modal from "../../../components/Modal";
 import { useLocation } from "react-router";
 import { query } from "@onflow/fcl";
@@ -14,13 +11,6 @@ import { GET_HIGHEST_BIDDER } from "../../../flow/get-highest-bidder.script";
 import axios from "axios";
 import { useUser } from "../../../providers/UserProvider";
 import { Link } from "react-router-dom";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import Form from "../../../components/Form";
-
-const promise = loadStripe(
-  process.env.STRIPE_TEST_API_KEY
-);
 
 let api_node;
 process.env.NODE_ENV === "production"
@@ -78,7 +68,7 @@ const Control = ({ className, data, error }) => {
             <div className={styles.avatar}>
               {highBidderProfile.profile_image ? (
                 <img
-                  src={`/user-images/${highBidder}-profile.jpg`}
+                  src={`https://nfluence-assets.s3.amazonaws.com/${highBidder}-profile`}
                   alt="Avatar"
                 />
               ) : (

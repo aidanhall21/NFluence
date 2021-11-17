@@ -119,7 +119,7 @@ const Upload = () => {
       return
     }
 
-    if (count > 10 || count < 0) {
+    if (count < 1) {
       setValidate(true)
       return
     }
@@ -219,7 +219,7 @@ const Upload = () => {
                   </div>
                 </div>
                 <div className={styles.item}>
-                  <div className={styles.category}>NSFT Details</div>
+                  <div className={styles.category}>NFT Details</div>
                   <div className={styles.fieldset}>
                     <TextInput
                       className={styles.field}
@@ -298,7 +298,7 @@ const Upload = () => {
                 </button>
                 {verified && (<div>You must verify your account before you can mint</div>)}
                 {fileCheck && (<div>Please upload content before continuing</div>)}
-                {validate && (<div>Count must be a number between 1 and 10</div>)}
+                {validate && (<div>Count must be a number greater than 1</div>)}
               </div>
             </form>
           </div>

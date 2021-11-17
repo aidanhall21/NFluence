@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
 
-import useUserNsfts from "../hooks/use-user-nsfts.hook";
+import useUserNsfts from "../hooks/use-user-nfts.hook";
 import useCollection from "../hooks/use-collection.hook";
 import { useAuth } from "./AuthProvider";
 import useCurrency from "../hooks/use-currency.hook";
@@ -15,6 +15,7 @@ export default function UserProvider({ children }) {
     error: collectionError,
     createCollection,
     checkCollection,
+    createFUSDVault
   } = useCollection(user);
   const { data: balance, createVault, getBalance } = useCurrency(user);
   const { data: profile, fetchUserData } = useProfileData(user, loggedIn);
@@ -51,6 +52,7 @@ export default function UserProvider({ children }) {
         collection,
         checkCollection,
         createCollection,
+        createFUSDVault,
         bidOnAuction,
         fetchUserData,
         collectionError,

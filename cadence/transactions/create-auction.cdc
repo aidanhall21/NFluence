@@ -11,10 +11,10 @@ transaction(nftId: UInt64, startPrice: UFix64) {
     prepare(acct: AuthAccount) {
         self.storefront = acct.borrow<&NFluenceAuction.Storefront>(from: NFluenceAuction.NFluenceAuctionStorefrontStoragePath)
             ?? panic("Missing or mis-typed NFTStorefront Storefront")
-        self.accountCollectionRef = acct.borrow<&NFluence.Collection>(from: /storage/NFTCollection)
+        self.accountCollectionRef = acct.borrow<&NFluence.Collection>(from: NFluence.CollectionStoragePath)
             ?? panic("Cannot borrow reference to collection")
         self.ownerCollectionCap = acct.getCapability<&NFluence.Collection>(NFluence.CollectionPublicPath)
-        self.ownerVaultCap = acct.getCapability<&{FungibleToken.Receiver}>(/public/utilityCoinReceiver)
+        self.ownerVaultCap = acct.getCapability<&{FungibleToken.Receiver}>(/public/fusdReceiver)
     }
 
     execute {

@@ -1,15 +1,12 @@
 export const GET_TOKEN_DATA = `
-import NSFT from 0xNSFT
+import NFluence from 0xNFLUENCE
 
-pub fun main(addr: Address): [NSFT.NSFData]? {
+pub fun main(addr: Address): [NFluence.NFluenceNFTData] {
     let account = getAccount(addr)
 
-    if let ref = account.getCapability<&NSFT.Collection{NSFT.NSFTCollectionPublic}>(NSFT.CollectionPublicPath).borrow() {
-        let data = ref.getAllTokenData()
-        return data
-    }
-
-    return nil
-
+    let ref = account.getCapability<&NFluence.Collection{NFluence.NFluenceCollectionPublic}>(NFluence.CollectionPublicPath).borrow()
+                    ?? panic("Oh NO!")
+    let data = ref.getAllTokenData()
+    return data
 }
 `

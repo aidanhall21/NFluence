@@ -18,19 +18,19 @@ const breadcrumbs = [
 const items = [
   {
     url: "/upload-single",
-    buttonText: "Create Single",
-    image: "/images/nsft-logo.jpeg",
-    imageDark: "/images/nsft-logo-dark.jpeg",
-    image2x: "/images/nsft-logo.jpeg",
-    imageDark2x: "/images/nsft-logo-dark.jpeg"
+    buttonText: "Create Single NFT (1 of 1)",
+    image: "/images/nfluence-logo-light.jpg",
+    imageDark: "/images/nfluence-logo-dark.jpg",
+    image2x: "/images/nfluence-logo-light.jpg",
+    imageDark2x: "/images/nfluence-logo-dark.jpg"
   },
   {
     url: "/upload-multiple",
-    buttonText: "Create Multiple",
-    image: "/images/nsft-logo.jpeg",
-    imageDark: "/images/nsft-logo-dark.jpeg",
-    image2x: "/images/nsft-logo.jpeg",
-    imageDark2x: "/images/nsft-logo-dark.jpeg"
+    buttonText: "Create NFT Edition (1 of Many)",
+    image: "/images/nfluence-logo-light.jpg",
+    imageDark: "/images/nfluence-logo-dark.jpg",
+    image2x: "/images/nfluence-logo-light.jpg",
+    imageDark2x: "/images/nfluence-logo-dark.jpg"
   },
 ];
 
@@ -53,10 +53,10 @@ const Upload = () => {
               <div className={styles.item} key={index}>
                 <div className={styles.preview}>
                 <Image
-              srcSet="/images/nsft-logo.jpeg 2x"
-              srcSetDark="/images/nsft-logo-dark.jpeg 2x"
-              src="/images/nsft-logo.jpeg"
-              srcDark="/images/nsft-logo-dark.jpeg"
+              srcSet="/images/nfluence-logo.jpg 2x"
+              srcSetDark="/images/nfluence-logo-dark.jpg 2x"
+              src="/images/nfluence-logo-light.jpg"
+              srcDark="/images/nfluence-logo-dark.jpg"
               alt="Logo"
             />
                 </div>

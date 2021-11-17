@@ -6,7 +6,7 @@ running an auctions and setting up an account storefront to store all active auc
 import FungibleToken from 0x9a0766d93b6608b7
 import NonFungibleToken from "./NonFungibleToken.cdc"
 import NFluence from "./NFluence.cdc"
-import NFluenceUtilityCoin from "./NFluenceUtilityCoin.cdc"
+import FUSD from 0xe223d8a629e49c68
 
 pub contract NFluenceAuction {
 
@@ -22,7 +22,7 @@ pub contract NFluenceAuction {
 
     pub event NFluenceAuctionContractInitialized()
     pub event AuctionCreated(tokenID: UInt64, auctionID: UInt64, user: Address, startPrice: UFix64)
-    pub event BidPlaced(tokenID: UInt64?, user: Address, bidPrice: UFix64)
+    pub event BidPlaced(tokenID: UInt64?, user: Address, bidPrice: UFix64, owner: Address)
     pub event BidReceived(tokenID: UInt64?, user: Address, bidPrice: UFix64)
     pub event Settled(tokenID: UInt64?, auctionID: UInt64, price: UFix64, user: Address, winner: Address?)
     pub event SettledNoBids(tokenID: UInt64, auctionID: UInt64, user: Address)
@@ -62,11 +62,12 @@ pub contract NFluenceAuction {
             endTime: UFix64,
             minNextBid: UFix64,
             completed: Bool,
-            expired: Bool
+            expired: Bool,
+            numBids: UInt64
         ) {
             self.auctionId = auctionId
             self.price = currentPrice
-            self.numBids = 0
+            self.numBids = numBids
             self.timeRemaining = timeRemaining
             self.nftData = nftData
             self.leader = leader
@@ -149,7 +150,7 @@ pub contract NFluenceAuction {
             ownerVaultCap: Capability<&{FungibleToken.Receiver}>,
         ) {
             self.nftId = nftId
-            self.bidVault <- NFluenceUtilityCoin.createEmptyVault()
+            self.bidVault <- FUSD.createEmptyVault()
             self.auctionID = NFluenceAuction.totalAuctions
             self.minimumBidIncrement = minimumBidIncrement
             self.auctionLength = auctionLength
@@ -334,7 +335,7 @@ pub contract NFluenceAuction {
             }
 
 
-            emit BidPlaced(tokenID: self.nftId, user: bidderAddress, bidPrice: self.currentPrice)
+            emit BidPlaced(tokenID: self.nftId, user: bidderAddress, bidPrice: self.currentPrice, owner: ownerAddress)
             emit BidReceived(tokenID: self.nftId, user: ownerAddress, bidPrice: self.currentPrice)
         }
 
@@ -350,7 +351,8 @@ pub contract NFluenceAuction {
                 endTime: self.auctionStartTime + self.auctionLength,
                 minNextBid: self.minNextBid(),
                 completed: self.auctionCompleted,
-                expired: self.isAuctionExpired()
+                expired: self.isAuctionExpired(),
+                numBids: self.numberOfBids
             )
         }
 
@@ -500,7 +502,7 @@ pub contract NFluenceAuction {
         let admin <- create Administrator()
         self.account.save(<-admin, to: self.NFluenceAuctionAdminStorage)
 
-        self.cutVault <- NFluenceUtilityCoin.createEmptyVault()
+        self.cutVault <- FUSD.createEmptyVault()
 
         emit NFluenceAuctionContractInitialized()
         self.totalAuctions = (0 as UInt64)

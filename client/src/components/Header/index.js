@@ -39,7 +39,7 @@ const Header = () => {
     <header className={styles.header}>
       <div className={cn("container", styles.container)}>
         <Link className={styles.logo} to="/">
-          <Image className={styles.pic} src="/images/nsft-logo.jpeg" srcDark="/images/nsft-logo-dark.jpeg" alt="Logo" />
+          <Image className={styles.pic} src="/images/nfluence-logo-light.jpg" srcDark="/images/nfluence-logo-dark.jpg" alt="Logo" />
         </Link>
         <div className={cn(styles.wrapper, { [styles.active]: visibleNav })}>
           <nav className={styles.nav}>

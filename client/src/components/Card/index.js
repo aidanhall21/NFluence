@@ -63,6 +63,7 @@ const Card = ({ className, item }) => {
   const { handle } = useParams();
   const { profile, user } = useUser()
   console.log('link', link)
+  console.log(item)
 
   useEffect(() => {
     setLoading(true)
@@ -84,7 +85,7 @@ const Card = ({ className, item }) => {
           </>
         ) : (
           <>
-            <img src={link !== '' && !loading ? link : '/images/auction-lock.jpeg'} alt="Card" />
+            <img src={link !== '' && !loading ? link : '/images/auction-lock.jpg'} alt="Card" />
           </>
         )}
         {/*<div className={styles.control}>

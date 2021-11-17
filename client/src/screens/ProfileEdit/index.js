@@ -14,7 +14,8 @@ import Loader from "../../components/Loader";
 import { formatAmountInput } from "../../mocks/functions";
 import { authorizationFunction } from "../../services/authorization-function";
 import Icon from "../../components/Icon";
-const stripe = require('stripe')(process.env.STRIPE_TEST_API_KEY)
+import { Link } from "react-router-dom";
+const stripe = require("stripe")(process.env.STRIPE_TEST_API_KEY);
 
 const breadcrumbs = [
   {
@@ -35,14 +36,12 @@ const ProductDisplay = () => (
   <section>
     <div className={styles.item}>
       <div className="description">
-      <h3>NFluence Balance</h3>
-      <h5>$1.00</h5>
+        <h3>NFluence Balance</h3>
+        <h5>$1.00</h5>
       </div>
     </div>
     <form action={`${api_node}/api/v1/create-checkout-session`} method="POST">
-      <button type="submit">
-        Checkout
-      </button>
+      <button type="submit">Checkout</button>
     </form>
   </section>
 );
@@ -69,9 +68,9 @@ const ProfileEdit = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  const [updateSuccess, setUpdateSuccess] = useState(false)
-  const [verified, setVerified] = useState(false)
-  const [src, setSrc] = useState('')
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [verified, setVerified] = useState(false);
+  const [src, setSrc] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -81,23 +80,20 @@ const ProfileEdit = () => {
       setMessage("Deposit Successful! You will receive an email confirmation.");
     }
     if (query.get("canceled")) {
-      setMessage(
-        "Order canceled"
-      );
+      setMessage("Order canceled");
     }
   }, []);
 
   function uploadFile(file, signedRequest, url) {
     const xhr = new XMLHttpRequest();
-    xhr.open('PUT', signedRequest);
+    xhr.open("PUT", signedRequest);
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
-          setSrc(url)
-          console.log(url)
-        }
-        else {
-          alert('Could not upload file');
+          setSrc(url);
+          console.log(url);
+        } else {
+          alert("Could not upload file");
         }
       }
     };
@@ -107,27 +103,28 @@ const ProfileEdit = () => {
   const getSignedRequest = (file) => {
     const xhr = new XMLHttpRequest();
     //const type = file.type.split('/')[1]
-    const filename = `${user?.addr}-profile`
-    xhr.open('GET', `${api_node}/api/v1/sign-s3?file-name=${filename}&file-type=${file.type}`);
+    const filename = `${user?.addr}-profile`;
+    xhr.open(
+      "GET",
+      `${api_node}/api/v1/sign-s3?file-name=${filename}&file-type=${file.type}`
+    );
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
           const response = JSON.parse(xhr.responseText);
-          uploadFile(file, response.signedRequest, response.url)
-        }
-        else {
-          alert('Could not get signed URL');
+          uploadFile(file, response.signedRequest, response.url);
+        } else {
+          alert("Could not get signed URL");
         }
       }
     };
     xhr.send();
-  }
+  };
 
   const onProfilePhotoChange = (e) => {
-
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file == null) {
-      return alert('No file selected.');
+      return alert("No file selected.");
     }
     getSignedRequest(file);
     profile.db
@@ -156,7 +153,7 @@ const ProfileEdit = () => {
           url: profile.url,
           twitter: profile.twitter,
           instagram: profile.instagram,
-          verified: profile.verified
+          verified: profile.verified,
         });
     //window.location.reload();
   };
@@ -198,7 +195,9 @@ const ProfileEdit = () => {
     setTwitter(profile.twitter);
     setInsta(profile.instagram);
     setEmail(profile.email);
-    profile.profile_image ? setSrc(`https://nfluence-assets.s3.amazonaws.com/${user?.addr}-profile`) : setSrc(`data:image/png;base64,${profile.avatar}`)
+    profile.profile_image
+      ? setSrc(`https://nfluence-assets.s3.amazonaws.com/${user?.addr}-profile`)
+      : setSrc(`data:image/png;base64,${profile.avatar}`);
   }, [profile]);
 
   const handleSubmit = async (e) => {
@@ -209,7 +208,7 @@ const ProfileEdit = () => {
       const API = await axios.get(`${api_node}/api/v1/usernames/${username}`);
       const serverResponse = API.data;
 
-      if (serverResponse[0].num_unique !== '0') {
+      if (serverResponse[0].num_unique !== "0") {
         taken = true;
       }
     }
@@ -243,21 +242,21 @@ const ProfileEdit = () => {
             url: url,
             twitter: twitter,
             instagram: insta,
-            verified: profile.verified
+            verified: profile.verified,
           });
-      setUpdateSuccess(true)
+      setUpdateSuccess(true);
       //await fetchUserData()
       setTimeout(() => {
         window.location.reload();
-      }, 500)
+      }, 500);
     }
   };
 
   const onDepositSubmit = async (e) => {
     e.preventDefault();
     if (!collection) {
-      setVerified(true)
-      return
+      setVerified(true);
+      return;
     }
     /*
     setLoading(true);
@@ -296,11 +295,7 @@ const ProfileEdit = () => {
             <div className={styles.col}>
               <div className={styles.user}>
                 <div className={styles.avatar}>
-                    <img
-                      id="preview"
-                      src={src}
-                      alt="Avatar"
-                    />
+                  <img id="preview" src={src} alt="Avatar" />
                 </div>
                 <div className={styles.details}>
                   <div className={styles.stage}>Profile photo</div>
@@ -321,7 +316,7 @@ const ProfileEdit = () => {
                       onChange={onProfilePhotoChange}
                     />
                   </div>
-                      </div>
+                </div>
               </div>
             </div>
             <div className={styles.col}>
@@ -379,15 +374,18 @@ const ProfileEdit = () => {
                     />
                   </div>
                 </div>
-                { message && (
-                  <Message message={message} />
-                )
-                }
+                {message && <Message message={message} />}
                 <div className={styles.item}>
                   <div className={styles.category}>
                     Fund Your Account with USD
                   </div>
-                  <div className={styles.fieldset}>
+                  <a
+                    className={cn("button-small", styles.button)}
+                    href={`https://buy-staging.moonpay.com?apiKey=pk_test_GX9mFp3NBs9MjHYHDTcXboccdgvOdIl&currencyCode=fusd&walletAddress=${user?.addr}`}
+                  >
+                    Add Funds
+                  </a>
+                  {/*<div className={styles.fieldset}>
                     {loading && (
                       <div className={styles.item}>
                         <button className={cn("button loading", styles.button)}>
@@ -423,7 +421,7 @@ const ProfileEdit = () => {
                       />
                     )}
                     {verified && (<div>You must verify your account before you can mint</div>)}
-                  </div>
+                    </div>*/}
                 </div>
                 <div className={styles.item}>
                   <div className={styles.category}>Social</div>
@@ -473,11 +471,9 @@ const ProfileEdit = () => {
                   className={cn("button", styles.button)}
                   onClick={(e) => handleSubmit(e)}
                 >
-                  {!updateSuccess ? 'Update Profile' : 'Update Successful!'}
+                  {!updateSuccess ? "Update Profile" : "Update Successful!"}
                 </button>
-                {errors && (
-                  <div>Your username has been taken already :(</div>
-                )}
+                {errors && <div>Your username has been taken already :(</div>}
               </div>
             </div>
           </div>

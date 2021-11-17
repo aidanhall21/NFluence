@@ -1,4 +1,3 @@
-const stripe = require('stripe')(process.env.STRIP_TEST_API_KEY)
 const express = require("express");
 const aws = require('aws-sdk');
 const path = require("path");
@@ -22,103 +21,6 @@ app.use(urlencoded({ extended: false }));
 app.use(errorhandler());
 
 app.use('/api/v1', apiRouter)
-
-const calculateOrderAmount = items => {
-  // Replace this constant with a calculation of the order's amount
-  // Calculate the order total on the server to prevent
-  // people from directly manipulating the amount on the client
-  console.log(items)
-  return items;
-};
-
-app.post('/api/v1/create-checkout-session', async (req, res) => {
-  const deposit = req.query.deposit;
-  console.log(deposit)
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        // TODO: replace this with the `price` of the product you want to sell
-        price: 'price_1Jhkb8JoN02dbjVUPf1L3RN7',
-        quantity: deposit,
-      },
-    ],
-    payment_method_types: [
-      'card',
-    ],
-    mode: 'payment',
-    success_url: `${MY_DOMAIN}?success=true`,
-    cancel_url: `${MY_DOMAIN}?canceled=true`,
-  });
-
-  res.header("Access-Control-Allow-Origin", "*")
-
-  res.redirect(303, session.url)
-})
-
-app.post('/api/v1/create-payment-intent', async (req, res) => {
-  const { items } = req.body;
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: calculateOrderAmount(items),
-    currency: "usd"
-  });
-
-  res.send({
-    clientSecret: paymentIntent.client_secret
-  })
-})
-
-const fulfillOrder = (session) => {
-  // TODO: fill me in
-  console.log("Fulfilling order", session);
-}
-
-app.post('/api/v1/webhook', bodyParser.raw({type: 'application/json'}), (request, response) => {
-  const event = request.body;
-
-  // Handle the event
-  switch (event.type) {
-    case 'payment_intent.succeeded':
-      const paymentIntent = event.data.object;
-      console.log('PaymentIntent was successful!');
-      console.log(paymentIntent)
-      break;
-    case 'payment_method.attached':
-      const paymentMethod = event.data.object;
-      console.log('PaymentMethod was attached to a Customer!');
-      break;
-    // ... handle other event types
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
-
-  // Return a 200 response to acknowledge receipt of the event
-  response.json({received: true});
-});
-
-let storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './client/public/user-images')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-})
-
-let upload = multer({ storage: storage }).single('file')
-
-app.post('/api/v1/upload', function(req, res) {
-  upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
-      console.log(err)
-      return res.status(500).json(err)
-    } else if (err) {
-      console.log(err)
-      return res.status(500).json(err)
-    }
-    console.log(req.file)
-    return res.status(200).send(req.file)
-  })
-})
 
 //update these paths
 const serveReactApp = () => {

@@ -2,6 +2,7 @@ import { mutate, query, tx } from "@onflow/fcl";
 import { useEffect, useReducer } from "react";
 import { CHECK_COLLECTION } from '../flow/check-collection.script'
 import { INIT_ACCOUNT } from "../flow/init-account.tx";
+import { SETUP_FUSD_VAULT } from "../flow/setup-fusd-vault.tx";
 import { defaultReducer } from "../reducer/defaultReducer";
 
 export default function useCollection(user) {
@@ -36,7 +37,7 @@ export default function useCollection(user) {
         try {
             let res = await mutate({
                 cadence: INIT_ACCOUNT,
-                limit: 55
+                limit: 9999
             })
             await tx(res).onceSealed()
             dispatch({ type: 'SUCCESS', payload: true })
@@ -46,9 +47,25 @@ export default function useCollection(user) {
         }
     }
 
+    const createFUSDVault = async () => {
+        dispatch({ type: 'PROCESSING' })
+        try {
+            let res = await mutate({
+                cadence: SETUP_FUSD_VAULT,
+                limit: 9999
+            })
+            await tx(res).onceSealed()
+            dispatch({ type: 'SUCCESS', payload: true})
+        } catch(err) {
+            console.log(err)
+            dispatch({ type: 'ERROR' })
+        }
+    }
+
     return {
         ...state,
         checkCollection,
         createCollection,
+        createFUSDVault,
     }
 }

@@ -1,10 +1,10 @@
 export const GET_OWNED_IDS = `
-import NSFT from 0xNSFT
+import NFluence from 0xNFLUENCE
 
 pub fun main(addr: Address): [UInt64]? {
     let account = getAccount(addr)
 
-    if let ref = account.getCapability<&NSFT.Collection{NSFT.NSFTCollectionPublic}>(NSFT.CollectionPublicPath).borrow() {
+    if let ref = account.getCapability<&NFluence.Collection{NFluence.NFluenceCollectionPublic}>(NFluence.CollectionPublicPath).borrow() {
         let data = ref.getIDs()
         return data
     }

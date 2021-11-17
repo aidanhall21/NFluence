@@ -1,11 +1,10 @@
-import NSFAuction from "../contracts/NSFAuction.cdc"
-import NSFT from "../contracts/NSFT.cdc"
+import NFluenceAuction from "../contracts/NFluenceAuction.cdc"
 
-pub fun main(address: Address, tokenID: UInt64): NSFT.NSFData? {
+pub fun main(address: Address, tokenID: UInt64): NFluenceAuction.AuctionData? {
 
-    if let storefront = getAccount(address).getCapability<&NSFAuction.Storefront{NSFAuction.StorefrontPublic}>(NSFAuction.StorefrontPublicPath).borrow() {
+    if let storefront = getAccount(address).getCapability<&NFluenceAuction.Storefront{NFluenceAuction.StorefrontPublic}>(NFluenceAuction.NFluenceAuctionStorefrontPublicPath).borrow() {
         let data = storefront.borrowListing(listingResourceID: tokenID)!
-        return data.getNFTData()!
+        return data.getAuctionData()
     }
 
     return nil

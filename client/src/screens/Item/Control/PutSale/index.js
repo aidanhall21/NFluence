@@ -41,19 +41,7 @@ const PutSale = ({ className }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await addToAuction(parseInt(nftid), formatAmountInput(price));
-    let events = await getAuctionStartedEvents()
-    console.log(events)
-    let userAuctions = events.filter(event => event.data.user === user?.addr)
-    const userAuctionData = userAuctions[userAuctions.length - 1]
-    console.log(userAuctionData)
-    await axios.post(`${api_node}/api/v1/auction`, {
-      blockheight: userAuctionData.blockHeight, 
-      blockid: userAuctionData.blockId, 
-      blocktime: userAuctionData.blockTimestamp, 
-      tokenid: userAuctionData.data.tokenID,
-      user: userAuctionData.data.user, 
-      price: userAuctionData.data.startPrice,
-    }) 
+
   };
 
   return (
@@ -62,18 +50,6 @@ const PutSale = ({ className }) => {
       <div className={styles.text}>
             You'll need to confirm the transaction in the next popup.
           </div>
-      {/*<div className={styles.line}>
-        <div className={styles.icon}>
-          <Icon name="coin" size="24" />
-        </div>
-        <div className={styles.details}>
-          <div className={styles.info}>Instant sale price</div>
-          <div className={styles.text}>
-            Enter the price for which the item will be instanly sold
-          </div>
-        </div>
-        <Switch className={styles.switch} value={price} setValue={setPrice} />
-  </div>*/}
       <div className={styles.table}>
         <div className={styles.row}>
           <Form
@@ -86,53 +62,21 @@ const PutSale = ({ className }) => {
             name="price"
             step={1}
           />
-          {/*<div className={styles.col}>Starting Price</div>
-            <div className={styles.col}>value</div>*/}
         </div>
       </div>
       {loading ? (
         <div className={styles.item}>
-          {/*<div className={styles.head}>
-            <div className={styles.icon}>
-              <LoaderCircle className={styles.loader} />
-            </div>
-            <div className={styles.details}>
-              <div className={styles.info}>Minting...</div>
-              <div className={styles.text}>
-                This may take up to a couple minutes to complete.
-              </div>
-            </div>
-      </div>*/}
           <button className={cn("button loading", styles.button)}>
             <Loader className={styles.loader} color="white" />
           </button>
         </div>
       ) : (error ? (
         <div className={cn(styles.item, styles.error)}>
-          {/*<div className={styles.head}>
-            <div className={styles.details}>
-              <div className={styles.text}>
-              Something went wrong, please{" "}
-              <a href="/#" target="_blank" rel="noopener noreferrer">
-                try again
-              </a>
-              </div>
-            </div>
-      </div>*/}
           <button className={cn("button error", styles.button)}>Something went wrong :(</button>
         </div>
       ) :
         (status.status === 4 ? (
           <div className={cn(styles.item, styles.done)}>
-          {/*<div className={styles.head}>
-            <div className={styles.icon}>
-              <Icon name="upload-file" size="24" />
-            </div>
-            <div className={styles.details}>
-              <div className={styles.info}>Mint Successful!</div>
-              <div className={styles.text}>Check your profile to see your NFT</div>
-            </div>
-        </div>*/}
           <button className={cn("button done", styles.button)}>Success! Your auction has started</button>
         </div>
         ) : (<div className={styles.btns}>
@@ -142,9 +86,6 @@ const PutSale = ({ className }) => {
           >
             Start Auction
           </button>
-          {/*<button className={cn("button-stroke", styles.button)} onClick={onClose} >
-            Go Back
-        </button>*/}
         </div>))
       )}
     </div>

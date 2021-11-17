@@ -1,6 +1,7 @@
 import React from "react";
 import cn from "classnames";
 import styles from "./Bids.module.sass";
+import { Link } from "react-router-dom";
 
 const Bids = ({ className, items }) => {
   return (
@@ -8,12 +9,12 @@ const Bids = ({ className, items }) => {
       <div className={styles.list}>
         {items.map((x, index) => (
           <div className={styles.item} key={index}>
-            {/*<div className={styles.avatar}>
-            {x.profile_image ? <img src={`/user-images/${x.address}-profile.jpg`} alt="Avatar" /> : <img src={`data:image/png;base64,${x.avatar}`} alt="Avatar" />}
-        </div>*/}
+            <div className={styles.avatar}>
+            <img src={`https://nfluence-assets.s3.amazonaws.com/${x.blockEventData.user}-profile`} alt="Avatar" />
+        </div>
             <div className={styles.details}>
-              <div className={styles.position}>Bid #{x.bidSequence + 1}</div>
-              <div className={styles.name}>${x.bidAmount.split(".")[0]}</div>
+              <div className={styles.name}>@{x.userData[0].handle}</div>
+              <div className={styles.name}>${x.blockEventData.bidPrice}</div>
             </div>
           </div>
         ))}

@@ -7,8 +7,6 @@ import { useAuth } from "../../../providers/AuthProvider";
 import axios from "axios";
 // import { isStepDivisible } from "react-range/lib/utils";
 
-const stripe = require('stripe')(process.env.STRIPE_TEST_API_KEY)
-
 let api_node;
 process.env.NODE_ENV === "production"
   ? api_node = ''
@@ -34,7 +32,7 @@ const User = ({ className, data, handle }) => {
   ];
 
   const { user } = useAuth()
-  const { collection, profile, createCollection, fetchUserData, collectionError } = useUser()
+  const { collection, profile, createCollection, createFUSDVault, fetchUserData, collectionError } = useUser()
   console.log("collection", collection)
   console.log('err', collectionError)
 
@@ -42,19 +40,7 @@ const User = ({ className, data, handle }) => {
     setVerifying(true)
     console.log(collectionError)
     await createCollection()
-
-    const account = await stripe.accounts.create({
-      type: 'express'
-    });
-
-    const accounts = await stripe.accountLinks.create({
-      account: account.id,
-      refresh_url: 'https://example.com/reauth',
-      return_url: 'https://nsftonight.com/user',
-      type: 'account_onboarding',
-    });
-
-    window.location.assign(accounts.url)
+    await createFUSDVault()
     
     if (!data.db) {
       console.log('adding to db')

@@ -13,7 +13,6 @@ import { createTokenLink } from "../../mocks/functions";
 import { ownerReducer } from "../../reducer/ownerReducer";
 import axios from "axios";
 import { GET_SINGLE_AUCTION_DATA } from "../../flow/get-single-auction-data.script";
-import { GET_BID_HISTORY } from "../../flow/get-bid-history.script";
 import Bids from "./Bids";
 import { AuctionTimer } from "../../components/Card";
 import ReactPlayer from "react-player"
@@ -96,25 +95,30 @@ const Item = () => {
       }
     }
     const fetchBidHistory = async () => {
-      try {
-        let res = await query({
-          cadence: GET_BID_HISTORY,
-          args: (arg, t) => [arg(address, t.Address), arg(parseInt(nftid), t.UInt64)]
-        })
-        if (res.length > 0) {
-          
+      const api = await axios.get(`https://prod-test-net-dashboard-api.azurewebsites.net/api/company/04a74a09-619e-47f3-a6b4-99d24ce69971/search?tokenID=${nftid}`)
+      const serverResponse = api.data
+      const result = serverResponse.filter(event => event.flowEventId === "A.a3c018ee20b2cb65.NFluenceAuction.BidPlaced")
+      console.log("bids", result)
+      const asyncRes = await Promise.all(result.map(async (event) => {
+        const user = await axios.get(`${api_node}/api/v1/user/${event.blockEventData.user}`)
+        console.log(user)
+        const userData = user.data
+        return {
+          ...event,
+          userData
         }
-        setBids(res.reverse())
-      } catch(err) {
-      }
+      }))
+      console.log(asyncRes)
+      setBids(asyncRes)
     }
 
-      fetchTokenData()
+      fetchAuctionTokenData()
       .catch((err) => {
         console.log('first catch')
-        fetchAuctionTokenData()
-        fetchBidHistory()
+        fetchTokenData()
       })
+      fetchTokenData()
+      fetchBidHistory()
   }, [address, nftid, currentOwner, user?.addr]);
 
   useEffect(() => {
@@ -176,28 +180,13 @@ const Item = () => {
         <div className={cn("container", styles.container)}>
           <div className={styles.bg}>
             <div className={styles.preview}>
-              {/*<div className={styles.categories}>
-                {categories.map((x, index) => (
-                  <div
-                    className={cn(
-                      { "status-black": x.category === "black" },
-                      { "status-purple": x.category === "purple" },
-                      styles.category
-                    )}
-                    key={index}
-                  >
-                    {x.content}
-                  </div>
-                ))}
-                    </div>*/}
-                    
               {state.data.fileType === 1 && link !== '' && !loading ? (
                 <>
                   <ReactPlayer url={link} controls loop={true} />
                 </>
               ) : (
                 <>
-                  <img src={link !== '' && !loading ? link : '/images/auction-lock.jpeg'} alt="Card" />
+                  <img src={link !== '' && !loading ? link : '/images/auction-lock.jpg'} alt="Card" />
                 </>
               )}
             </div>

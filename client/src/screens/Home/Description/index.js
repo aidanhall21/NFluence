@@ -37,10 +37,10 @@ const Description = () => {
         <div className={styles.gallery}>
           <div className={styles.preview}>
             <Image
-              srcSet="/images/nsft-logo.jpeg 2x"
-              srcSetDark="/images/nsft-logo-dark.jpeg 2x"
-              src="/images/nsft-logo.jpeg"
-              srcDark="/images/nsft-logo-dark.jpeg"
+              srcSet="/images/nfluence-logo-light.jpg 2x"
+              srcSetDark="/images/nfluence-logo-dark.jpg 2x"
+              src="/images/nfluence-logo-light.jpg"
+              srcDark="/images/nfluence-logo-dark.jpg"
               alt="Logo"
             />
           </div>

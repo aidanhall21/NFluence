@@ -1,8 +1,8 @@
 export const CHECK_COLLECTION = `
-import NSFT from 0xNSFT
+import NFluence from 0xNFLUENCE
 
 pub fun main(addr: Address): Bool {
-    let ref = getAccount(addr).getCapability<&NSFT.Collection{NSFT.NSFTCollectionPublic}>(NSFT.CollectionPublicPath).check()
+    let ref = getAccount(addr).getCapability<&NFluence.Collection{NFluence.NFluenceCollectionPublic}>(NFluence.CollectionPublicPath).check()
     return ref
 }
 `
