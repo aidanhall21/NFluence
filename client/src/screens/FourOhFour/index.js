@@ -43,10 +43,10 @@ const FourOhFour = () => {
       <div className={cn("container", styles.container)}>
         <div className={styles.preview}>
           <Image
-            srcSet="/images/nsft-logo.jpeg"
-            srcSetDark="/images/nsft-logo-dark.jpeg"
-            src="/images/nsft-logo.jpeg"
-            srcDark="/images/nsft-logo-dark.jpeg"
+            srcSet="/images/nfluence-logo.jpg"
+            srcSetDark="/images/nfluence-logo-dark.jpg"
+            src="/images/nfluence-logo.jpg"
+            srcDark="/images/nfluence-logo-dark.jpg"
             alt="Figures"
           />
         </div>

@@ -345,8 +345,8 @@ const Profile = () => {
               className={cn("button-small", styles.button)}
               disabled={loading}
               onClick={() => {
-                //setVisible(false)
-                window.location.reload()
+                setVisible(false)
+                //window.location.reload()
               }}
             >
               Save photo

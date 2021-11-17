@@ -38,9 +38,24 @@ app.listen(port, () => {
   console.log(`listening on PORT ${port}`);
 });
 
-const S3_BUCKET = process.env.REACT_APP_S3_BUCKET;
-console.log(S3_BUCKET)
+const S3_BUCKET = process.env.S3_BUCKET;
+
+var credentials = new aws.SharedIniFileCredentials({profile: 'default'});
+aws.config.credentials = credentials;
+
+aws.config.getCredentials(function(err) {
+  if (err) console.log(err.stack);
+  // credentials not loaded
+  else {
+    console.log("Success");
+  }
+});
+
+
+
 aws.config.region = 'us-east-2';
+
+console.log("Region: ", aws.config.region);
 
 app.get('/api/v1/sign-s3', (req, res) => {
   const s3 = new aws.S3();
