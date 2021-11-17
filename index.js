@@ -38,7 +38,7 @@ app.listen(port, () => {
   console.log(`listening on PORT ${port}`);
 });
 
-const S3_BUCKET = process.env.S3_BUCKET;
+const S3_BUCKET = process.env.REACT_APP_S3_BUCKET;
 aws.config.region = 'us-east-2';
 
 app.get('/api/v1/sign-s3', (req, res) => {

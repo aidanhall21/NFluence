@@ -9,7 +9,7 @@
     "yarn": "1.x"
   },
   "scripts": {
-    "start": "./server.sh",
+    "start": "node index.js",
     "heroku-postbuild": "cd client && yarn install && yarn run build"
   },
   "author": "Aidan Bradley Hall",
