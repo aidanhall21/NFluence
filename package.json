@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "16.x",
+    "npm": "7.x",
+    "yarn": "1.x"
+  },
   "scripts": {
     "start": "./server.sh",
     "heroku-postbuild": "cd client && yarn install && yarn run build"

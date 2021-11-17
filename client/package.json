@@ -2,6 +2,11 @@
   "name": "nfluence",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "16.x",
+    "npm": "7.x",
+    "yarn": "1.x"
+  },
   "dependencies": {
     "@onflow/fcl": "^0.0.76",
     "@stripe/react-stripe-js": "^1.6.0",
