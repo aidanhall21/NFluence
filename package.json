@@ -1,10 +1,10 @@
 {
-  "name": "nsft-server",
+  "name": "nfluence-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "./server.sh",
     "heroku-postbuild": "cd client && yarn install && yarn run build"
   },
   "author": "Aidan Bradley Hall",

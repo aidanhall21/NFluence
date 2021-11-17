@@ -11,9 +11,6 @@ let port = 5000
 
 const app = express();
 const apiRouter = require('./db/queries');
-const bodyParser = require('body-parser');
-
-const MY_DOMAIN = 'http://localhost:3000/profile-edit';
 
 app.use(cors());
 app.use(json());
@@ -42,7 +39,6 @@ app.listen(port, () => {
 });
 
 const S3_BUCKET = process.env.S3_BUCKET;
-console.log(S3_BUCKET)
 aws.config.region = 'us-east-2';
 
 app.get('/api/v1/sign-s3', (req, res) => {
@@ -58,8 +54,6 @@ app.get('/api/v1/sign-s3', (req, res) => {
     ContentType: fileType,
     ACL: 'public-read'
   };
-
-  console.log(s3Params)
 
   s3.getSignedUrl('putObject', s3Params, (err, data) => {
     if (err) {

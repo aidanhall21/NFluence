@@ -4,7 +4,7 @@ const { Pool } = require("pg");
 const express = require('express')
 
 const pool = new Pool({
-  connectionString: 'postgresql://postgres:Mgoblue2@localhost:5432/NSFT',
+  connectionString: process.env.DATABASE_URL,
   ssl:
   process.env.NODE_ENV === "production"
     ? { rejectUnauthorized: false }
