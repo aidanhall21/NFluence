@@ -5,7 +5,7 @@ const multer = require('multer')
 const cors = require("cors");
 const { json, urlencoded } = require("body-parser");
 const errorhandler = require("errorhandler");
-require('dotenv').config()
+require('dotenv').config({path: __dirname+'/.env.local'})
 
 let port = 5000
 
@@ -39,6 +39,7 @@ app.listen(port, () => {
 });
 
 const S3_BUCKET = process.env.REACT_APP_S3_BUCKET;
+console.log(S3_BUCKET)
 aws.config.region = 'us-east-2';
 
 app.get('/api/v1/sign-s3', (req, res) => {

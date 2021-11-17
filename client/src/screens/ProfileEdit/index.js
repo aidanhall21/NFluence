@@ -7,15 +7,6 @@ import TextArea from "../../components/TextArea";
 import { useAuth } from "../../providers/AuthProvider";
 import { useUser } from "../../providers/UserProvider";
 import axios from "axios";
-import Form from "../../components/Form";
-import { mutate, tx } from "@onflow/fcl";
-import { MINT_UTILITY_COIN } from "../../flow/mint-utility-coin.tx";
-import Loader from "../../components/Loader";
-import { formatAmountInput } from "../../mocks/functions";
-import { authorizationFunction } from "../../services/authorization-function";
-import Icon from "../../components/Icon";
-import { Link } from "react-router-dom";
-const stripe = require("stripe")(process.env.STRIPE_TEST_API_KEY);
 
 const breadcrumbs = [
   {
@@ -32,19 +23,6 @@ process.env.NODE_ENV === "production"
   ? (api_node = "")
   : (api_node = process.env.REACT_APP_LOCAL_API_NODE);
 
-const ProductDisplay = () => (
-  <section>
-    <div className={styles.item}>
-      <div className="description">
-        <h3>NFluence Balance</h3>
-        <h5>$1.00</h5>
-      </div>
-    </div>
-    <form action={`${api_node}/api/v1/create-checkout-session`} method="POST">
-      <button type="submit">Checkout</button>
-    </form>
-  </section>
-);
 
 const Message = ({ message }) => (
   <section>
