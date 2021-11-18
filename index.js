@@ -40,8 +40,8 @@ app.listen(port, () => {
 
 const S3_BUCKET = process.env.S3_BUCKET;
 
-var credentials = new aws.SharedIniFileCredentials({profile: 'default'});
-aws.config.credentials = credentials;
+//var credentials = new aws.SharedIniFileCredentials({profile: 'default'});
+//aws.config.credentials = credentials;
 
 aws.config.getCredentials(function(err) {
   if (err) console.log(err.stack);
