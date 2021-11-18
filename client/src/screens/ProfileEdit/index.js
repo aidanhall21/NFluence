@@ -86,9 +86,11 @@ const ProfileEdit = () => {
       "GET",
       `${api_node}/api/v1/sign-s3?file-name=${filename}&file-type=${file.type}`
     );
+    console.log(xhr)
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
+          console.log(xhr)
           const response = JSON.parse(xhr.responseText);
           console.log(response)
           uploadFile(file, response.signedRequest, response.url);
