@@ -18,30 +18,7 @@ app.use(urlencoded({ extended: false }));
 app.use(errorhandler());
 
 app.use('/api/v1', apiRouter)
-
-//update these paths
-const serveReactApp = () => {
-  app.use(express.static(path.join(__dirname, "client/build")));
-  app.get("*", function (req, res) {
-    res.sendFile(path.resolve(__dirname, "client/build/index.html"));
-  });
-};
-
-app.engine('html', require('ejs').renderFile);
-
-if (process.env.NODE_ENV === 'production') {
-  port = process.env.PORT || 5000
-  serveReactApp();
-}
-
-app.listen(port, () => {
-  console.log(`listening on PORT ${port}`);
-});
-
 const S3_BUCKET = process.env.S3_BUCKET;
-
-//var credentials = new aws.SharedIniFileCredentials({profile: 'default'});
-//aws.config.credentials = credentials;
 
 aws.config.getCredentials(function(err) {
   if (err) console.log(err.stack);
@@ -83,4 +60,23 @@ app.get('/api/v1/sign-s3', (req, res) => {
     res.write(JSON.stringify(returnData));
     res.end();
   });
+});
+
+//update these paths
+const serveReactApp = () => {
+  app.use(express.static(path.join(__dirname, "client/build")));
+  app.get("*", function (req, res) {
+    res.sendFile(path.resolve(__dirname, "client/build/index.html"));
+  });
+};
+
+app.engine('html', require('ejs').renderFile);
+
+if (process.env.NODE_ENV === 'production') {
+  port = process.env.PORT || 5000
+  serveReactApp();
+}
+
+app.listen(port, () => {
+  console.log(`listening on PORT ${port}`);
 });

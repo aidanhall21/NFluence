@@ -86,6 +86,8 @@ const ProfileEdit = () => {
       "GET",
       `${api_node}/api/v1/sign-s3?file-name=${filename}&file-type=${file.type}`
     );
+    xhr.setRequestHeader("Accept", "application/json")
+    xhr.setRequestHeader("Content-Type", "application/json")
     console.log(xhr)
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
