@@ -58,11 +58,11 @@ const Upload = () => {
   const [success, setSuccess] = useState(false)
   const [verified, setVerified] = useState(false)
   const [fileCheck, setFileCheck] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(false)
+  const [load, setLoad] = useState(false)
+  const [err, setErr] = useState(false)
   const [validate, setValidate] = useState(false)
 
-  const { mintNsft, collection, fetchUserMintedNsfts, user } = useUser()
+  const { mintNsft, collection, fetchUserMintedNsfts, error, loading, errorText } = useUser()
 
   const location = useLocation()
 
@@ -124,7 +124,7 @@ const Upload = () => {
       return
     }
 
-    setLoading(true)
+    setLoad(true)
 
     setVisibleModal(true)
 
@@ -157,8 +157,8 @@ const Upload = () => {
       })
     } catch(err) {
       console.log(err)
-      setLoading(false)
-      setError(true)
+      setLoad(false)
+      setErr(true)
     }
 
 
@@ -168,14 +168,20 @@ const Upload = () => {
     //eslint-disable-next-line
     const tx = await mintNsft(hash, type, name, desc, parseInt(count))
     .then((response) => {
-      setSuccess(true)
-      setLoading(false)
-      console.log(response)
-      fetchUserMintedNsfts()
+      if (response) {
+        //setSuccess(true)
+        setLoad(false)
+        console.log(response)
+        fetchUserMintedNsfts()
+      } else {
+        //setError(true)
+        setLoad(false)
+        setSuccess(false)
+      }
     })
     .catch((err) => {
-      setError(true)
-      setLoading(false)
+      //setError(true)
+      setLoad(false)
       setSuccess(false)
       console.log(err)
     })
@@ -241,7 +247,7 @@ const Upload = () => {
                     {location.pathname.split("/")[1] === 'upload-multiple' && (
                       <TextInput
                       className={styles.field}
-                      label="Count"
+                      label="Count (Max 10)"
                       name="Count"
                       type="number"
                       value={count}
@@ -316,7 +322,7 @@ const Upload = () => {
         </div>
       </div>
       <Modal visible={visibleModal} onClose={() => setVisibleModal(false)}>
-        <FolowSteps className={styles.steps} obj={{ loading: loading, error: error, success: success }} onClose={() => setVisibleModal(false)} />
+        <FolowSteps className={styles.steps} err={errorText} obj={{ loading: loading, error: error, success: success, load: load, err: err }} onClose={() => setVisibleModal(false)} />
       </Modal>
     </>
   );

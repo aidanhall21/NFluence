@@ -17,6 +17,7 @@ const User = ({ className, data, handle }) => {
   const [visible, setVisible] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [success, setSuccess] = useState(false)
+  const [almost, setAlmost] = useState(false)
   const [error, setError] = useState(false)
   console.log('data', data)
 
@@ -40,6 +41,7 @@ const User = ({ className, data, handle }) => {
     setVerifying(true)
     console.log(collectionError)
     await createCollection()
+    setAlmost(true)
     await createFUSDVault()
     
     if (!data.db) {
@@ -71,6 +73,7 @@ const User = ({ className, data, handle }) => {
       verify: true,
       address: user?.addr
     })
+    setAlmost(false)
     setSuccess(true)
     await fetchUserData()
     setVerifying(false)
@@ -99,7 +102,7 @@ const User = ({ className, data, handle }) => {
           <Icon name="globe" size="16" />
           <span>{data.url}</span>
         </a> : <></>}
-        {profile.handle === handle ? <></> : (<div className={styles.control}>
+        {/*profile.handle === handle ? <></> : (<div className={styles.control}>
           <div className={styles.btns}>
             <button
               className={cn(
@@ -113,7 +116,7 @@ const User = ({ className, data, handle }) => {
               <span>Unfollow</span>
             </button>
           </div>
-        </div>)}
+              </div>)*/}
         {data.address !== user?.addr || collection ? <></> : (<div className={styles.control}>
           <div className={styles.btns}>
             <button
@@ -128,6 +131,7 @@ const User = ({ className, data, handle }) => {
             </button>
           </div>
         </div>)}
+        {almost && (<span>Just one more thing...</span>)}
         {success && (<span>You're now verified!</span>)}
         {error && (<span>Something went wrong, please contact us</span>)}
         <div className={styles.socials}>

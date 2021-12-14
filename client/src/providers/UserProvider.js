@@ -27,6 +27,7 @@ export default function UserProvider({ children }) {
     owned_ids,
     owned_data: userOwned,
     bids_data: bids,
+    errorText,
     mintNsft,
     settleAuction,
     loading,
@@ -68,6 +69,7 @@ export default function UserProvider({ children }) {
         userOwned,
         loading,
         error,
+        errorText,
         status,
       }}
     >

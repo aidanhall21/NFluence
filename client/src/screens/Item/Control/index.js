@@ -18,7 +18,6 @@ process.env.NODE_ENV === "production"
   : (api_node = process.env.REACT_APP_LOCAL_API_NODE);
 
 const Control = ({ className, data, error }) => {
-  const [visibleModalPurchase, setVisibleModalPurchase] = useState(false);
   const [visibleModalBid, setVisibleModalBid] = useState(false);
   const [visibleModalAccept, setVisibleModalAccept] = useState(false);
   const [visibleModalSale, setVisibleModalSale] = useState(false);
@@ -108,20 +107,6 @@ const Control = ({ className, data, error }) => {
             )}
           </div>
         )}
-        {/*<div className={styles.btns}>
-          <button className={cn("button-stroke", styles.button)}>
-            View all
-          </button>
-          <button
-            className={cn("button", styles.button)}
-            onClick={() => setVisibleModalAccept(true)}
-          >
-            Accept
-          </button>
-          </div>
-        <div className={styles.text}>
-          Platform fee <span className={styles.percent}>20%</span>
-          </div>*/}
         {!data.auctionId && address === user?.addr && !error && (
           <>
             <div className={styles.foot}>
@@ -139,18 +124,10 @@ const Control = ({ className, data, error }) => {
           </>
         )}
       </div>
-      {/*<Modal
-        visible={visibleModalPurchase}
-        onClose={() => setVisibleModalPurchase(false)}
-      >
-        <Checkout />
-        <SuccessfullyPurchased />
-      </Modal>*/}
       <Modal
         visible={visibleModalBid}
         onClose={() => setVisibleModalBid(false)}
       >
-        {/*<Connect />*/}
         <Bid data={data} />
       </Modal>
       <Modal

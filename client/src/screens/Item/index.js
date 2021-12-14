@@ -59,9 +59,7 @@ const Item = () => {
   const [currentOwner, setCurrentOwner] = useState(false)
   const { address, nftid } = useParams();
   const { user, owned_ids } = useUser()
-  console.log(currentOwner)
-  console.log(owned_ids)
-  console.log(user?.addr)
+  console.log(link)
 
   useEffect(() => {
     const fetchTokenData = async () => {
@@ -77,7 +75,7 @@ const Item = () => {
         dispatch({ type: "SUCCESS", payload: res });
       } catch (err) {
         dispatch({ type: "ERROR" });
-        throw new Error('whoops!')
+        //throw new Error('whoops!')
       }
     };
     const fetchAuctionTokenData = async () => {
@@ -95,13 +93,14 @@ const Item = () => {
       }
     }
     const fetchBidHistory = async () => {
+      if (state.data === {}) return
+      console.log(state.data == {})
+      console.log(state.data)
       const api = await axios.get(`https://prod-test-net-dashboard-api.azurewebsites.net/api/company/04a74a09-619e-47f3-a6b4-99d24ce69971/search?tokenID=${nftid}`)
       const serverResponse = api.data
       const result = serverResponse.filter(event => event.flowEventId === "A.a3c018ee20b2cb65.NFluenceAuction.BidPlaced")
-      console.log("bids", result)
       const asyncRes = await Promise.all(result.map(async (event) => {
         const user = await axios.get(`${api_node}/api/v1/user/${event.blockEventData.user}`)
-        console.log(user)
         const userData = user.data
         return {
           ...event,
@@ -130,8 +129,10 @@ const Item = () => {
   useEffect(() => {
     setLoading(true)
     const fetchData = async () => {
-      if (state.data.auctionId && user?.addr !== address && !currentOwner) return
-      console.log('fetching')
+      if (state.data.nftId && user?.addr !== address && !currentOwner) return
+      console.log(state.data)
+      console.log(user?.addr !== address)
+      console.log(!currentOwner)
       const res = await createTokenLink(state.data);
       console.log(res)
       if (!res.properties && !res.image) return
@@ -172,7 +173,6 @@ const Item = () => {
     fetchOwnerData()
   }, [state.data, address, currentOwner, user?.addr])
 
-  console.log('ITEMS', ownerState.data)
 
   return (
     <>

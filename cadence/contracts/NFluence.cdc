@@ -262,7 +262,7 @@ pub contract NFluence: NonFungibleToken {
     init() {
         // Initialize the total supply and max edition size variables
         self.totalSupply = 0
-        self.maxEditionSize = 10
+        self.maxEditionSize = 1000
         // Initialize Collection paths
         self.CollectionPublicPath = /public/NFluenceCollectionPublic
         self.CollectionStoragePath = /storage/NFluenceCollectionStorage

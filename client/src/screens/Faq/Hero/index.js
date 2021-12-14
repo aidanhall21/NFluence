@@ -11,9 +11,9 @@ const items = [
     icon: "home",
     items: [
       {
-        title: "What is NSFT?",
+        title: "What is ?",
         content:
-          "NSFT is a platform for creators to distribute limited exclusive content to fans & followers. When you upload a photo or video, it is permanently attached to a unique token (an NFT) that – once sold – will be transferred directly from the creator to the auction winner. Upon this transaction, the auction winner will be able to view the content and assumes full ownership of the token",
+          "NFluence is a platform for creators to distribute limited exclusive content to fans & followers. When you upload a photo or video, it is permanently attached to a unique token (an NFT) that – once sold – will be transferred directly from the creator to the auction winner. Upon this transaction, the auction winner will be able to view the content and assumes full ownership of the token",
       },
       {
         title: "What is an NFT?",
@@ -39,12 +39,12 @@ const items = [
     icon: "circle-and-square",
     items: [
       {
-        title: "What type of content should I upload and sell on NSFT?",
-        content: "We encourage anyone with an active & passionate base of followers to explore the platform. While many creators use NSFT to distribute content that is differentiated from their standard material, others prefer to upload and auction their regular content at a limited volume to achieve premium pricing, Because ownership of each token can always be verified, some creators will also choose to attach external value or incentives to a sale; as an example, a video game streamer could offer to play a Fortnite match with the winner of specific auctioned content. Content creators typically see the most success and bidding activity when sharing their current auctions on additional social media platforms for maximum visibility."
+        title: "What type of content should I upload and sell on NFluence?",
+        content: "We encourage anyone with an active & passionate base of followers to explore the platform. While many creators use NFluence to distribute content that is differentiated from their standard material, others prefer to upload and auction their regular content at a limited volume to achieve premium pricing, Because ownership of each token can always be verified, some creators will also choose to attach external value or incentives to a sale; as an example, a video game streamer could offer to play a Fortnite match with the winner of specific auctioned content. Content creators typically see the most success and bidding activity when sharing their current auctions on additional social media platforms for maximum visibility."
       },
       {
         title: "Will I receive a percentage if one of my pieces is resold in the future?",
-        content: "Yes, you will receive 80% of the initial auction price of your item, and then when we introduce our own NSFT marketplace you'll receive a portion of any sale on that secondary market"
+        content: "Yes, you will receive 80% of the initial auction price of your item, and then when we introduce our own NFluence marketplace you'll receive a portion of any sale on that secondary market"
       },
     ],
   },
@@ -79,8 +79,8 @@ const items = [
         content: "A blockchain is decentralized database. You can think of it as a chain of blocks containing transactions that everyone agrees on."
       },
       {
-        title: "What blockchain does NSFT run on?",
-        content: "NSFT runs on the Flow blockchain"
+        title: "What blockchain does NFluence run on?",
+        content: "NFluence runs on the Flow blockchain"
       },
     ],
   },
@@ -114,7 +114,7 @@ const Hero = () => {
           <h1 className={cn("h2", styles.title)}>Frequently asked questions</h1>
           <div className={styles.info}>
             Common community questions are below, you can also{" "}
-            <a href="mailto:aidan@nsftonight.com" rel="noopener noreferrer">
+            <a href="mailto:aidan@NFluenceonight.com" rel="noopener noreferrer">
               Contact Support
             </a>
           </div>

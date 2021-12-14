@@ -27,18 +27,17 @@ export default function useUserNsfts(user) {
         owned_data: [],
         owned_ids: [],
         bids_data: [],
-        txStatus: {}
+        txStatus: {},
+        errorText: ''
     })
 
     const runScript = async (address, id) => {
-        console.log('HI', address, id)
         let auction_data;
         try {
             auction_data = await query({
                 cadence: GET_SINGLE_AUCTION_DATA,
                 args: (arg, t) => [arg(address, t.Address), arg(id, t.UInt64)]
             })
-            console.log(auction_data)
         } catch (err) {
             return
         }
@@ -71,11 +70,11 @@ export default function useUserNsfts(user) {
             if (res !== null) {
                 minted_nsfts = res.filter(token => token.creatorAddress === user?.addr)
             }
-            console.log(minted_nsfts)
+            minted_nsfts.sort((a, b) => a.nftId - b.nftId)
             dispatch({ type: 'MINTED_SUCCESS', payload: minted_nsfts })
         } catch (err) {
             console.log(err)
-            dispatch({ type: 'ERROR' })
+            dispatch({ type: 'ERROR', payload: err })
         }
     }
 
@@ -91,6 +90,7 @@ export default function useUserNsfts(user) {
             if (res !== null) {
                 owned_nsfts = res.filter(token => token.creatorAddress !== user?.addr)
             }
+            owned_nsfts.sort((a, b) => a.nftId - b.nftId)
             dispatch({ type: 'ID_SUCCESS', payload: owned_nsfts })
         } catch(err) {
             console.log(err)
@@ -110,6 +110,7 @@ export default function useUserNsfts(user) {
             if (res !== null) {
                 owned_nsfts = res.filter(token => token.creatorAddress !== user?.addr)
             }
+            owned_nsfts.sort((a, b) => a.nftId - b.nftId)
             dispatch({ type: 'OWNED_SUCCESS', payload: owned_nsfts })
         } catch (err) {
             console.log(err)
@@ -125,6 +126,8 @@ export default function useUserNsfts(user) {
                 args: (arg, t) => [arg(user?.addr, t.Address)]
             })
             let data = await fetchAuctionData(user?.addr, res)
+            console.log(data)
+            data.sort((a, b) => parseFloat(a.timeRemaining) - parseFloat(b.timeRemaining))
             dispatch({ type: 'AUCTION_SUCCESS', payload: data })
         } catch(err) {
             dispatch({ type: 'ERROR' })
@@ -191,12 +194,9 @@ export default function useUserNsfts(user) {
                 limit: 9999
             })
             let txStatus = await tx(res).onceSealed()
-            console.log('done!')
-            console.log(txStatus)
             dispatch({ type: 'TX_SUCCESS', payload: txStatus })
             return txStatus
         } catch(err) {
-            console.log(err)
             dispatch({ type: 'ERROR' })
         }
     }
@@ -258,7 +258,7 @@ export default function useUserNsfts(user) {
             return txStatus
         } catch(err) {
             console.log(err)
-            dispatch({ type: 'ERROR' })
+            dispatch({ type: 'ERROR', payload: err })
         }
     }
 

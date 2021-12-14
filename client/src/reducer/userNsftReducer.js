@@ -52,7 +52,8 @@ export const userNsftReducer = (state, action) => {
             return {
                 ...state,
                 loading: false,
-                error: true
+                error: true,
+                errorText: action.payload
             }
         default:
             throw new Error()

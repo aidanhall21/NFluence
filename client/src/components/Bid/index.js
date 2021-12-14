@@ -9,7 +9,6 @@ import Loader from "../Loader";
 
 const Bid = ({ className, data }) => {
   const [bid, setBid] = useState(data.minNextBid);
-  console.log(bid);
   const [nofunds, setNofunds] = useState(false);
   const [visibleModalBid, setVisibleModalBid] = useState(false);
 
@@ -20,11 +19,11 @@ const Bid = ({ className, data }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setNofunds(false);
-    if (balance < bid) {
+    if (parseFloat(balance) < parseFloat(bid)) {
       setNofunds(true);
       return;
     }
-    await bidOnAuction(parseInt(nftid), address, formatAmountInput(bid));
+    await bidOnAuction(parseInt(nftid), address, bid);
     await getBalance();
   };
 
@@ -34,6 +33,12 @@ const Bid = ({ className, data }) => {
       <div className={styles.info}>
         You are about to bid on <strong>{data.title}</strong>
       </div>
+      {nofunds && (<><div className={styles.info}>
+              Something went wrong
+              </div>
+              <div className={styles.text}>
+              You do not have enough funds to bid on this item.
+              </div></>)}
       <div className={styles.text}>
         Minimum bid ${parseInt(data.minNextBid).toString()}
       </div>

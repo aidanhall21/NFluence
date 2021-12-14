@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import cn from "classnames";
 import styles from "./ProfileEdit.module.sass";
 import Control from "../../components/Control";
@@ -7,6 +7,7 @@ import TextArea from "../../components/TextArea";
 import { useAuth } from "../../providers/AuthProvider";
 import { useUser } from "../../providers/UserProvider";
 import axios from "axios";
+import crypto from 'crypto';
 
 const breadcrumbs = [
   {
@@ -23,16 +24,9 @@ process.env.NODE_ENV === "production"
   ? (api_node = "")
   : (api_node = process.env.REACT_APP_LOCAL_API_NODE);
 
-
-const Message = ({ message }) => (
-  <section>
-    <p>{message}</p>
-  </section>
-);
-
 const ProfileEdit = () => {
   const { user } = useAuth();
-  const { profile, getBalance, collection, fetchUserData } = useUser();
+  const { profile } = useUser();
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [change, setChange] = useState(false);
@@ -42,25 +36,8 @@ const ProfileEdit = () => {
   const [insta, setInsta] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState(false);
-  const [deposit, setDeposit] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [verified, setVerified] = useState(false);
   const [src, setSrc] = useState("");
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    // Check to see if this is a redirect back from Checkout
-    const query = new URLSearchParams(window.location.search);
-    if (query.get("success")) {
-      setMessage("Deposit Successful! You will receive an email confirmation.");
-    }
-    if (query.get("canceled")) {
-      setMessage("Order canceled");
-    }
-  }, []);
 
   function uploadFile(file, signedRequest, url) {
     const xhr = new XMLHttpRequest();
@@ -69,7 +46,6 @@ const ProfileEdit = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
           setSrc(url);
-          console.log(url);
         } else {
           alert("Could not upload file");
         }
@@ -88,13 +64,10 @@ const ProfileEdit = () => {
     );
     xhr.setRequestHeader("Accept", "application/json")
     xhr.setRequestHeader("Content-Type", "application/json")
-    console.log(xhr)
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
-          console.log(xhr)
           const response = JSON.parse(xhr.responseText);
-          console.log(response)
           uploadFile(file, response.signedRequest, response.url);
         } else {
           alert("Could not get signed URL");
@@ -181,7 +154,7 @@ const ProfileEdit = () => {
     profile.profile_image
       ? setSrc(`https://nfluence-assets.s3.amazonaws.com/${user?.addr}-profile`)
       : setSrc(`data:image/png;base64,${profile.avatar}`);
-  }, [profile]);
+  }, [profile, user?.addr]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -235,36 +208,17 @@ const ProfileEdit = () => {
     }
   };
 
-  const onDepositSubmit = async (e) => {
-    e.preventDefault();
-    if (!collection) {
-      setVerified(true);
-      return;
-    }
-    /*
-    setLoading(true);
-    try {
-      let res = await mutate({
-        cadence: MINT_UTILITY_COIN,
-        args: (arg, t) => [
-          arg(user?.addr, t.Address),
-          arg(formatAmountInput(deposit), t.UFix64),
-        ],
-        limit: 200,
-        authz: authorizationFunction
-      });
-      let txStatus = await tx(res).onceSealed();
-      setSuccess(true);
-      setLoading(false);
-      getBalance()
-      return txStatus;
-    } catch (err) {
-      setError(true);
-      setLoading(false);
-      console.log(err);
-    }
-    */
-  };
+  const urlWithSignature = useRef('');
+  useEffect(() => {
+    const originalUrl = `https://buy-staging.moonpay.com?apiKey=${process.env.REACT_APP_MOONPAY_PUBLISHABLE_KEY}&currencyCode=fusd&walletAddress=${user?.addr}`
+    const signature = crypto
+      .createHmac('sha256', `${process.env.REACT_APP_MOONPAY_SECRET_KEY}`)
+      .update(new URL(originalUrl).search)
+      .digest('base64');
+    console.log(urlWithSignature)
+    urlWithSignature.current = `${originalUrl}&signature=${encodeURIComponent(signature)}`;
+  }, [user?.addr])
+  console.log(urlWithSignature)
 
   return (
     <div className={styles.page}>
@@ -357,17 +311,19 @@ const ProfileEdit = () => {
                     />
                   </div>
                 </div>
-                {message && <Message message={message} />}
                 <div className={styles.item}>
                   <div className={styles.category}>
                     Fund Your Account with USD
                   </div>
-                  <a
+                  {profile.verified && (<a
                     className={cn("button-small", styles.button)}
-                    href={`https://buy-staging.moonpay.com?apiKey=pk_test_GX9mFp3NBs9MjHYHDTcXboccdgvOdIl&currencyCode=fusd&walletAddress=${user?.addr}`}
+                    href={`${urlWithSignature.current}`}
                   >
                     Add Funds
-                  </a>
+                  </a>)}
+                  {!profile.verified && (
+                    <div>You must verify your account before you can deposit.</div>
+                  )}
                   {/*<div className={styles.fieldset}>
                     {loading && (
                       <div className={styles.item}>

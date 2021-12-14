@@ -10,7 +10,7 @@ const Bids = ({ className, items }) => {
         {items.map((x, index) => (
           <div className={styles.item} key={index}>
             <div className={styles.avatar}>
-            <img src={`https://nfluence-assets.s3.amazonaws.com/${x.blockEventData.user}-profile`} alt="Avatar" />
+            <img src={`https://nfluence-assets.s3.amazonaws.com/${x.blockEventData.user}-profile`} onError={(e)=>{e.target.onerror = null; e.target.src="/logo-single-letter.jpeg"}} alt="Avatar" />
         </div>
             <div className={styles.details}>
               <div className={styles.name}>@{x.userData[0].handle}</div>
