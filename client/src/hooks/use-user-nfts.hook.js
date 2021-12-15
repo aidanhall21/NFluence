@@ -2,7 +2,6 @@ import { useEffect, useReducer } from "react";
 import { userNsftReducer } from "../reducer/userNsftReducer";
 import { mutate, query, tx } from '@onflow/fcl';
 import { MINT_NSFT } from "../flow/mint-nsft.tx";
-import { authorizationFunction } from "../services/authorization-function";
 import { GET_TOKEN_DATA } from "../flow/get-token-data.script";
 import { CREATE_AUCTION } from "../flow/create-auction.tx";
 import { GET_AUCTION_IDS } from "../flow/get-auction-ids.script";
@@ -11,12 +10,6 @@ import { SETTLE_AUCTION } from "../flow/settle-auction.tx";
 import { BID_ON_AUCTION } from "../flow/bid-auction.tx";
 import { GET_OWNED_IDS } from "../flow/get-owned-token-ids.script";
 import axios from "axios";
-
-let api_node;
-
-process.env.NODE_ENV === "production"
-  ? api_node = ''
-  : api_node = process.env.REACT_APP_LOCAL_API_NODE
 
 export default function useUserNsfts(user) {
     const [state, dispatch] = useReducer(userNsftReducer, {
@@ -65,7 +58,6 @@ export default function useUserNsfts(user) {
                 cadence: GET_TOKEN_DATA,
                 args: (arg, t) => [arg(user?.addr, t.Address)]
             })
-            console.log(res)
             let minted_nsfts = []
             if (res !== null) {
                 minted_nsfts = res.filter(token => token.creatorAddress === user?.addr)
@@ -85,7 +77,6 @@ export default function useUserNsfts(user) {
                 cadence: GET_OWNED_IDS,
                 args: (arg, t) => [arg(user?.addr, t.Address)]
             })
-            console.log(res)
             let owned_nsfts = []
             if (res !== null) {
                 owned_nsfts = res.filter(token => token.creatorAddress !== user?.addr)
@@ -126,7 +117,6 @@ export default function useUserNsfts(user) {
                 args: (arg, t) => [arg(user?.addr, t.Address)]
             })
             let data = await fetchAuctionData(user?.addr, res)
-            console.log(data)
             data.sort((a, b) => parseFloat(a.timeRemaining) - parseFloat(b.timeRemaining))
             dispatch({ type: 'AUCTION_SUCCESS', payload: data })
         } catch(err) {

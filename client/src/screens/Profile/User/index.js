@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import cn from "classnames";
 import styles from "./User.module.sass";
 import Icon from "../../../components/Icon";
@@ -19,7 +19,6 @@ const User = ({ className, data, handle }) => {
   const [success, setSuccess] = useState(false)
   const [almost, setAlmost] = useState(false)
   const [error, setError] = useState(false)
-  console.log('data', data)
 
   const socials = [
     {
@@ -33,17 +32,17 @@ const User = ({ className, data, handle }) => {
   ];
 
   const { user } = useAuth()
-  const { collection, profile, createCollection, createFUSDVault, fetchUserData, collectionError } = useUser()
-  console.log("collection", collection)
-  console.log('err', collectionError)
+  const { collection, collectionLoading, createCollection, createFUSDVault, fetchUserData, collectionError } = useUser()
+  const err = useRef(collectionError);
 
-  const verify = async () => {
-    setVerifying(true)
-    console.log(collectionError)
-    await createCollection()
-    setAlmost(true)
-    await createFUSDVault()
-    
+  const addVerification = async () => {
+    await axios.put(`${api_node}/api/v1/user/verify`, {
+      verify: true,
+      address: user?.addr
+    })
+  }
+
+  const addToDb = async () => {
     if (!data.db) {
       console.log('adding to db')
       await axios.post(`${api_node}/api/v1/user`, {
@@ -61,24 +60,38 @@ const User = ({ className, data, handle }) => {
         twitter: data.twitter,
         instagram: data.instagram
       })
-      
     }
-    console.log(collectionError)
-    if (collectionError) {
-      console.log('err')
-      setError(true)
+  }
+
+  const verifyVault = async () => {
+    setAlmost(true)
+    let txStatus = await createFUSDVault()
+    if (!txStatus) {
+      setAlmost(false)
+      setVerifying(false)
       return
     }
-    await axios.put(`${api_node}/api/v1/user/verify`, {
-      verify: true,
-      address: user?.addr
-    })
+    console.log('nex step')
+    await addToDb()
+    await addVerification()
     setAlmost(false)
     setSuccess(true)
     await fetchUserData()
     setVerifying(false)
   }
 
+  const verify = async () => {
+    setVerifying(true)
+    if (!collection) {
+      let txStatus = await createCollection()
+      if (!txStatus) {
+        setVerifying(false)
+        return
+      }
+    }
+    console.log('NEXT')
+    await verifyVault()
+  }
 
   return (
     <>
@@ -117,7 +130,7 @@ const User = ({ className, data, handle }) => {
             </button>
           </div>
               </div>)*/}
-        {data.address !== user?.addr || collection ? <></> : (<div className={styles.control}>
+        {data.address !== user?.addr || data.verified || almost ? <></> : (<div className={styles.control}>
           <div className={styles.btns}>
             <button
               className={cn(

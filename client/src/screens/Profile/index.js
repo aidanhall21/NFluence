@@ -186,11 +186,9 @@ const Profile = () => {
   const [visible, setVisible] = useState(false);
   //const [file, setFile] = useState(null)
   const [profData, setProfData] = useState({})
-  console.log(profData)
   const [auctions, setAuctions] = useState([])
   const [src, setSrc] = useState('')
   const [loading, setLoading] = useState(false)
-  console.log('src', src)
   //const [bids, setBids] = useState([])
 
   const { handle } = useParams();
@@ -198,8 +196,6 @@ const Profile = () => {
   const { user } = useAuth()
   const { profile, userNsfts, bids, userAuctions, userOwned, fetchAccountLiveAuctions, fetchUserMintedNsfts } = useUser()
   const history = useHistory()
-  console.log("BIDS", bids)
-  console.log("CREATED", userNsfts)
 
   useEffect(() => {
     setProfData(profile)
@@ -242,7 +238,6 @@ const Profile = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
           setSrc(`url(${url})`)
-          console.log(src)
           setLoading(false)
         }
         else {
@@ -279,8 +274,6 @@ const Profile = () => {
       return alert('No file selected.');
     }
     getSignedRequest(file)
-
-    console.log(src)
 
     profile.db ?
     axios.put(`${api_node}/api/v1/user/update`, {

@@ -13,6 +13,7 @@ export default function UserProvider({ children }) {
   const {
     data: collection,
     error: collectionError,
+    loading: collectionLoading,
     createCollection,
     checkCollection,
     createFUSDVault
@@ -57,6 +58,7 @@ export default function UserProvider({ children }) {
         bidOnAuction,
         fetchUserData,
         collectionError,
+        collectionLoading,
         addToAuction,
         userAuctions,
         settleAuction,

@@ -23,6 +23,7 @@ export default function useCollection(user) {
         } catch (err) {
             console.log(err)
             dispatch({ type: 'ERROR' })
+            console.log(state)
         }
     }
 
@@ -34,13 +35,15 @@ export default function useCollection(user) {
 
     const createCollection = async () => {
         dispatch({ type: 'PROCESSING' })
+        console.log('creating collection')
         try {
             let res = await mutate({
                 cadence: INIT_ACCOUNT,
                 limit: 9999
             })
-            await tx(res).onceSealed()
+            let txStatus = await tx(res).onceSealed()
             dispatch({ type: 'SUCCESS', payload: true })
+            return txStatus
         } catch (err) {
             console.log(err)
             dispatch({ type: 'ERROR' })
@@ -54,8 +57,9 @@ export default function useCollection(user) {
                 cadence: SETUP_FUSD_VAULT,
                 limit: 9999
             })
-            await tx(res).onceSealed()
+            let txStatus = await tx(res).onceSealed()
             dispatch({ type: 'SUCCESS', payload: true})
+            return txStatus
         } catch(err) {
             console.log(err)
             dispatch({ type: 'ERROR' })

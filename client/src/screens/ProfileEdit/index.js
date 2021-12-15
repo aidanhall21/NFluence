@@ -315,15 +315,15 @@ const ProfileEdit = () => {
                   <div className={styles.category}>
                     Fund Your Account with USD
                   </div>
-                  {profile.verified && (<a
+                  {(<a
                     className={cn("button-small", styles.button)}
                     href={`${urlWithSignature.current}`}
                   >
                     Add Funds
                   </a>)}
-                  {!profile.verified && (
+                  {/*!profile.verified && (
                     <div>You must verify your account before you can deposit.</div>
-                  )}
+                  )/*}
                   {/*<div className={styles.fieldset}>
                     {loading && (
                       <div className={styles.item}>
