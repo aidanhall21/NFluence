@@ -45,7 +45,7 @@ const Control = ({ className, data, error }) => {
       } catch (err) {}
     };
     getHighestBidder();
-  }, [data]);
+  }, [data, address, tokenId]);
 
   useEffect(() => {
     if (highBidder === "") return;

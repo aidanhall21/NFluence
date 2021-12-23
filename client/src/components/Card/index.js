@@ -62,8 +62,6 @@ const Card = ({ className, item }) => {
   const [loading, setLoading] = useState(true)
   const { handle } = useParams();
   const { profile, user } = useUser()
-  console.log('link', link)
-  console.log(item)
 
   useEffect(() => {
     setLoading(true)

@@ -1,7 +1,5 @@
 import { mutate, query, tx } from "@onflow/fcl";
 import { useEffect, useReducer } from "react";
-import { INIT_ACCOUNT } from "../flow/init-account.tx";
-import { GET_BALANCE } from "../flow/get-balance.script";
 import { defaultReducer } from "../reducer/defaultReducer";
 import { GET_FUSD_BALANCE } from "../flow/get-fusd-balance.script";
 import { SETUP_FUSD_VAULT } from "../flow/setup-fusd-vault.tx";
@@ -28,6 +26,7 @@ export default function useCurrency(user) {
             })
             dispatch({ type: 'SUCCESS', payload: response })
         } catch (err) {
+            console.log(err)
             dispatch({ type: 'ERROR' })
         }
     }

@@ -1,11 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import cn from "classnames";
 import styles from "./User.module.sass";
 import Icon from "../../../components/Icon";
 import { useUser } from "../../../providers/UserProvider";
 import { useAuth } from "../../../providers/AuthProvider";
 import axios from "axios";
-// import { isStepDivisible } from "react-range/lib/utils";
 
 let api_node;
 process.env.NODE_ENV === "production"
@@ -32,8 +31,7 @@ const User = ({ className, data, handle }) => {
   ];
 
   const { user } = useAuth()
-  const { collection, collectionLoading, createCollection, createFUSDVault, fetchUserData, collectionError } = useUser()
-  const err = useRef(collectionError);
+  const { collection, createCollection, createFUSDVault, fetchUserData } = useUser()
 
   const addVerification = async () => {
     await axios.put(`${api_node}/api/v1/user/verify`, {
@@ -44,7 +42,6 @@ const User = ({ className, data, handle }) => {
 
   const addToDb = async () => {
     if (!data.db) {
-      console.log('adding to db')
       await axios.post(`${api_node}/api/v1/user`, {
         name: data.name,
         email: data.email,
@@ -71,7 +68,6 @@ const User = ({ className, data, handle }) => {
       setVerifying(false)
       return
     }
-    console.log('nex step')
     await addToDb()
     await addVerification()
     setAlmost(false)
@@ -89,7 +85,6 @@ const User = ({ className, data, handle }) => {
         return
       }
     }
-    console.log('NEXT')
     await verifyVault()
   }
 

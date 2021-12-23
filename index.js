@@ -24,7 +24,7 @@ aws.config.getCredentials(function(err) {
   if (err) console.log(err.stack);
   // credentials not loaded
   else {
-    console.log("Access key:", aws.config.credentials);
+    console.log('');
   }
 });
 
@@ -32,14 +32,10 @@ aws.config.getCredentials(function(err) {
 
 aws.config.region = 'us-east-2';
 
-console.log("Region: ", aws.config.region);
-
 app.get('/api/v1/sign-s3', (req, res) => {
   const s3 = new aws.S3();
   const fileName = req.query['file-name'];
-  console.log(fileName)
   const fileType = req.query['file-type'];
-  console.log(fileType)
   const s3Params = {
     Bucket: S3_BUCKET,
     Key: fileName,

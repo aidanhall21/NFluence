@@ -59,14 +59,12 @@ const Item = () => {
   const [currentOwner, setCurrentOwner] = useState(false)
   const { address, nftid } = useParams();
   const { user, owned_ids } = useUser()
-  console.log(link)
 
   useEffect(() => {
     const fetchTokenData = async () => {
       dispatch({ type: "PROCESSING" });
       let acct;
       currentOwner ? acct = user?.addr : acct = address
-      console.log(acct)
       try {
         let res = await query({
           cadence: GET_SINGLE_TOKEN_DATA,
@@ -94,8 +92,6 @@ const Item = () => {
     }
     const fetchBidHistory = async () => {
       if (state.data === {}) return
-      console.log(state.data == {})
-      console.log(state.data)
       const api = await axios.get(`https://prod-test-net-dashboard-api.azurewebsites.net/api/company/04a74a09-619e-47f3-a6b4-99d24ce69971/search?tokenID=${nftid}`)
       const serverResponse = api.data
       const result = serverResponse.filter(event => event.flowEventId === "A.a3c018ee20b2cb65.NFluenceAuction.BidPlaced")
@@ -107,18 +103,16 @@ const Item = () => {
           userData
         }
       }))
-      console.log(asyncRes)
       setBids(asyncRes)
     }
 
       fetchAuctionTokenData()
       .catch((err) => {
-        console.log('first catch')
         fetchTokenData()
       })
       fetchTokenData()
       fetchBidHistory()
-  }, [address, nftid, currentOwner, user?.addr]);
+  }, [address, nftid, currentOwner, user?.addr, state.data]);
 
   useEffect(() => {
     if (owned_ids.includes(parseInt(nftid))) {
@@ -130,11 +124,7 @@ const Item = () => {
     setLoading(true)
     const fetchData = async () => {
       if (state.data.nftId && user?.addr !== address && !currentOwner) return
-      console.log(state.data)
-      console.log(user?.addr !== address)
-      console.log(!currentOwner)
       const res = await createTokenLink(state.data);
-      console.log(res)
       if (!res.properties && !res.image) return
       setLink(res.properties.file)
     };
@@ -144,7 +134,6 @@ const Item = () => {
 
   useEffect(() => {
     const fetchOwnerData = async () => {
-      console.log(state.data)
       if (state.data === {}) return
       let acct;
       currentOwner ? acct = user?.addr : acct = address

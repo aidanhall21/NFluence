@@ -210,7 +210,7 @@ const ProfileEdit = () => {
 
   const urlWithSignature = useRef('');
   useEffect(() => {
-    const originalUrl = `https://buy-staging.moonpay.com?apiKey=${process.env.REACT_APP_MOONPAY_PUBLISHABLE_KEY}&currencyCode=fusd&walletAddress=${user?.addr}&redirectURL=https://www.nfluence.fans/`
+    const originalUrl = `https://buy-staging.moonpay.com?apiKey=${process.env.REACT_APP_MOONPAY_PUBLISHABLE_KEY}&currencyCode=fusd&walletAddress=${user?.addr}&redirectURL=https%3A%2F%2Fwww.nfluence.fans%2F`
     const signature = crypto
       .createHmac('sha256', `${process.env.REACT_APP_MOONPAY_SECRET_KEY}`)
       .update(new URL(originalUrl).search)

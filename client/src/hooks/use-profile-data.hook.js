@@ -2,7 +2,6 @@ import { useEffect, useReducer } from "react";
 import { defaultReducer } from "../reducer/defaultReducer";
 import Identicon from "identicon.js";
 import axios from "axios";
-//import { AVATAR_DEFAULT } from "../components/Header/User/avatar-default";
 
 let api_node;
 process.env.NODE_ENV === "production"

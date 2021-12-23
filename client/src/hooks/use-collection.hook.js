@@ -23,7 +23,6 @@ export default function useCollection(user) {
         } catch (err) {
             console.log(err)
             dispatch({ type: 'ERROR' })
-            console.log(state)
         }
     }
 
@@ -35,7 +34,6 @@ export default function useCollection(user) {
 
     const createCollection = async () => {
         dispatch({ type: 'PROCESSING' })
-        console.log('creating collection')
         try {
             let res = await mutate({
                 cadence: INIT_ACCOUNT,

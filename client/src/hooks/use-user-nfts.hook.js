@@ -45,7 +45,6 @@ export default function useUserNsfts(user) {
     }
 
     const fetchBidData = async (data) => {
-        console.log(data)
         return Promise.all(data.map((el) => {
             return runScript(el.blockEventData.owner, el.blockEventData.tokenID)
         }))
@@ -96,7 +95,6 @@ export default function useUserNsfts(user) {
                 cadence: GET_TOKEN_DATA,
                 args: (arg, t) => [arg(user?.addr, t.Address)]
             })
-            console.log(res)
             let owned_nsfts = []
             if (res !== null) {
                 owned_nsfts = res.filter(token => token.creatorAddress !== user?.addr)
@@ -200,7 +198,6 @@ export default function useUserNsfts(user) {
                 limit: 9999
             })
             let txStatus = await tx(res).onceSealed()
-            console.log(txStatus)
             dispatch({ type: 'TX_SUCCESS', payload: txStatus })
         } catch(err) {
             console.log(err)
@@ -209,7 +206,6 @@ export default function useUserNsfts(user) {
     }
 
     const settleAuction = async (nftid) => {
-        console.log(state.error)
         dispatch({ type: 'PROCESSING' })
         try {
             let res = await mutate({
@@ -218,7 +214,6 @@ export default function useUserNsfts(user) {
                 limit: 9999
             })
             let txStatus = await tx(res).onceSealed()
-            console.log(txStatus)
             dispatch({ type: 'TX_SUCCESS', payload: txStatus })
             return txStatus
         } catch(err) {

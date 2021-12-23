@@ -5,15 +5,9 @@ import styles from "./Profile.module.sass";
 import Icon from "../../components/Icon";
 import User from "./User";
 import Items from "./Items";
-//import Followers from "./Followers";
-
-
-// data
-//import { bids } from "../../mocks/bids";
 import axios from "axios";
 import { useAuth } from "../../providers/AuthProvider";
 import { useUser } from "../../providers/UserProvider";
-import { getBidPlacedEvents } from "../../flow/query-event.script.script";
 
 const userLinks = [
   "Your Auctions",
@@ -27,154 +21,6 @@ const accountLinks = [
 ]
 
 
-/*
-const following = [
-  {
-    name: "Sally Fadel",
-    counter: "161 followers",
-    avatar: "/images/content/avatar-5.jpg",
-    url: "https://ui8.net",
-    buttonClass: "stroke",
-    buttonContent: "Unfollow",
-    gallery: [
-      "/images/content/follower-pic-1.jpg",
-      "/images/content/follower-pic-2.jpg",
-      "/images/content/follower-pic-3.jpg",
-      "/images/content/follower-pic-4.jpg",
-    ],
-  },
-  {
-    name: "Aniya Harber",
-    counter: "161 followers",
-    avatar: "/images/content/avatar-6.jpg",
-    url: "https://ui8.net",
-    buttonClass: "stroke",
-    buttonContent: "Unfollow",
-    gallery: [
-      "/images/content/follower-pic-5.jpg",
-      "/images/content/follower-pic-6.jpg",
-      "/images/content/follower-pic-1.jpg",
-      "/images/content/follower-pic-3.jpg",
-    ],
-  },
-  {
-    name: "Edwardo Bea",
-    counter: "161 followers",
-    avatar: "/images/content/avatar-7.jpg",
-    url: "https://ui8.net",
-    buttonClass: "stroke",
-    buttonContent: "Unfollow",
-    gallery: [
-      "/images/content/follower-pic-4.jpg",
-      "/images/content/follower-pic-1.jpg",
-      "/images/content/follower-pic-3.jpg",
-      "/images/content/follower-pic-6.jpg",
-    ],
-  },
-  {
-    name: "Reymundo",
-    counter: "161 followers",
-    avatar: "/images/content/avatar-8.jpg",
-    url: "https://ui8.net",
-    buttonClass: "stroke",
-    buttonContent: "Unfollow",
-    gallery: [
-      "/images/content/follower-pic-5.jpg",
-      "/images/content/follower-pic-2.jpg",
-      "/images/content/follower-pic-6.jpg",
-      "/images/content/follower-pic-1.jpg",
-    ],
-  },
-  {
-    name: "Jeanette",
-    counter: "161 followers",
-    avatar: "/images/content/avatar-9.jpg",
-    url: "https://ui8.net",
-    buttonClass: "stroke",
-    buttonContent: "Unfollow",
-    gallery: [
-      "/images/content/follower-pic-1.jpg",
-      "/images/content/follower-pic-3.jpg",
-      "/images/content/follower-pic-5.jpg",
-      "/images/content/follower-pic-4.jpg",
-    ],
-  },
-];
-
-const followers = [
-  {
-    name: "Sally Fadel",
-    counter: "161 followers",
-    avatar: "/images/content/avatar-5.jpg",
-    url: "https://ui8.net",
-    buttonClass: "blue",
-    buttonContent: "Follow",
-    gallery: [
-      "/images/content/follower-pic-1.jpg",
-      "/images/content/follower-pic-2.jpg",
-      "/images/content/follower-pic-3.jpg",
-      "/images/content/follower-pic-4.jpg",
-    ],
-  },
-  {
-    name: "Aniya Harber",
-    counter: "161 followers",
-    avatar: "/images/content/avatar-6.jpg",
-    url: "https://ui8.net",
-    buttonClass: "blue",
-    buttonContent: "Follow",
-    gallery: [
-      "/images/content/follower-pic-5.jpg",
-      "/images/content/follower-pic-6.jpg",
-      "/images/content/follower-pic-1.jpg",
-      "/images/content/follower-pic-3.jpg",
-    ],
-  },
-  {
-    name: "Edwardo Bea",
-    counter: "161 followers",
-    avatar: "/images/content/avatar-7.jpg",
-    url: "https://ui8.net",
-    buttonClass: "blue",
-    buttonContent: "Follow",
-    gallery: [
-      "/images/content/follower-pic-4.jpg",
-      "/images/content/follower-pic-1.jpg",
-      "/images/content/follower-pic-3.jpg",
-      "/images/content/follower-pic-6.jpg",
-    ],
-  },
-  {
-    name: "Reymundo",
-    counter: "161 followers",
-    avatar: "/images/content/avatar-8.jpg",
-    url: "https://ui8.net",
-    buttonClass: "blue",
-    buttonContent: "Follow",
-    gallery: [
-      "/images/content/follower-pic-5.jpg",
-      "/images/content/follower-pic-2.jpg",
-      "/images/content/follower-pic-6.jpg",
-      "/images/content/follower-pic-1.jpg",
-    ],
-  },
-  {
-    name: "Jeanette",
-    counter: "161 followers",
-    avatar: "/images/content/avatar-9.jpg",
-    url: "https://ui8.net",
-    buttonClass: "blue",
-    buttonContent: "Follow",
-    gallery: [
-      "/images/content/follower-pic-1.jpg",
-      "/images/content/follower-pic-3.jpg",
-      "/images/content/follower-pic-5.jpg",
-      "/images/content/follower-pic-4.jpg",
-    ],
-  },
-];
-*/
-
 let api_node;
 
 process.env.NODE_ENV === "production"
@@ -184,17 +30,15 @@ process.env.NODE_ENV === "production"
 const Profile = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [visible, setVisible] = useState(false);
-  //const [file, setFile] = useState(null)
   const [profData, setProfData] = useState({})
   const [auctions, setAuctions] = useState([])
   const [src, setSrc] = useState('')
   const [loading, setLoading] = useState(false)
-  //const [bids, setBids] = useState([])
 
   const { handle } = useParams();
 
   const { user } = useAuth()
-  const { profile, userNsfts, bids, userAuctions, userOwned, fetchAccountLiveAuctions, fetchUserMintedNsfts } = useUser()
+  const { profile, userNsfts, bids, userAuctions, userOwned, fetchAccountLiveAuctions } = useUser()
   const history = useHistory()
 
   useEffect(() => {
@@ -225,11 +69,11 @@ const Profile = () => {
       setAuctions(auctionData)
     }
     updateAuctions()
-  }, [profData, userAuctions])
+  }, [profData, userAuctions, fetchAccountLiveAuctions, handle, profile.handle])
 
   useEffect(() => {
     profile.cover_image ? setSrc(`url(https://nfluence-assets.s3.amazonaws.com/${user?.addr}-cover)`) : setSrc(`url(/images/content/bg-profile.jpg)`)
-  }, [profile]);
+  }, [profile, user?.addr]);
 
   function uploadFile(file, signedRequest, url) {
     const xhr = new XMLHttpRequest();

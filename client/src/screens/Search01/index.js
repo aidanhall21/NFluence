@@ -45,7 +45,6 @@ const Search = () => {
   const param = new URLSearchParams(urlsearch).get('search')
 
   useEffect(() => {
-    console.log('Searching')
     const searchUsers = async (param) => {
       dispatch({ type: 'PROCESSING' })
       try { 

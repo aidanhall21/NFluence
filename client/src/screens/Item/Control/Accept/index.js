@@ -14,7 +14,6 @@ process.env.NODE_ENV === "production"
 
 
 const Accept = ({ className, data, profile }) => {
-  console.log(data)
   const items = [
     {
       title: "Platform fee",

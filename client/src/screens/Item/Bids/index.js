@@ -1,7 +1,6 @@
 import React from "react";
 import cn from "classnames";
 import styles from "./Bids.module.sass";
-import { Link } from "react-router-dom";
 
 const Bids = ({ className, items }) => {
   return (

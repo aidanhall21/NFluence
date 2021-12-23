@@ -128,7 +128,6 @@ const Upload = () => {
 
     setVisibleModal(true)
 
-    console.log(file)
     const filetype = file["type"].split("/")[0]
     let type;
     if (filetype === 'image') {
@@ -171,7 +170,6 @@ const Upload = () => {
       if (response) {
         //setSuccess(true)
         setLoad(false)
-        console.log(response)
         fetchUserMintedNsfts()
       } else {
         //setError(true)

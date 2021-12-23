@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import cn from "classnames";
 import styles from "./Bid.module.sass";
 import Form from "../Form";
-import { formatAmountInput } from "../../mocks/functions";
 import { useParams } from "react-router";
 import { useUser } from "../../providers/UserProvider";
 import Loader from "../Loader";
@@ -10,10 +9,9 @@ import Loader from "../Loader";
 const Bid = ({ className, data }) => {
   const [bid, setBid] = useState(data.minNextBid);
   const [nofunds, setNofunds] = useState(false);
-  const [visibleModalBid, setVisibleModalBid] = useState(false);
 
   const { address, nftid } = useParams();
-  const { bidOnAuction, balance, loading, error, status, getBalance, user } =
+  const { bidOnAuction, balance, loading, error, status, getBalance } =
     useUser();
 
   const handleSubmit = async (e) => {

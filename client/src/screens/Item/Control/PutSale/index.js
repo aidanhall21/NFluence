@@ -6,36 +6,11 @@ import { useUser } from "../../../../providers/UserProvider";
 import { useParams } from "react-router";
 import Loader from "../../../../components/Loader";
 import { formatAmountInput } from "../../../../mocks/functions";
-import { getAuctionStartedEvents } from "../../../../flow/query-event.script.script"
-import axios from "axios";
-//import Icon from "../../../../components/Icon";
-//import LoaderCircle from "../../../../components/LoaderCircle";
-//import Icon from "../../../../components/Icon";
-//import Switch from "../../../../components/Switch";
 
-/*const items = [
-  {
-    title: "Enter your price",
-    value: "ETH",
-  },
-  {
-    title: "Service fee",
-    value: "1.5%",
-  },
-  {
-    title: "Total bid amount",
-    value: "0 ETH",
-  },
-];*/
-
-let api_node;
-process.env.NODE_ENV === "production"
-  ? api_node = ''
-  : api_node = process.env.REACT_APP_LOCAL_API_NODE
 
 const PutSale = ({ className }) => {
   const [price, setPrice] = useState(false);
-  const { addToAuction, loading, status, error, user } = useUser();
+  const { addToAuction, loading, status, error } = useUser();
   const { nftid } = useParams();
 
   const handleSubmit = async (e) => {

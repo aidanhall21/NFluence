@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import cn from "classnames";
 import styles from "./UploadVariants.module.sass";
 import Control from "../../components/Control";
-import Image from "../../components/Image";
 
 const breadcrumbs = [
   {
