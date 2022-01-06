@@ -1,3 +1,7 @@
+/*
+### THIS CONTRACT IS CURRENTLY NOT IN USE
+ */
+
 import FungibleToken from 0x9a0766d93b6608b7
 
 pub contract NFluenceUtilityCoin: FungibleToken {

@@ -1,7 +1,7 @@
 import NFluence from "../contracts/NFluence.cdc"
 import NFluenceAuction from "../contracts/NFluenceAuction.cdc"
 import FungibleToken from 0x9a0766d93b6608b7
-import NFluenceUtilityCoin from "../contracts/NFluenceUtilityCoin.cdc"
+import FUSD from 0xe223d8a629e49c68
 
 transaction(listingResourceID: UInt64, storefrontAddress: Address, bidAmount: UFix64) {
     let paymentVault: @FungibleToken.Vault
@@ -19,10 +19,10 @@ transaction(listingResourceID: UInt64, storefrontAddress: Address, bidAmount: UF
             ?? panic("Could not borrow Storefront from provided address")
         self.listing = self.storefront.borrowListing(listingResourceID: listingResourceID)
             ?? panic("No offer with that ID in Storefront")
-        let vaultRef = acct.borrow<&NFluenceUtilityCoin.Vault>(from: NFluenceUtilityCoin.NFluenceUtilityCoinVaultStoragePath)
+        let vaultRef = acct.borrow<&FUSD.Vault>(from: /storage/fusdVault)
             ?? panic("Could not borrow reference to the owner's Vault!")
         self.paymentVault <- vaultRef.withdraw(amount: bidAmount)
-        self.vaultCap = acct.getCapability<&{FungibleToken.Receiver}>(NFluenceUtilityCoin.NFluenceUtilityCoinReceiverPublicPath)
+        self.vaultCap = acct.getCapability<&{FungibleToken.Receiver}>(/public/fusdReceiver)
         self.collectionCap = acct.getCapability<&NFluence.Collection{NFluence.NFluenceCollectionPublic}>(NFluence.CollectionPublicPath)
     }
 

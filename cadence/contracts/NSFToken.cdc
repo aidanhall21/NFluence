@@ -1,19 +1,5 @@
 /*
-When an auction or sale is completed a cut of that goes into the main Admin account
-Let's say it's an UtilityCoin account for now
-Another cut will go into another account Vault/Collection or whatever
-NSFTokens will be distributed to early adopters (creators and buyers) until there
-are no more tokens remaining
-
-Questions:
-    Should there be a finite amount of these tokens
-    Should an admin be able to mint more
-    I think in case of emergency the answer to these questions should be yes
-
-
-0xee82856bf20e2aa6 on emulator
-0x9a0766d93b6608b7 on testnet
-0xf233dcee88fe0abe on mainnet
+### THIS CONTRACT IS CURRENTLY NOT IN USE
  */
 
 import FungibleToken from "./FungibleToken.cdc"

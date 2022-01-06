@@ -155,7 +155,7 @@ pub contract NFluenceAuction {
             self.minimumBidIncrement = minimumBidIncrement
             self.auctionLength = auctionLength
             self.startPrice = startPrice
-            self.currentPrice = startPrice // Why this?
+            self.currentPrice = startPrice
             self.auctionStartTime = auctionStartTime
             self.auctionCompleted = false
             // recipient collection and vault capabilities set to the owner collection and vault capabilities
@@ -216,7 +216,7 @@ pub contract NFluenceAuction {
         }
 
         // If an auction is settled with no bids or cancelled
-        pub fun returnNFTToOwner() {
+        access(self) fun returnNFTToOwner() {
 
             // release any bidder's tokens
             if self.numberOfBids > 0 {
@@ -228,7 +228,7 @@ pub contract NFluenceAuction {
 
         // Sends NFT to the hightest bidder or back to the original owner if no bids
         // Resolves all transfer of bid funds as well
-        pub fun settleAuction()  {
+        access(contract) fun settleAuction()  {
 
             pre {
                 !self.auctionCompleted : "This auction has already been settled"
@@ -271,10 +271,7 @@ pub contract NFluenceAuction {
         }
 
         // Extend an auction with a given set of seconds
-        pub fun extendWith(_ amount: UFix64) {
-            pre {
-                amount > 0.0 : "Cannot extend an auction by a negative amount"
-            }
+        access(self) fun extendWith(_ amount: UFix64) {
             self.auctionLength = self.auctionLength + amount
         }
 
@@ -293,7 +290,7 @@ pub contract NFluenceAuction {
             return 0.0
         }
 
-        pub fun cancelAuction() {
+        access(contract) fun cancelAuction() {
 
             emit Canceled(tokenID: self.nftId, auctionID: self.auctionID, user: self.ownerVaultCap.borrow()!.owner!.address)
             self.returnNFTToOwner()
@@ -382,8 +379,8 @@ pub contract NFluenceAuction {
             vaultCap: Capability<&{FungibleToken.Receiver}>)
 
         // removing an auction from the storefront is effectively canceling the auction
-        pub fun removeListing(listingResourceID: UInt64)
-        pub fun settleListing(listingResourceID: UInt64)
+        access(contract) fun removeListing(listingResourceID: UInt64)
+        access(contract) fun settleListing(listingResourceID: UInt64)
     }
 
     pub resource interface StorefrontPublic {
@@ -426,7 +423,7 @@ pub contract NFluenceAuction {
         }
 
         // Remove a Listing that has not yet been purchased from the collection and destroy it.
-        pub fun removeListing(listingResourceID: UInt64) {
+        access(contract) fun removeListing(listingResourceID: UInt64) {
 
             if self.checkIdInListing(tokenId: listingResourceID) {
               let listing <- self.listings.remove(key: listingResourceID)!
@@ -441,7 +438,7 @@ pub contract NFluenceAuction {
           return self.listings.containsKey(tokenId)
         }
 
-        pub fun settleListing(listingResourceID: UInt64) {
+        access(contract) fun settleListing(listingResourceID: UInt64) {
             let listing <- self.listings.remove(key: listingResourceID) ?? panic("missing Listing")
             listing.settleAuction()
             destroy listing
@@ -478,7 +475,7 @@ pub contract NFluenceAuction {
     // An admin resource that contains administrative functions for this contract
     pub resource Administrator {
 
-        pub fun updateCutPercentage(newPercentage: UFix64) {
+        access(self) fun updateCutPercentage(newPercentage: UFix64) {
             pre {
                 newPercentage > 1.0 : "New percentage must be between 1 and 100"
             }
@@ -486,7 +483,7 @@ pub contract NFluenceAuction {
             NFluenceAuction.cutPercentage = newPercentage
         }
 
-        pub fun retrieveCutVault(): @FungibleToken.Vault {
+        access(self) fun retrieveCutVault(): @FungibleToken.Vault {
             let cutVaultAmount = NFluenceAuction.cutVault.balance
             return <- NFluenceAuction.cutVault.withdraw(amount: cutVaultAmount)
         }
