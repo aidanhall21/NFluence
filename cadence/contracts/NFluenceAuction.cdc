@@ -8,6 +8,7 @@ import NonFungibleToken from "./NonFungibleToken.cdc"
 import NFluence from "./NFluence.cdc"
 import FUSD from 0xe223d8a629e49c68
 
+
 pub contract NFluenceAuction {
 
     // The total amount of AuctionItems that have been created
@@ -365,30 +366,12 @@ pub contract NFluenceAuction {
         }
     }
 
-    // An interface for adding and removing Listings within a Storefront,
-    // intended for use by the Storefront's owner
-    pub resource interface StorefrontManager {
-
-        pub fun createAuction(
-            token: UInt64, 
-            minimumBidIncrement: Int32, 
-            auctionLength: UFix64,
-            auctionStartTime: UFix64,
-            startPrice: UFix64,
-            collectionCap: Capability<&NFluence.Collection>, 
-            vaultCap: Capability<&{FungibleToken.Receiver}>)
-
-        // removing an auction from the storefront is effectively canceling the auction
-        access(contract) fun removeListing(listingResourceID: UInt64)
-        access(contract) fun settleListing(listingResourceID: UInt64)
-    }
-
     pub resource interface StorefrontPublic {
         pub fun getListingIDs(): [UInt64]
         pub fun borrowListing(listingResourceID: UInt64): &AuctionItem{AuctionPublic}?
    }
 
-    pub resource Storefront : StorefrontManager, StorefrontPublic {
+    pub resource Storefront : StorefrontPublic {
 
         access(self) var listings: @{UInt64: AuctionItem}
 
@@ -423,7 +406,7 @@ pub contract NFluenceAuction {
         }
 
         // Remove a Listing that has not yet been purchased from the collection and destroy it.
-        access(contract) fun removeListing(listingResourceID: UInt64) {
+        pub fun removeListing(listingResourceID: UInt64) {
 
             if self.checkIdInListing(tokenId: listingResourceID) {
               let listing <- self.listings.remove(key: listingResourceID)!
@@ -438,7 +421,7 @@ pub contract NFluenceAuction {
           return self.listings.containsKey(tokenId)
         }
 
-        access(contract) fun settleListing(listingResourceID: UInt64) {
+        pub fun settleListing(listingResourceID: UInt64) {
             let listing <- self.listings.remove(key: listingResourceID) ?? panic("missing Listing")
             listing.settleAuction()
             destroy listing

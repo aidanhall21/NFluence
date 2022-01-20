@@ -7,7 +7,7 @@ transaction(recipient: Address, withdrawID: UInt64) {
         let recipient = getAccount(recipient)
         let collectionRef = signer.borrow<&NFluence.Collection>(from: NFluence.CollectionStoragePath)
             ?? panic("Could not borrow a reference to the owner's collection")
-        let storefront = signer.borrow<&NFluenceAuction.Storefront{NFluenceAuction.StorefrontManager}>(from: NFluenceAuction.NFluenceAuctionStorefrontStoragePath)
+        let storefront = signer.borrow<&NFluenceAuction.Storefront>(from: NFluenceAuction.NFluenceAuctionStorefrontStoragePath)
             ?? panic("Missing or mis-typed NFTStorefront.Storefront")
         let depositRef = recipient.getCapability(NFluence.CollectionPublicPath).borrow<&NFluence.Collection{NFluence.NFluenceCollectionPublic}>()!
         storefront.removeListing(listingResourceID: withdrawID)
