@@ -26,6 +26,7 @@
     "express": "^4.17.1",
     "faker": "6.6.6",
     "google-protobuf": "^3.14.0",
+    "http": "^0.0.1-security",
     "identicon.js": "^2.3.3",
     "nft.storage": "^5.2.2",
     "node-forge": "^1.0.0",
