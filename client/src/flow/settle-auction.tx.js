@@ -1,8 +1,8 @@
 export const SETTLE_AUCTION = `
 import NFluence from 0xNFLUENCE
 import NFluenceAuction from 0xAUCTION
-import FungibleToken from 0x9a0766d93b6608b7
-import FUSD from 0xe223d8a629e49c68
+import FungibleToken from 0xFUNG
+import FUSD from 0xFUSD
 
 transaction(listingResourceID: UInt64) {
     let storefront: &NFluenceAuction.Storefront

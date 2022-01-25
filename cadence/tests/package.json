@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/preset-env": "^7.15.0",
+    "@babel/core": "^7.16.12",
+    "@babel/preset-env": "^7.16.11",
     "@onflow/types": "0.0.6",
     "babel-jest": "^27.0.6",
     "flow-js-testing": "0.2.2",

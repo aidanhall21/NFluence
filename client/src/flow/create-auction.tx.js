@@ -1,7 +1,7 @@
 export const CREATE_AUCTION = `
 import NFluenceAuction from 0xAUCTION
 import NFluence from 0xNFLUENCE
-import FungibleToken from 0x9a0766d93b6608b7
+import FungibleToken from 0xFUNG
 
 transaction(nftId: UInt64, startPrice: UFix64) {
     let ownerCollectionCap: Capability<&NFluence.Collection>

@@ -1,11 +1,11 @@
 export const GET_FUSD_BALANCE = `
 // Mainnet
-// import FungibleToken from "../contracts/FungibleToken.cdc"
-// import FUSD from "../contracts/FUSD.cdc"
+import FungibleToken from 0xFUNG
+import FUSD from 0xFUSD
 
 // Testnet
-import FungibleToken from 0x9a0766d93b6608b7
-import FUSD from 0xe223d8a629e49c68
+// import FungibleToken from 0x9a0766d93b6608b7
+// import FUSD from 0xe223d8a629e49c68
 
 pub fun main(address: Address): UFix64 {
   let account = getAccount(address)
