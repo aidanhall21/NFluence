@@ -7,7 +7,7 @@ import TextInput from "../../components/TextInput";
 import Modal from "../../components/Modal";
 import Preview from "./Preview";
 import FolowSteps from "./FolowSteps";
-import { NFTStorage } from "nft.storage"
+import { NFTStorage } from "nft.storage/dist/bundle.esm.min.js"
 import CryptoJs from 'crypto-js'
 import { useUser } from "../../providers/UserProvider";
 import { useLocation } from "react-router";

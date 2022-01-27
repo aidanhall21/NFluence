@@ -7,7 +7,7 @@ const { json, urlencoded } = require("body-parser");
 const errorhandler = require("errorhandler");
 require('dotenv').config({path: __dirname+'/.env.local'})
 
-let port = 5000
+let port = 5005
 
 const app = express();
 const apiRouter = require('./db/queries');
