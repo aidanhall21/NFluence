@@ -209,6 +209,7 @@ const ProfileEdit = () => {
   };
 
   const urlWithSignature = useRef('');
+  //buy-staging for test
   useEffect(() => {
     const originalUrl = `https://buy.moonpay.com?apiKey=${process.env.REACT_APP_MOONPAY_PUBLISHABLE_KEY}&currencyCode=fusd&walletAddress=${user?.addr}&redirectURL=https%3A%2F%2Fwww.nfluence.fans%2F`
     const signature = crypto
