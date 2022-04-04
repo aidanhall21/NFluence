@@ -26,7 +26,7 @@ export default function useCurrency(user) {
             })
             dispatch({ type: 'SUCCESS', payload: response })
         } catch (err) {
-            console.log(err)
+            console.log('user has no FUSD vault installed')
             dispatch({ type: 'ERROR' })
         }
     }

@@ -5,7 +5,7 @@ import Bid from "../../../components/Bid";
 import Accept from "./Accept";
 import PutSale from "./PutSale";
 import Modal from "../../../components/Modal";
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 import { query } from "@onflow/fcl";
 import { GET_HIGHEST_BIDDER } from "../../../flow/get-highest-bidder.script";
 import axios from "axios";
@@ -24,14 +24,14 @@ const Control = ({ className, data, error }) => {
   const [highBidder, setHighBidder] = useState("");
   const [highBidderProfile, setHighBidderProfile] = useState({});
 
-  const location = useLocation();
-  const address = location.pathname.split("/")[2];
-  const tokenId = location.pathname.split("/")[3];
+  const { pathname } = useLocation();
+  const address = pathname.split("/")[2];
+  const tokenId = pathname.split("/")[3];
 
   const { user } = useUser();
 
   useEffect(() => {
-    if (!data.auctionId) return;
+    if (!'auctionId' in data) return;
     const getHighestBidder = async () => {
       try {
         let res = await query({
@@ -62,7 +62,7 @@ const Control = ({ className, data, error }) => {
   return (
     <>
       <div className={cn(styles.control, className)}>
-        {data.auctionId && (
+        {'auctionId' in data && (
           <div className={styles.head}>
             <div className={styles.avatar}>
               {highBidderProfile.profile_image ? (
@@ -87,7 +87,7 @@ const Control = ({ className, data, error }) => {
             </div>
           </div>
         )}
-        {data.auctionId && (
+        {'auctionId' in data && (
           <div className={styles.btns}>
             {address === user?.addr && (
               <button
@@ -107,7 +107,7 @@ const Control = ({ className, data, error }) => {
             )}
           </div>
         )}
-        {!data.auctionId && address === user?.addr && !error && (
+        {!'auctionId' in data && address === user?.addr && !error && (
           <>
             <div className={styles.foot}>
               <button

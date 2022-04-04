@@ -1,7 +1,6 @@
 const express = require("express");
 const aws = require('aws-sdk');
 const path = require("path");
-const multer = require('multer')
 const cors = require("cors");
 const { json, urlencoded } = require("body-parser");
 const errorhandler = require("errorhandler");
@@ -32,6 +31,8 @@ aws.config.getCredentials(function(err) {
 
 aws.config.region = 'us-east-2';
 
+//console.log(S3_BUCKET, process.env.AWS_ACCESS_KEY_ID)
+
 app.get('/api/v1/sign-s3', (req, res) => {
   const s3 = new aws.S3();
   const fileName = req.query['file-name'];
@@ -43,6 +44,7 @@ app.get('/api/v1/sign-s3', (req, res) => {
     ContentType: fileType,
     ACL: 'public-read'
   };
+  console.log(fileName, fileType)
 
   s3.getSignedUrl('putObject', s3Params, (err, data) => {
     if (err) {

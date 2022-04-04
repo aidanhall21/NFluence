@@ -3,7 +3,7 @@ import cn from "classnames";
 import styles from "./PutSale.module.sass";
 import Form from "../../../../components/Form";
 import { useUser } from "../../../../providers/UserProvider";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import Loader from "../../../../components/Loader";
 import { formatAmountInput } from "../../../../mocks/functions";
 

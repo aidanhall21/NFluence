@@ -1,6 +1,6 @@
 export const GET_FUSD_BALANCE = `
 // Mainnet
-import FungibleToken from 0xFUNG
+import FungibleToken from 0xTOKEN
 import FUSD from 0xFUSD
 
 // Testnet

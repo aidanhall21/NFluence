@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import cn from "classnames";
 import styles from "./Bid.module.sass";
 import Form from "../Form";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { useUser } from "../../providers/UserProvider";
 import Loader from "../Loader";
 

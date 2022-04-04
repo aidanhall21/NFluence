@@ -1,7 +1,7 @@
 export const SETTLE_AUCTION = `
 import NFluence from 0xNFLUENCE
 import NFluenceAuction from 0xAUCTION
-import FungibleToken from 0xFUNG
+import FungibleToken from 0xTOKEN
 import FUSD from 0xFUSD
 
 transaction(listingResourceID: UInt64) {

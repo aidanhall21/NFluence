@@ -7,7 +7,7 @@ config({
     "app.detail.title": "NFluence",
     "0xNFLUENCE": process.env.REACT_APP_NFLUENCE_CONTRACT,
     "0xAUCTION": process.env.REACT_APP_AUCTION_CONTRACT,
-    "OxFUNG": "0xf233dcee88fe0abe",
+    "0xTOKEN": "0xf233dcee88fe0abe",
     "0xFUSD": "0x3c5959b568896393",
     "0xNONF": "0x1d7e57aa55817448"
 })

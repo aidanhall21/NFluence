@@ -2,7 +2,7 @@ import React from "react";
 import cn from "classnames";
 import styles from "./Accept.module.sass";
 import { useUser } from "../../../../providers/UserProvider";
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 import Loader from "../../../../components/Loader";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -34,11 +34,11 @@ const Accept = ({ className, data, profile }) => {
     await settleAuction(parseInt(nftid));
     // When you settle but reject the transaction the auciton is still marked as inactive in the db
     await getBalance()
-    await axios.put(`${api_node}/api/v1/auction/settle`, {
+    {/*await axios.put(`${api_node}/api/v1/auction/settle`, {
       active: false, 
       address: user?.addr, 
       tokenid: nftid, 
-    })
+    })*/}
     await fetchAccountLiveAuctions()
     await fetchUserMintedNsfts()
   };

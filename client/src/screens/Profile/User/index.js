@@ -13,10 +13,12 @@ process.env.NODE_ENV === "production"
 
 
 const User = ({ className, data, handle }) => {
-  const [visible, setVisible] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [success, setSuccess] = useState(false)
   const [almost, setAlmost] = useState(false)
+  //eslint-disable-next-line
+  const [visible, setVisible] = useState(false);
+  //eslint-disable-next-line
   const [error, setError] = useState(false)
 
   const socials = [

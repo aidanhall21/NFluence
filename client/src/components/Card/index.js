@@ -66,7 +66,7 @@ const Card = ({ className, item }) => {
   useEffect(() => {
     setLoading(true)
     const fetchData = async () => {
-      if (item.auctionId && item.creatorAddress !== user?.addr) return
+      if ('auctionId' in item && item.creatorAddress !== user?.addr) return
       const res = await createTokenLink(item);
       setLink(res.properties.file)
     };
@@ -114,7 +114,7 @@ const Card = ({ className, item }) => {
         <div className={styles.body}>
           <div className={styles.line}>
             <div className={styles.title}>{item.title}</div>
-            {item.auctionId ? (
+            {'auctionId' in item ? (
               <div className={styles.price}>${item.price.split(".")[0]}</div>
             ) : (
               <></>
@@ -128,7 +128,7 @@ const Card = ({ className, item }) => {
           </div>
         </div>
       </Link>
-      {item.auctionId ? <div className={styles.foot}>
+      {'auctionId' in item ? <div className={styles.foot}>
         <AuctionTimer data={item} />
       </div> : <></>}
     </div>

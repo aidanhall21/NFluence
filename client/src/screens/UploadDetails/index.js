@@ -10,7 +10,7 @@ import FolowSteps from "./FolowSteps";
 import { NFTStorage } from "nft.storage/dist/bundle.esm.min.js"
 import CryptoJs from 'crypto-js'
 import { useUser } from "../../providers/UserProvider";
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import image from './nsft-logo.jpeg';
 
@@ -64,7 +64,7 @@ const Upload = () => {
 
   const { mintNsft, collection, fetchUserMintedNsfts, error, loading, errorText } = useUser()
 
-  const location = useLocation()
+  const { pathname } = useLocation()
 
   const client = new NFTStorage({ token: apikey })
 
@@ -192,16 +192,16 @@ const Upload = () => {
           <div className={styles.wrapper}>
             <div className={styles.head}>
               <div className={cn("h2", styles.title)}>
-                {location.pathname.split("/")[1] === 'upload-single' ? 'Create a collectible' : 'Create multiple collectibles'}
+                {pathname.split("/")[1] === 'upload-single' ? 'Create a collectible' : 'Create multiple collectibles'}
               </div>
               <Link
                 className={styles.button}
-                to={location.pathname.split("/")[1] === 'upload-single' ? '/upload-multiple' : '/upload-single'}
+                to={pathname.split("/")[1] === 'upload-single' ? '/upload-multiple' : '/upload-single'}
               >
               <button
                 className={cn("button-stroke button-small", styles.button)}
               >
-                {location.pathname.split("/")[1] === 'upload-single' ? 'Switch to Multiple' : 'Switch to Single'}
+                {pathname.split("/")[1] === 'upload-single' ? 'Switch to Multiple' : 'Switch to Single'}
               </button>
               </Link>
             </div>
@@ -242,7 +242,7 @@ const Upload = () => {
                       required
                       onChange={(e) => handleDescriptionChange(e.currentTarget.value)}
                     />
-                    {location.pathname.split("/")[1] === 'upload-multiple' && (
+                    {pathname.split("/")[1] === 'upload-multiple' && (
                       <TextInput
                       className={styles.field}
                       label="Count (Max 10)"

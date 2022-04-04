@@ -8,7 +8,7 @@ import styles from "./Search01.module.sass";
 
 // data
 //import { bids } from "../../mocks/bids";
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 import { defaultReducer } from "../../reducer/defaultReducer";
 import axios from "axios";
 import Followers from "../Profile/Followers";

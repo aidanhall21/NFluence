@@ -1,6 +1,6 @@
 export const SETUP_FUSD_VAULT = `
 // Mainnet
-import FungibleToken from 0xFUNG
+import FungibleToken from 0xTOKEN
 import FUSD from 0xFUSD
 
 // Testnet

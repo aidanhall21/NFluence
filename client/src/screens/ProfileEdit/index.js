@@ -7,7 +7,16 @@ import TextArea from "../../components/TextArea";
 import { useAuth } from "../../providers/AuthProvider";
 import { useUser } from "../../providers/UserProvider";
 import axios from "axios";
-import crypto from 'crypto';
+/*
+let crypto;
+try {
+  crypto = require('crypto');
+} catch (err) {
+  console.log('crypto support is disabled!');
+}
+*/
+
+import * as crypto from 'crypto';
 
 const breadcrumbs = [
   {
@@ -44,6 +53,7 @@ const ProfileEdit = () => {
     xhr.open("PUT", signedRequest);
     xhr.onreadystatechange = () => {
       if (xhr.readyState === 4) {
+        console.log(xhr)
         if (xhr.status === 200) {
           setSrc(url);
         } else {
@@ -68,6 +78,7 @@ const ProfileEdit = () => {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
           const response = JSON.parse(xhr.responseText);
+          console.log(response)
           uploadFile(file, response.signedRequest, response.url);
         } else {
           alert("Could not get signed URL");
@@ -80,6 +91,7 @@ const ProfileEdit = () => {
   const onProfilePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file == null) {
+      console.log('Ive lost me mojo')
       return alert("No file selected.");
     }
     getSignedRequest(file);
@@ -208,12 +220,12 @@ const ProfileEdit = () => {
     }
   };
 
+  
   const urlWithSignature = useRef('');
   //buy-staging for test
   useEffect(() => {
     const originalUrl = `https://buy.moonpay.com?apiKey=${process.env.REACT_APP_MOONPAY_PUBLISHABLE_KEY}&currencyCode=fusd&walletAddress=${user?.addr}&redirectURL=https%3A%2F%2Fwww.nfluence.fans%2F`
-    const signature = crypto
-      .createHmac('sha256', `${process.env.REACT_APP_MOONPAY_SECRET_KEY}`)
+    const signature = crypto.createHmac('sha256', `${process.env.REACT_APP_MOONPAY_SECRET_KEY}`)
       .update(new URL(originalUrl).search)
       .digest('base64');
     urlWithSignature.current = `${originalUrl}&signature=${encodeURIComponent(signature)}`;
@@ -316,13 +328,13 @@ const ProfileEdit = () => {
                   </div>
                   {(<a
                     className={cn("button-small", styles.button)}
-                    href={`${urlWithSignature.current}`}
+                    href={profile.verified ? `${urlWithSignature.current}` : `#`}
                   >
                     Add Funds
                   </a>)}
-                  {/*!profile.verified && (
+                  {!profile.verified && (
                     <div>You must verify your account before you can deposit.</div>
-                  )/*}
+                  )}
                   {/*<div className={styles.fieldset}>
                     {loading && (
                       <div className={styles.item}>

@@ -64,7 +64,7 @@ export default function useUserNsfts(user) {
             minted_nsfts.sort((a, b) => a.nftId - b.nftId)
             dispatch({ type: 'MINTED_SUCCESS', payload: minted_nsfts })
         } catch (err) {
-            console.log(err)
+            console.log('no minted nfts')
             dispatch({ type: 'ERROR', payload: err })
         }
     }
@@ -102,7 +102,7 @@ export default function useUserNsfts(user) {
             owned_nsfts.sort((a, b) => a.nftId - b.nftId)
             dispatch({ type: 'OWNED_SUCCESS', payload: owned_nsfts })
         } catch (err) {
-            console.log(err)
+            console.log('no owned nfts')
             dispatch({ type: 'ERROR' })
         }
     }

@@ -4,7 +4,7 @@ import styles from "./Item.module.sass";
 import Users from "./Users";
 import Control from "./Control";
 //import Options from "./Options";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { defaultReducer } from "../../reducer/defaultReducer";
 import { query } from "@onflow/fcl";
 //import { useUser } from "../../providers/UserProvider";
@@ -50,6 +50,9 @@ const Item = () => {
     error: false,
     data: {},
   });
+
+  console.log('auctionId' in state.data)
+  console.log(state.data)
   const [ownerState, dispatchState] = useReducer(ownerReducer, {
     loading: false,
     error: false,
@@ -59,6 +62,7 @@ const Item = () => {
   const [currentOwner, setCurrentOwner] = useState(false)
   const { address, nftid } = useParams();
   const { user, owned_ids } = useUser()
+  
 
   useEffect(() => {
     const fetchTokenData = async () => {
@@ -72,6 +76,7 @@ const Item = () => {
         });
         dispatch({ type: "SUCCESS", payload: res });
       } catch (err) {
+        console.log(err)
         dispatch({ type: "ERROR" });
         //throw new Error('whoops!')
       }
@@ -110,9 +115,9 @@ const Item = () => {
       .catch((err) => {
         fetchTokenData()
       })
-      fetchTokenData()
+      //fetchTokenData()
       fetchBidHistory()
-  }, [address, nftid, currentOwner, user?.addr, state.data]);
+  }, [address, nftid, user?.addr]);
 
   useEffect(() => {
     if (owned_ids.includes(parseInt(nftid))) {
@@ -130,7 +135,7 @@ const Item = () => {
     };
     fetchData();
     setLoading(false)
-  }, [state.data, address, user?.addr, currentOwner])
+  }, [state.data, address, user?.addr])
 
   useEffect(() => {
     const fetchOwnerData = async () => {
@@ -160,7 +165,7 @@ const Item = () => {
     }
     fetchCreatorData()
     fetchOwnerData()
-  }, [state.data, address, currentOwner, user?.addr])
+  }, [state.data, address, user?.addr])
 
 
   return (
@@ -184,7 +189,7 @@ const Item = () => {
           <div className={styles.details}>
             <h1 className={cn("h3", styles.title)}>{state.data.title}</h1>
             <div className={styles.cost}>
-              {state.data.auctionId ? (<div className={cn("status-stroke-green", styles.price)}>
+              {'auctionId' in state.data ? (<div className={cn("status-stroke-green", styles.price)}>
                 Current Price: ${state.data.price.split(".")[0]}
               </div>) : (<></>)}
               <div className={styles.counter}>
@@ -206,7 +211,7 @@ const Item = () => {
                 </button>
               ))}
             </div>
-            {state.data.auctionId && activeIndex === 1 && (<AuctionTimer data={state.data} />)}
+            {'auctionId' in state.data && activeIndex === 1 && (<AuctionTimer data={state.data} />)}
             {activeIndex === 0 && !state.error && (<Users className={styles.users} items={ownerState.data} />)}
             {activeIndex === 3 && (<Bids className={styles.users} items={bids} />)}
             <Control className={styles.control} data={state.data} error={state.error} />

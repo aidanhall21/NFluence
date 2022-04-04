@@ -4,6 +4,7 @@ import { clearAllBodyScrollLocks } from "body-scroll-lock";
 import styles from "./Page.module.sass";
 import Header from "../Header";
 import Footer from "../Footer";
+import { useParams } from "react-router";
 
 const Page = ({ children }) => {
   const { pathname } = useLocation();
