@@ -51,8 +51,6 @@ const Item = () => {
     data: {},
   });
 
-  console.log('auctionId' in state.data)
-  console.log(state.data)
   const [ownerState, dispatchState] = useReducer(ownerReducer, {
     loading: false,
     error: false,
@@ -62,7 +60,8 @@ const Item = () => {
   const [currentOwner, setCurrentOwner] = useState(false)
   const { address, nftid } = useParams();
   const { user, owned_ids } = useUser()
-  
+
+  console.log(address, nftid)
 
   useEffect(() => {
     const fetchTokenData = async () => {
